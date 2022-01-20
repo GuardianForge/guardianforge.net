@@ -1,5 +1,6 @@
 import React, { MouseEventHandler } from 'react'
 import styled from 'styled-components'
+import colors from '../../../colors'
 // @ts-ignore
 import { classes, races } from "../../../constants"
 
@@ -15,7 +16,7 @@ const Wrapper = styled.div`
 
 	&:hover {
 		cursor: pointer;
-		border: 1px solid #777;
+		border: 1px solid ${colors.theme2.accent2};
 	}
 	.class-name {
 		color: #eee;

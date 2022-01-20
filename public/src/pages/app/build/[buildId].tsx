@@ -5,16 +5,25 @@ import styled from 'styled-components'
 // @ts-ignore
 import { GlobalContext } from '../../../contexts/GlobalContext'
 import Loading from "../components/Loading"
-import SubclassCard from '../../../components/build/SubclassCard'
-import ItemCard from '../../../components/build/ItemCard'
+import SubclassCard from '../components/SubclassCard'
+import ItemCard from '../components/ItemCard'
 import { Helmet } from 'react-helmet'
 import BuildAd from '../../../components/ads/BuildAd';
-import StatBar from '../../../components/build/StatBar';
+import StatBar from '../components/StatBar';
 import BuildMetaPanel from '../../../components/build/BuildMetaPanel'
 import { Col, Container, Row } from 'react-bootstrap'
 import CommandsBar from '../components/CommandsBar'
+import BuildData from '../models/Build'
+import colors from '../../../colors'
+import { Link } from 'gatsby'
+import User from '../models/User'
+import PlayerInfoCard from '../components/PlayerInfoCard'
+import Card from '../components/ui/Card'
+import BuildNotesCard from '../components/BuildNotesCard'
+import VideoReviewCard from '../components/VideoReviewCard'
 
 const Wrapper = styled.div`
+  margin: 0px 10px;
   @media (max-width: 576px) {
     h1, h2, h3 {
       text-align: center
@@ -41,12 +50,11 @@ function Build(props: Props) {
 
   const { isConfigLoaded, dispatchAlert, setPageTitle, isInitDone } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
-  const [buildData, setBuildData] = useState({})
-  const [buildName, setBuildName] = useState("")
+  const [buildData, setBuildData] = useState<BuildData>({})
   const [highlights, setHighlights] = useState([])
   const [isOwner, setIsOwner] = useState(false)
-  const [guardianOf, setGuardianOf] = useState()
-  const [createdBy, setCreatedBy] = useState()
+  const [guardianOf, setGuardianOf] = useState<User>()
+  const [createdBy, setCreatedBy] = useState<User>()
 
   useEffect(() => {
     if(!isInitDone) return
@@ -69,11 +77,9 @@ function Build(props: Props) {
 
       if(buildData.name) {
         setPageTitle(buildData.name)
-        setBuildName(buildData.name)
       } else {
         const name = `Build ${buildId}`
         setPageTitle(name)
-        setBuildName(name)
       }
 
       if(buildData.notes) {
@@ -175,9 +181,10 @@ function Build(props: Props) {
             </Col>
           </Row>
           <Row>
-            <Col md="9">
-              <div className="build-notes" dangerouslySetInnerHTML={{__html: buildData.notes}} />
+            <Col md="8">
               <BuildAd />
+
+              <StatBar stats={buildData.stats} highlights={buildData.highlights} />
 
               <h4>Subclass</h4>
               <div className="subclass row">
@@ -201,9 +208,12 @@ function Build(props: Props) {
               </div>
               <BuildAd />
             </Col>
-            <Col md="3">
-              sidebar
-
+            <Col md="4">
+              {(buildData.inputStyle || buildData.notes || buildData.primaryActivity) && (
+                <BuildNotesCard notes={buildData.notes} inputStyle={buildData.inputStyle} primaryActivityKey={buildData.primaryActivity} />
+              )}
+              {(createdBy || guardianOf) && <PlayerInfoCard createdBy={createdBy} guardianOf={guardianOf} />}
+              {buildData.videoLink && <VideoReviewCard youtubeUrl={buildData.videoLink} />}
             </Col>
           </Row>
 

@@ -22,34 +22,25 @@ export const Provider = ({children}) => {
   useEffect(() => {
     let el1 = document.getElementById('___gatsby')
     let el2 = document.getElementById("gatsby-focus-wrapper")
-    let el3 = document.getElementById("appLayout")
-    let el4 = document.getElementById("appLayoutMain")
+
     const observer = new MutationObserver(function (mutations, observer) {
-      el1.style.height = ''
-      el2.style.height = ''
-      el3.style.height = ''
-      el4.style.height = ''
+      if(el1 && el1.style) el1.style.height = ''
+      if(el2 && el2.style) el2.style.height = ''
     })
 
-    observer.observe(el1, {
-      attributes: true,
-      attributeFilter: ['style']
-    })
+    if(el1) {
+      observer.observe(el1, {
+        attributes: true,
+        attributeFilter: ['style']
+      })
+    }
 
-    observer.observe(el2, {
-      attributes: true,
-      attributeFilter: ['style']
-    })
-
-    observer.observe(el3, {
-      attributes: true,
-      attributeFilter: ['style']
-    })
-
-    observer.observe(el4, {
-      attributes: true,
-      attributeFilter: ['style']
-    })
+    if(el2) {
+      observer.observe(el2, {
+        attributes: true,
+        attributeFilter: ['style']
+      })
+    }
   }, [])
 
   async function initClient() {

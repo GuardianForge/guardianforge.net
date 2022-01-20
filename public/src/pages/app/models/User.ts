@@ -8,18 +8,19 @@ type User = {
   builds?: Array<BuildSummary>
 }
 
-type BungieNetUser = {
+export type BungieNetUser = {
   displayName?: string
   membershipId?: string
   profilePicturePath?: string
 }
 
-type UserInfo = {
+export type UserInfo = {
   about?: string
   social?: SocialInfo
+  uniqueName?: string
 }
 
-type SocialInfo = {
+export type SocialInfo = {
   twitter?: string
   twitch?: string
   youtube?: string

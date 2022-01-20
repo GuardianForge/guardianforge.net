@@ -237,6 +237,31 @@ function AppLayout(props: Props) {
     initApp()
   }, [isInitDone])
 
+
+  useEffect(() => {
+    let el3 = document.getElementById("appLayout")
+    let el4 = document.getElementById("appLayoutMain")
+
+    const observer = new MutationObserver(function (mutations, observer) {
+      if(el3 && el3.style) el3.style.height = ''
+      if(el4 && el4.style) el4.style.height = ''
+    })
+
+    if(el3) {
+      observer.observe(el3, {
+        attributes: true,
+        attributeFilter: ['style']
+      })
+    }
+
+    if(el4) {
+      observer.observe(el4, {
+        attributes: true,
+        attributeFilter: ['style']
+      })
+    }
+  }, [])
+
   useEffect(() => {
     // TODO: Fetch guardians
   }, [isInitDone])
