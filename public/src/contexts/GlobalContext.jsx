@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BungieApiService, ManifestService, IndexedDbService, InventoryManager } from "@guardianforge/destiny-data-utils"
 import GuardianForgeClientService from '../services/GuardianForgeClientService'
 import GuardianForgeApiService from '../services/GuardianForgeApiService'
@@ -18,6 +18,39 @@ export const Provider = ({children}) => {
   const [didOAuthComplete, setDidOAuthComplete] = useState(false)
   const [errorBeingReported, setErrorBeingReported] = useState({})
   const [pageTitle, setPageTitle] = useState("")
+
+  useEffect(() => {
+    let el1 = document.getElementById('___gatsby')
+    let el2 = document.getElementById("gatsby-focus-wrapper")
+    let el3 = document.getElementById("appLayout")
+    let el4 = document.getElementById("appLayoutMain")
+    const observer = new MutationObserver(function (mutations, observer) {
+      el1.style.height = ''
+      el2.style.height = ''
+      el3.style.height = ''
+      el4.style.height = ''
+    })
+
+    observer.observe(el1, {
+      attributes: true,
+      attributeFilter: ['style']
+    })
+
+    observer.observe(el2, {
+      attributes: true,
+      attributeFilter: ['style']
+    })
+
+    observer.observe(el3, {
+      attributes: true,
+      attributeFilter: ['style']
+    })
+
+    observer.observe(el4, {
+      attributes: true,
+      attributeFilter: ['style']
+    })
+  }, [])
 
   async function initClient() {
     let { ForgeClient } = window.services

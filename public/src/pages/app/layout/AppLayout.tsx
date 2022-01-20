@@ -292,7 +292,7 @@ function AppLayout(props: Props) {
   ]
 
   return (
-    <Layout>
+    <Layout id="appLayout">
       <SidebarOverlay className={`d-lg-none ${isMenuOpen ? "" : "d-none"}`}/>
       <Sidebar className={isMenuOpen ? "" : "d-none d-lg-flex"}>
         <div className="nav-header">
@@ -325,7 +325,7 @@ function AppLayout(props: Props) {
           <FontAwesomeIcon icon={faArrowLeft} />
         </div>
       </Sidebar>
-      <Main>
+      <Main id="appLayoutMain">
         <AppBar>
           <div className="app-bar-left">
             <FontAwesomeIcon onClick={onMenuBtnClicked} icon={faBars} className="menu-btn d-block d-lg-none d-xl-none" />
