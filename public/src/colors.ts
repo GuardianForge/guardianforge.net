@@ -12,6 +12,7 @@ export default {
     accent2: "#124383",
     icon: "#626277",
     border: "#242534",
-    text: "#eeeeee"
+    text: "#eeeeee",
+    text2: "#aaaaaa"
   }
 }

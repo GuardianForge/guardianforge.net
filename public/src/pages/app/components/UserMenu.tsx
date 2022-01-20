@@ -11,20 +11,39 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   margin-right: 10px;
-  background-color: ${colors.theme2.dark2};
+  /* background-color: ${colors.theme2.dark2}; */
   border-radius: 5px;
   padding: 0px 10px;
+  transition: background-color .15s;
+
+  &:hover {
+    background-color: ${colors.theme2.dark2}
+  }
+
+  .dropdown-toggle {
+    color: ${colors.theme2.text} !important;
+
+    &:hover {
+      color: ${colors.theme2.text} !important;
+      cursor: pointer;
+    }
+
+    &:active {
+      color: ${colors.theme2.text} !important;
+    }
+  }
 
   .display-name {
-    color: ${colors.theme2.text} !important;
+    /* color: ${colors.theme2.icon} !important; */
   }
 
   .dropdown-toggle::after {
-    color: ${colors.theme2.text} !important;
+    /* color: ${colors.theme2.icon} !important; */
   }
 
   .dropdown-menu {
     background-color: ${colors.theme2.dark2};
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
   }
 
   img {

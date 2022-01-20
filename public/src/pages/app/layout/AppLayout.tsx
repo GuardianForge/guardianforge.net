@@ -73,7 +73,7 @@ const Sidebar = styled.div`
 		padding: 5px;
 		margin: 0px 0px 25px 5px;
     font-size: 18px;
-    color: ${colors.theme2.icon};
+    color: ${colors.theme2.icon} !important;
     display: flex;
     align-items: center;
 
