@@ -1,0 +1,14 @@
+body {
+  height: 100vh;
+  margin: 0px;
+  background-color: #15141d !important
+}
+
+#___gatsby {
+  height: 100% !important;
+}
+
+#gatsby-focus-wrapper {
+  height: 100% !important
+  ;
+}

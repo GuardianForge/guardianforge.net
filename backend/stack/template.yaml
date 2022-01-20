@@ -1,0 +1,671 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  GuardianForge
+Globals:
+  Function:
+    Timeout: 5
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+      AllowCredentials: "'*'"
+
+Parameters:
+  EnvironmentParam:
+    Type: String
+    Default: qa
+    AllowedValues:
+      - qa
+      - prod
+    Description: Enter 'qa' or 'prod'
+  SiteDomainNameParam:
+    Type: String
+    Default: qa.guardianforge.net
+    Description: The CName used for the CloudFormation deployment.
+  ApiDomainNameParam:
+    Type: String
+    Default: qa-api.guardianforge.net
+    Description: The CName used for API Gateway & the CloudFront API Origin.
+  CertArnParam:
+    Type: String
+  SiteBucketNameParam:
+    Type: String
+  DataBucketNameParam:
+    Type: String
+  OAuthClientIdParam:
+    Type: String
+  OAuthClientSecretParam:
+    Type: String
+  BungieApiKeyParam:
+    Type: String
+  DiscordErrorWebhookParam:
+    Type: String
+  DiscordBuildWebhookParam:
+    Type: String
+  AlgoliaWorkspaceParam:
+    Type: String
+  AlgoliaKeyParam:
+    Type: String
+  AlgoliaIndexParam:
+    Type: String
+  NotionSecretParam:
+    Type: String
+  NotionDbIdParam:
+    Type: String
+
+Resources:
+  DataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DataBucketNameParam
+      AccessControl: PublicRead
+      VersioningConfiguration:
+        Status: Enabled
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+            Id: DefaultCorsRule
+            MaxAge: 3600
+
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref SiteBucketNameParam
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  CloudfrontCdn:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Ref SiteDomainNameParam
+        DefaultRootObject: index.html
+        Origins:
+          - Id: !Join ["-", ["S3-GuardianForge", !Ref EnvironmentParam]]
+            DomainName: !GetAtt SiteBucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+          - Id: !Join ["-", ["API-GuardianForge", !Ref EnvironmentParam]]
+            DomainName: !Ref ApiDomainNameParam
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginReadTimeout: 30
+              OriginKeepaliveTimeout: 5
+          - Id: !Join ["-", ["S3-Direct-GuardianForge", !Ref EnvironmentParam]]
+            DomainName: !Select [1, !Split ["//", !GetAtt SiteBucket.WebsiteURL]]
+            # DomainName: !GetAtt SiteBucket.WebsiteURL
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+              OriginReadTimeout: 30
+              OriginKeepaliveTimeout: 5
+        DefaultCacheBehavior:
+          TargetOriginId: !Join ["-", ["S3-Direct-GuardianForge", !Ref EnvironmentParam]]
+          ViewerProtocolPolicy: redirect-to-https
+          ForwardedValues:
+            QueryString: false
+          AllowedMethods:
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+        CacheBehaviors:
+          - PathPattern: build/*
+            TargetOriginId: !Join ["-", ["API-GuardianForge", !Ref EnvironmentParam]]
+            ViewerProtocolPolicy: redirect-to-https
+            ForwardedValues:
+              QueryString: false
+            AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponsePagePath: /index.html
+            ResponseCode: '200'
+            ErrorCachingMinTTL: 10
+          - ErrorCode: 404
+            ResponsePagePath: /index.html
+            ResponseCode: '200'
+            ErrorCachingMinTTL: 10
+        Comment: !Join ["-", ["GuardianForge", !Ref EnvironmentParam]]
+        PriceClass: PriceClass_All
+        Enabled: true
+        HttpVersion: http2
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertArnParam
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2019
+
+  ApiDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      CertificateArn: !Ref CertArnParam
+      DomainName: !Ref ApiDomainNameParam
+
+  ApiDomainNameMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: ""
+      DomainName: !Ref ApiDomainNameParam
+      RestApiId: !Ref ServerlessRestApi
+      Stage: Prod
+
+  DbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: createdById
+          AttributeType: S
+        - AttributeName: publishedOn
+          AttributeType: 'N'
+        - AttributeName: entityId
+          AttributeType: S
+        - AttributeName: entityType
+          AttributeType: S
+        - AttributeName: searchKey
+          AttributeType: S
+      KeySchema:
+        - AttributeName: entityType
+          KeyType: HASH
+        - AttributeName: entityId
+          KeyType: RANGE
+      LocalSecondaryIndexes:
+        - IndexName: idx_publishedOn
+          KeySchema:
+            - AttributeName: entityType
+              KeyType: HASH
+            - AttributeName: publishedOn
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: idx_createdById
+          KeySchema:
+            - AttributeName: entityType
+              KeyType: HASH
+            - AttributeName: createdById
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      GlobalSecondaryIndexes:
+        - IndexName: idx_searchKey
+          KeySchema:
+            - AttributeName: entityType
+              KeyType: HASH
+            - AttributeName: searchKey
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+#region Queues =========================================================================
+  NewBuildsQueue:
+    Type: AWS::SQS::Queue
+
+  UpvoteBuildQueue:
+    Type: AWS::SQS::Queue
+
+#endregion
+
+#region Functions ======================================================================
+  OAuthCodeHandlerFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/oauth/code/_post
+      Handler: _post
+      Runtime: go1.x
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /oauth/code
+            Method: POST
+      Environment:
+        Variables:
+          OAUTH_CLIENT_ID: !Ref OAuthClientIdParam
+          OAUTH_CLIENT_SECRET: !Ref OAuthClientSecretParam
+
+  RefreshTokenHandlerFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/oauth/refresh/_post
+      Handler: _post
+      Runtime: go1.x
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /oauth/refresh
+            Method: POST
+      Environment:
+        Variables:
+          OAUTH_CLIENT_ID: !Ref OAuthClientIdParam
+          OAUTH_CLIENT_SECRET: !Ref OAuthClientSecretParam
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  NewBuildsQueueHandlerFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: sqs-handlers/new-build-handler/
+      Handler: new-build-handler
+      Runtime: go1.x
+      Events:
+        SqsEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt NewBuildsQueue.Arn
+            BatchSize: 10
+      Environment:
+        Variables:
+          DISCORD_BUILD_WEBHOOK: !Ref DiscordBuildWebhookParam
+          NOTION_SECRET: !Ref NotionSecretParam
+          NOTION_DB_ID: !Ref NotionDbIdParam
+          BUCKET_NAME: !Ref DataBucket
+          ALGOLIA_WORKSPACE: !Ref AlgoliaWorkspaceParam
+          ALGOLIA_KEY: !Ref AlgoliaKeyParam
+          ALGOLIA_INDEX: !Ref AlgoliaIndexParam
+          PUBLIC_PATH: !Sub "https://${SiteDomainNameParam}"
+
+
+  UpvoteBuildQueueHandlerFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: sqs-handlers/upvote-build-handler/
+      Handler: upvote-build-handler
+      Runtime: go1.x
+      Events:
+        SqsEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt UpvoteBuildQueue.Arn
+            BatchSize: 10
+      Environment:
+        Variables:
+          DISCORD_BUILD_WEBHOOK: !Ref DiscordBuildWebhookParam
+          ALGOLIA_WORKSPACE: !Ref AlgoliaWorkspaceParam
+          ALGOLIA_KEY: !Ref AlgoliaKeyParam
+          ALGOLIA_INDEX: !Ref AlgoliaIndexParam
+
+  BookmarkBuildFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/me/bookmarks/_put
+      Handler: _put
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /me/bookmarks
+            Method: PUT
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  FetchBookmarksFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/me/bookmarks/_get/
+      Handler: _get
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /me/bookmarks
+            Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  FetchUpvotesFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/me/upvotes/_get/
+      Handler: _get
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /me/upvotes
+            Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  GetUserFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/users/username/_get
+      Handler: _get
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /users/{membershipId}
+            Method: GET
+            RequestParameters:
+              - method.request.path.membershipId
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  GetMeFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/me/_get
+      Handler: _get
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /me
+            Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  PutMeFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/me/_put
+      Handler: _put
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /me
+            Method: PUT
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  UpvoteBuildFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/me/upvotes/_put/
+      Handler: _put
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+        - SQSSendMessagePolicy:
+            QueueName:
+              !GetAtt UpvoteBuildQueue.QueueName
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /me/upvotes
+            Method: PUT
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+          UPVOTE_BUILDS_QUEUE: !GetAtt UpvoteBuildQueue.QueueName
+
+  FetchMyBuildsFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/me/builds/_get
+      Handler: _get
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /me/builds
+            Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  CreateBuildFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/builds/_post
+      Handler: _post
+      Runtime: go1.x
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref DataBucket
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-crud-policy
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+        - SQSSendMessagePolicy:
+            QueueName:
+              !GetAtt NewBuildsQueue.QueueName
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /builds
+            Method: POST
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUCKET_NAME: !Ref DataBucket
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+          DISCORD_BUILD_WEBHOOK: !Ref DiscordBuildWebhookParam
+          PUBLIC_PATH: !Sub "https://${SiteDomainNameParam}"
+          NEW_BUILDS_QUEUE: !Ref NewBuildsQueue
+          ALGOLIA_WORKSPACE: !Ref AlgoliaWorkspaceParam
+          ALGOLIA_KEY: !Ref AlgoliaKeyParam
+          ALGOLIA_INDEX: !Ref AlgoliaIndexParam
+
+  UpdateBuildFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/builds/_put
+      Handler: _put
+      Runtime: go1.x
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref DataBucket
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#s3-crud-policy
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /builds/{buildId}
+            Method: PUT
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUCKET_NAME: !Ref DataBucket
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+          ALGOLIA_WORKSPACE: !Ref AlgoliaWorkspaceParam
+          ALGOLIA_KEY: !Ref AlgoliaKeyParam
+          ALGOLIA_INDEX: !Ref AlgoliaIndexParam
+
+  ArchiveBuildFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/builds/_delete
+      Handler: _delete
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+            # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-template-list.html#dynamo-db-crud-policy
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /builds/{buildId}
+            Method: DELETE
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+          ALGOLIA_WORKSPACE: !Ref AlgoliaWorkspaceParam
+          ALGOLIA_KEY: !Ref AlgoliaKeyParam
+          ALGOLIA_INDEX: !Ref AlgoliaIndexParam
+
+  FetchLatestBuildsFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/builds/latest/_get
+      Handler: _get
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /builds/latest
+            Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+
+  FetchBuildUpvoteCountFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/builds/upvotes/_get
+      Handler: _get
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /builds/upvotes/{buildId}
+            Method: GET
+            RequestParameters:
+              - method.request.path.buildId
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DbTable
+
+  BuildsOgProxy:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: proxy/builds-og-proxy/
+      Handler: builds-og-proxy
+      Runtime: go1.x
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /build/{buildId}
+            Method: GET
+      Environment:
+        Variables:
+          PUBLIC_PATH: !Sub "https://${SiteDomainNameParam}"
+          DATA_BUCKET_NAME: !Ref DataBucketNameParam
+
+  ReportErrorProxy:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/report/error/_post
+      Handler: _post
+      Runtime: go1.x
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /report/error
+            Method: POST
+      Environment:
+        Variables:
+          DISCORD_ERR_WEBHOOK: !Ref DiscordErrorWebhookParam
+
+  CreateOgImageFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3-handlers/create-og-image/
+      Handler: create-og-image
+      Runtime: go1.x
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Join ["-", ["guardianforge", !Ref EnvironmentParam, "data"]]
+      Events:
+        CreateOgImageEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref DataBucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: builds
+                  - Name: suffix
+                    Value: .json
+
+  CreateOgImageFnInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt CreateOgImageFn.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: 's3.amazonaws.com'
+      SourceAccount: !Sub ${AWS::AccountId}
+      SourceArn: !GetAtt DataBucket.Arn
+#endregion
+
+Outputs:
+  ApiDomainName:
+    Value: !GetAtt ApiDomainName.DistributionDomainName
+  CloudFront:
+    Value: !GetAtt CloudfrontCdn.DomainName
