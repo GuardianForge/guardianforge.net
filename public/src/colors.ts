@@ -14,5 +14,10 @@ export default {
     border: "#242534",
     text: "#eeeeee",
     text2: "#aaaaaa"
+  },
+  elements: {
+    Arc: "#6B9DB9",
+    Void: "#826787",
+    Solar: "#D86013"
   }
 }

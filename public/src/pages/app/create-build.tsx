@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Row, Col } from 'react-bootstrap'
+import { Row, Col, Container, Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import colors from '../../colors'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -11,6 +11,8 @@ import EquipmentItemCard from './components/EquipmentItemCard'
 import Subclass from './components/Subclass'
 import { State } from './models/Enums'
 import Loading from './components/Loading'
+import ButtonBar from './components/forms/ButtonBar'
+import Seperator from './components/ui/Seperator'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -61,9 +63,7 @@ function CreateBuild(props: Props) {
       // TODO: Pull this from ForgeClient user info
       const membershipType = 2
       const membershipId = "4611686018462801516"
-      // let comps = [ 102, 103, 200, 201, 205, 300, 302, 303, 304, 305, 306, 307, 308, 310 ]
       let token = await ForgeClient.getToken()
-      // let data = await BungieApiService.GetProfile(membershipType, membershipId, comps, token)
 
       // @ts-ignore
       window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)
@@ -118,92 +118,107 @@ function CreateBuild(props: Props) {
         <Loading />
       )}
       {_state === State.DONE && (
-        <Row>
-          <Col md="9">
-            <div className="row">
-              <div className="col-md-12">
-                <h4>Subclass</h4>
+        <Container fluid>
+          <Row>
+            <Col>
+              <ButtonBar>
+                <Button>Save</Button>
+                <Button>Optimize</Button>
+                {/* <Seperator vertical />
+                <div>
+                  Status messages on build setup
+                </div> */}
+              </ButtonBar>
+            </Col>
+          </Row>
+          <Row>
+            <Col md="9">
+              <div className="row">
+                <div className="col-md-12">
+                  <h4>Subclass</h4>
+                </div>
+                <div className="col-md-12">
+                  <Subclass />
+                </div>
               </div>
-              <div className="col-md-12">
-                <Subclass />
-              </div>
-            </div>
 
-            <div className="row">
-              <div className="col-md-12 mt-3">
-                <h4>Weapons</h4>
-              </div>
-              <div className="col-md-4">
-                <EquipmentItem item={buildData.items.kinetic} slot={Enums.BucketTypeEnum.Kinetic} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                  Select Kinetic
-                </EquipmentItem>
-              </div>
-              <div className="col-md-4">
-                {buildData.items && buildData.items.energy && (
-                  <EquipmentItem item={buildData.items.energy} slot={Enums.BucketTypeEnum.Energy} classType={selectedClass}  onItemUpdated={onItemUpdated}>
-                    Select Energy
+              <div className="row">
+                <div className="col-md-12 mt-3">
+                  <h4>Weapons</h4>
+                </div>
+                <div className="col-md-4">
+                  <EquipmentItem item={buildData.items.kinetic} slot={Enums.BucketTypeEnum.Kinetic} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                    Select Kinetic
                   </EquipmentItem>
-                )}
+                </div>
+                <div className="col-md-4">
+                  {buildData.items && buildData.items.energy && (
+                    <EquipmentItem item={buildData.items.energy} slot={Enums.BucketTypeEnum.Energy} classType={selectedClass}  onItemUpdated={onItemUpdated}>
+                      Select Energy
+                    </EquipmentItem>
+                  )}
+                </div>
+                <div className="col-md-4">
+                  {buildData.items && buildData.items.power && (
+                    <EquipmentItem item={buildData.items.power} slot={Enums.BucketTypeEnum.Power} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                      Select Power
+                    </EquipmentItem>
+                  )}
+                </div>
               </div>
-              <div className="col-md-4">
-                {buildData.items && buildData.items.power && (
-                  <EquipmentItem item={buildData.items.power} slot={Enums.BucketTypeEnum.Power} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                    Select Power
-                  </EquipmentItem>
-                )}
-              </div>
-            </div>
 
-            <div className="row">
-              <div className="col-md-12 mt-3">
-                <h4>Armor</h4>
-              </div>
-              <div className="col-md-4">
-                {buildData.items && buildData.items.helmet && (
-                  <EquipmentItem  item={buildData.items.helmet} slot={Enums.BucketTypeEnum.Helmet} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                    Select Helmet
-                  </EquipmentItem>
-                )}
-              </div>
-              <div className="col-md-4">
-                {buildData.items && buildData.items.arms && (
-                  <EquipmentItem item={buildData.items.arms} slot={Enums.BucketTypeEnum.Arms} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                    Select Arms
-                  </EquipmentItem>
-                )}
+              <div className="row">
+                <div className="col-md-12 mt-3">
+                  <h4>Armor</h4>
+                </div>
+                <div className="col-md-4">
+                  {buildData.items && buildData.items.helmet && (
+                    <EquipmentItem  item={buildData.items.helmet} slot={Enums.BucketTypeEnum.Helmet} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                      Select Helmet
+                    </EquipmentItem>
+                  )}
+                </div>
+                <div className="col-md-4">
+                  {buildData.items && buildData.items.arms && (
+                    <EquipmentItem item={buildData.items.arms} slot={Enums.BucketTypeEnum.Arms} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                      Select Arms
+                    </EquipmentItem>
+                  )}
 
-              </div>
-              <div className="col-md-4">
-                {buildData.items && buildData.items.chest && (
-                  <EquipmentItem item={buildData.items.chest} slot={Enums.BucketTypeEnum.Chest} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                    Select Chest
-                  </EquipmentItem>
-                )}
+                </div>
+                <div className="col-md-4">
+                  {buildData.items && buildData.items.chest && (
+                    <EquipmentItem item={buildData.items.chest} slot={Enums.BucketTypeEnum.Chest} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                      Select Chest
+                    </EquipmentItem>
+                  )}
 
+                </div>
+                <div className="col-md-4">
+                  {buildData.items && buildData.items.legs && (
+                    <EquipmentItem item={buildData.items.legs} slot={Enums.BucketTypeEnum.Legs} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                      Select Legs
+                    </EquipmentItem>
+                  )}
+                </div>
+                <div className="col-md-4">
+                  {buildData.items && buildData.items.classItem && (
+                    <EquipmentItem item={buildData.items.classItem} slot={Enums.BucketTypeEnum.ClassItem} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                      Select Class Item
+                    </EquipmentItem>
+                  )}
+                </div>
               </div>
-              <div className="col-md-4">
-                {buildData.items && buildData.items.legs && (
-                  <EquipmentItem item={buildData.items.legs} slot={Enums.BucketTypeEnum.Legs} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                    Select Legs
-                  </EquipmentItem>
-                )}
+            </Col>
+            <Col md="3">
+              <h4>Build Info</h4>
+              <div className="build-info-card">
+                Misc info here
               </div>
-              <div className="col-md-4">
-                {buildData.items && buildData.items.classItem && (
-                  <EquipmentItem item={buildData.items.classItem} slot={Enums.BucketTypeEnum.ClassItem} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                    Select Class Item
-                  </EquipmentItem>
-                )}
-              </div>
-            </div>
-          </Col>
-          <Col md="3">
-            <h4>Build Info</h4>
-            <div className="build-info-card">
-              Misc info here
-            </div>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+
+        </Container>
       )}
     </Wrapper>
   )
