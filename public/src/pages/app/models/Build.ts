@@ -5,6 +5,7 @@ class Build {
   inputStyle?: string
   notes?: string
   stats?: BuildStatCollection
+  items?: BuildItemCollection
 }
 
 export type BuildItem = {
@@ -56,6 +57,18 @@ export type BuildStatCollection = {
 export type BuildStat = {
   icon?: string
   value?: string
+}
+
+export type BuildItemCollection = {
+  subclass?: BuildItem
+  kinetic?: BuildItem
+  energy?: BuildItem
+  power?: BuildItem
+  helmet?: BuildItem
+  arms?: BuildItem
+  chest?: BuildItem
+  legs?: BuildItem
+  classItem?: BuildItem
 }
 
 export default Build

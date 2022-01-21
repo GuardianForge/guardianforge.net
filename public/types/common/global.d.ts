@@ -15,5 +15,6 @@ type ServiceCollection = {
 declare global {
 	interface Window {
 		services: ServiceCollection;
+		adsbygoogle: any;
 	}
 }

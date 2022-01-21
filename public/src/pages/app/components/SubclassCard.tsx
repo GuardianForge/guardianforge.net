@@ -139,7 +139,7 @@ const Wrapper = styled(Card)`
 
 type Props = {
   item: BuildItem
-  onPlugClicked: Function
+  onPlugClicked?: Function
   highlights: Array<string>
   className?: string
 }

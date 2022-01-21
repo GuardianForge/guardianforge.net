@@ -4,6 +4,8 @@ type User = {
   bungieGlobalDisplayName?: string
   bungieGlobalDisplayNameCode?: number
   bungieNetUser?: BungieNetUser
+  bungieNetUserId?: string
+  displayName?: string
   userInfo?: UserInfo
   builds?: Array<BuildSummary>
 }

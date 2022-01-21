@@ -59,8 +59,8 @@ const Wrapper = styled(Card)`
 
 type Props = {
   item: BuildItem
-  onItemClicked: Function
-  onPlugClicked: Function
+  onItemClicked?: Function
+  onPlugClicked?: Function
   highlights: Array<string>
   className?: string
 }

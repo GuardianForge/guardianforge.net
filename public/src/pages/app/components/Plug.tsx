@@ -31,7 +31,7 @@ type Props = {
   plug: BuildItemPlug
   plugType: string
   highlights: Array<string>
-  onClick: Function
+  onClick?: Function
 }
 
 function Plug(props: Props) {

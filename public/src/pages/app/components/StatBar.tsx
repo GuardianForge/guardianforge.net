@@ -37,7 +37,7 @@ const Wrapper = styled(Card)`
 type Props = {
   stats: BuildStatCollection
   highlights: Array<string>
-  onStatClicked: Function
+  onStatClicked?: Function
 }
 
 function StatBar(props: Props) {
