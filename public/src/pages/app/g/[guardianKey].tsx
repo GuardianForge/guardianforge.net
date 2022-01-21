@@ -154,6 +154,8 @@ function Guardian(props: Props) {
 
       setCharacterData(characterData)
       setCompState(COMP_STATE.DONE)
+
+      console.log(characterData, items)
     }
     init()
   }, [isInitDone])

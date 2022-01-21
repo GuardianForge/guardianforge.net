@@ -61,17 +61,18 @@ function CreateBuild(props: Props) {
       // TODO: Pull this from ForgeClient user info
       const membershipType = 2
       const membershipId = "4611686018462801516"
+      // let comps = [ 102, 103, 200, 201, 205, 300, 302, 303, 304, 305, 306, 307, 308, 310 ]
       let token = await ForgeClient.getToken()
-      let data = await BungieApiService.fetchUserInventory(token, membershipType, membershipId)
+      // let data = await BungieApiService.GetProfile(membershipType, membershipId, comps, token)
 
       // @ts-ignore
       window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)
       // @ts-ignore
-      window.services.InventoryManager.loadInventory(data)
+      await window.services.InventoryManager.loadInventory(membershipType, membershipId, token)
       setIsInventoryLoaded(true)
 
       if(location.state && location.state.guardianKey) {
-        console.log("initializing from existing guardian")
+        console.log("initializing from existing guardian", location.state.guardianKey)
       }
       setState(State.DONE)
     }
