@@ -1,7 +1,12 @@
+import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Item } from '@guardianforge/destiny-data-utils';
-import React, { useEffect, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import colors from '../../../colors';
+import ForgeModal from './Modal';
+import V2SuperTree from './V2SuperTree';
 
 
 const Wrapper = styled.div`
@@ -16,6 +21,10 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-right: 10px;
+
+    &-top {
+      flex: 1;
+    }
   }
 
   .subclass-right {
@@ -44,70 +53,10 @@ const Wrapper = styled.div`
         }
       }
 
-      .selected-tree {
+      .equipped-tree {
         margin-left: 70px;
         margin-top: 40px;
         margin-bottom: 20px;
-        transform: rotate(-45deg);
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-        grid-column-gap: 0px;
-        grid-row-gap: 0px;
-        height: 200px;
-        width: 200px;
-        border: 4px solid rgba(150,150,150,0.7);
-
-        .img-wrapper-outer {
-          padding: 3px;
-        }
-
-        .img-wrapper-outer-1 {
-          border-right: 6px solid white;
-          border-top: 6px solid white;
-          margin-right: -6px;
-          margin-top: -6px;
-        }
-
-        .img-wrapper-outer-2 {
-          border-left: 6px solid white;
-          border-bottom: 6px solid white;
-          margin-left: -6px;
-          margin-bottom: -6px;
-        }
-
-        .img-wrapper-outer-3 {
-          border-right: 6px solid white;
-          border-bottom: 6px solid white;
-          margin-right: -6px;
-          margin-bottom: -6px;
-        }
-
-        .img-wrapper {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border: 1px solid white;
-          /* margin: 3px; */
-
-          &-2 {
-            background-color: ${colors.elements.Arc}
-          }
-
-          &-3 {
-            background-color: ${colors.elements.Solar}
-          }
-
-          &-4 {
-            background-color: ${colors.elements.Void}
-          }
-        }
-
-        img {
-          transform: rotate(45deg);
-        }
       }
     }
 
@@ -135,6 +84,55 @@ const Wrapper = styled.div`
   }
 `
 
+const SubclassConfigModalBody = styled(Container)`
+  .perk-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .perk-row {
+    display: flex;
+    margin-bottom: 20px;
+
+    .available-perk {
+      height: 50px;
+      width: 50px;
+      margin-right: 10px;
+      border-radius: 5px;
+      border: 2px solid rgba(0,0,0,0);
+
+      &:hover {
+        border: 2px solid ${colors.theme2.accent1};
+        cursor: pointer;
+      }
+    }
+
+    .selected {
+      border: 2px solid yellow;
+
+      &:hover {
+        border: 2px solid yellow;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .tree-diamond-container {
+    .tree-diamond {
+      margin-top: 35px;
+      margin-left: 20px;
+      margin-bottom: 35px;
+      height: 150px;
+      width: 150px;
+
+      img {
+        height: 45px !important;
+        width: 45px !important;
+      }
+    }
+  }
+`
+
 enum AffinityEnum {
   Arc = 2,
   Solar = 3,
@@ -143,19 +141,23 @@ enum AffinityEnum {
 
 type Props = {
   subclass: Item
+  onChangeSubclassClicked: MouseEventHandler
 }
 
 function V2SubclassCard(props: Props) {
-  const { subclass } = props
+  const { subclass, onChangeSubclassClicked } = props
   const [specialty, setSpecialty] = useState<any>()
   const [grenade, setGrenade] = useState<any>()
   const [movement, setMovement] = useState<any>()
   const [tree, setTree] = useState<any>()
   const [affinity, setAffinity] = useState(0)
+  const [availableSpecialties, setAvailableSpecialties] = useState<any>()
+  const [availableGrenades, setAvailableGrenades] = useState<any>()
+  const [availableMovementModes, setAvailableMovementModes] = useState<any>()
+  const [availableSuperTress, setAvailableSuperTrees] = useState<any>()
+  const [isConfigureSubclassModalShown, setIsConfigureSubclassModalShown] = useState(false)
 
   useEffect(() => {
-    let ep = subclass.getEquippedPerks()
-    console.log("ep", ep)
     setSpecialty(subclass.getEquippedClassSpecialty())
     setGrenade(subclass.getEquippedGrenade())
     setMovement(subclass.getEquippedMovementMode())
@@ -171,12 +173,36 @@ function V2SubclassCard(props: Props) {
     if(subclass.name === "Sentinel") {
       setAffinity(AffinityEnum.Void)
     }
+
+    // Setup modal
+    // TODO: Set custom titles based on class (ex: Barricade, Rift, Dodge...)
+    setAvailableSpecialties(subclass.getAvailableClassSpecialties())
+    setAvailableGrenades(subclass.getAvailableGrenades())
+    setAvailableMovementModes(subclass.getAvailableMovementModes())
+    setAvailableSuperTrees(subclass.getAvailableSuperTrees())
+
   }, [subclass])
+
+  function onConfigureSubclassClicked() {
+    setIsConfigureSubclassModalShown(true)
+  }
+
+  function onTreeClicked(tree: any) {
+    setTree(tree)
+  }
 
   return (
     <Wrapper>
       <div className="subclass-left">
-        <img className="icon" src={subclass.iconUrl} />
+        <div className="subclass-left-top">
+          <img className="icon" src={subclass.iconUrl} />
+        </div>
+        <div>
+          <div className="icon-btns">
+            <FontAwesomeIcon icon={faCog} onClick={onConfigureSubclassClicked} />
+            <FontAwesomeIcon icon={faExchangeAlt} onClick={onChangeSubclassClicked} />
+          </div>
+        </div>
       </div>
       <div className="subclass-right">
         <span className="name">{ subclass.name } {tree ? `• ${tree.name}` : ""}</span>
@@ -201,19 +227,74 @@ function V2SubclassCard(props: Props) {
               </div>
             )}
           </div>
-          {tree && (
-            <div className="selected-tree">
-              {tree.perks.map((p: any, idx: number) => (
-                <div className={`img-wrapper-outer ${tree.equippedTree === idx ? `img-wrapper-outer-${tree.equippedTree}` : ""}`}>
-                  <div className={`img-wrapper img-wrapper-${affinity}`}>
-                    <img src={`https://www.bungie.net${p.icon}`} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          {tree && <V2SuperTree className="equipped-tree" tree={tree} affinity={affinity} hideName/>}
         </div>
       </div>
+
+      <ForgeModal
+        size="xl"
+        show={isConfigureSubclassModalShown}
+        title={subclass.name}
+        footer={<Button onClick={() => setIsConfigureSubclassModalShown(false)}>Close</Button>}>
+        <SubclassConfigModalBody>
+          <Row>
+            <Col>
+              <span className="perk-title">Grenades</span>
+              <div className="perk-row">
+                {availableGrenades && availableGrenades.map((p: any) => (
+                  <div>
+                    <img className={p.name === grenade.name ? "available-perk selected" : "available-perk"}
+                      src={`https://www.bungie.net${p.icon}`}
+                      onClick={() => setGrenade(p)} />
+                  </div>
+                ))}
+              </div>
+            </Col>
+            <Col>
+              <span className="perk-title">Class Specialty</span>
+              <div className="perk-row">
+                {availableSpecialties && availableSpecialties.map((p: any) => (
+                  <div>
+                    <img className={p.name === specialty.name ? "available-perk selected" : "available-perk"}
+                      src={`https://www.bungie.net${p.icon}`}
+                      onClick={() => setSpecialty(p)} />
+                  </div>
+                ))}
+              </div>
+            </Col>
+            <Col>
+              <span className="perk-title">Movement Modes</span>
+              <div className="perk-row">
+                {availableMovementModes && availableMovementModes.map((p: any) => (
+                  <div>
+                    <img className={p.name === movement.name ? "available-perk selected" : "available-perk"}
+                      src={`https://www.bungie.net${p.icon}`}
+                      onClick={() => setMovement(p)} />
+                  </div>
+                ))}
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span className="perk-title super-tree-title">Super Trees</span>
+            </Col>
+          </Row>
+          <Row>
+            {availableSuperTress && availableSuperTress.map((t: any, idx: number) => (
+              <Col key={`available-super-tree-${idx}`}>
+                <div className="tree-diamond-container">
+                  <V2SuperTree
+                    tree={t}
+                    affinity={affinity}
+                    onClick={onTreeClicked}
+                    selected={tree.name === t.name} />
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </SubclassConfigModalBody>
+      </ForgeModal>
     </Wrapper>
   )
 }

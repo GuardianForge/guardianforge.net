@@ -68,7 +68,7 @@ const SelectSubclassButton = styled(Button)`
 `
 
 function Subclass() {
-  const [availableSubclasses, setAvailableSubclass] = useState([])
+  const [availableSubclasses, setAvailableSubclass] = useState<Array<Item>>([])
   const [selectedSubclass, setSelectedSubclass] = useState<Item>()
   const [isSelectingSubclass, setIsSelectingSubclass] = useState(false)
   const [isV3Subclass, setIsV3Subclass] = useState(false)
@@ -108,12 +108,8 @@ function Subclass() {
             {isV3Subclass ? (
               <V3SubclassCard subclass={selectedSubclass} />
             ) : (
-              <V2SubclassCard subclass={selectedSubclass} />
+              <V2SubclassCard subclass={selectedSubclass} onChangeSubclassClicked={() => selectSubclass()} />
             )}
-          </div>
-          <div className="icon-btns">
-            <FontAwesomeIcon icon={faCog} onClick={configureSubclass} />
-            <FontAwesomeIcon icon={faExchangeAlt} onClick={selectSubclass} />
           </div>
         </>
       ) : (
