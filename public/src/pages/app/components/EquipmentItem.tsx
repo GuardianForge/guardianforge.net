@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import colors from '../../../colors'
-import { InventoryManager, Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-utils'
+import { Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-utils'
 import EquipmentItemCard from './EquipmentItemCard'
 import ForgeButton from './forms/Button'
 import ForgeModal from './Modal'
@@ -90,6 +90,26 @@ const ItemConfigModal = styled(ForgeModal)`
       border: 3px solid #2482ca;
     }
 
+    .mod-sockets {
+      display: flex;
+    }
+
+    .is-editing {
+      animation: border-pulsate 2s infinite;
+    }
+
+    @keyframes border-pulsate {
+      0% {
+        border-color: ${colors.theme2.accent1};
+      }
+      50% {
+        border-color: rgba(255, 255, 0, 0.1);
+      }
+      100% {
+        border-color: ${colors.theme2.accent1};
+      }
+    }
+
     img {
       height: auto;
       max-width: 56px;
@@ -102,6 +122,12 @@ const ItemConfigModal = styled(ForgeModal)`
         cursor: pointer
       }
     }
+  }
+
+  .mod-drawer {
+    background-color: ${colors.theme2.dark2};
+    border-radius: 5px;
+    padding: 10px;
   }
 `
 
@@ -152,7 +178,9 @@ function EquipmentItem(props: EquipmentItemProps) {
       const { InventoryManager } = window.services
       if(InventoryManager) {
         let itemMods = InventoryManager.getModsForItem(item)
-        setMods(itemMods)
+        if(itemMods) {
+          setMods(itemMods)
+        }
       }
     }
   }, [item])
@@ -217,6 +245,31 @@ function EquipmentItem(props: EquipmentItemProps) {
       }
     }
     setInventoryFilter(filter)
+  }
+
+
+  const [isModDrawerOpen, setIsModDrawerOpen] = useState(false)
+  const [availableMods, setAvailableMods] = useState<Array<Item>>()
+  const [socketBeingEdited, setSocketBeingEdited] = useState<Socket>()
+  function showModDrawer(socket: Socket) {
+    console.log(socket)
+    if(socket.position !== undefined) {
+      let am = mods?.get(socket.position)
+      console.log(am)
+      setAvailableMods(am)
+      setSocketBeingEdited(socket)
+      // setSocketEditPosition(socket.position)
+      setIsModDrawerOpen(true)
+    }
+  }
+
+  function onSocketPlugClicked(plug: Item) {
+    if(socketBeingEdited) {
+      setEquippedPlug(socketBeingEdited, plug)
+      setAvailableMods(undefined)
+      setSocketBeingEdited(undefined)
+      setIsModDrawerOpen(false)
+    }
   }
 
   return (
@@ -307,12 +360,19 @@ function EquipmentItem(props: EquipmentItemProps) {
               <div className="mod-sockets">
                 {item?.getModSockets()?.map((socket: Socket) => (
                   <div className="mod-socket">
-                    {mods && socket.position && mods.get(socket.position) && mods.get(socket.position).map((plug: Item) => (
-                      <img onClick={() => setEquippedPlug(socket, plug)} className={socket.equippedPlug && socket.equippedPlug._meta?.manifestDefinition.hash === plug._meta.manifestDefinition.hash ? "equipped" : ""} src={plug.iconUrl} />
-                    ))}
+                    <img onClick={() => showModDrawer(socket)}
+                      className={socketBeingEdited?.position === socket.position ? "is-editing" : ""}
+                      src={socket.equippedPlug?.iconUrl} />
                   </div>
                 ))}
               </div>
+              {isModDrawerOpen && (
+                <div className="mod-drawer">
+                  {availableMods && availableMods.map((plug: Item) => (
+                    <img src={plug.iconUrl} onClick={() => onSocketPlugClicked(plug)} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
