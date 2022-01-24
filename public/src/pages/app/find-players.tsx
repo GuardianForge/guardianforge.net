@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import {DebounceInput} from 'react-debounce-input';
-import PlayerSearchResultCard from './components/PlayerSearchResultCard'
-import Loading from './components/Loading'
+import PlayerSearchResultCard from '../../components/app/PlayerSearchResultCard'
+import Loading from '../../components/app/Loading'
 import { Helmet } from 'react-helmet';
-import User from './models/User';
+import User from '../../models/User';
 // @ts-ignore
-import { GlobalContext } from '../../contexts/GlobalContext.jsx'
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
 
 const Wrapper = styled.div`
 	display: flex;

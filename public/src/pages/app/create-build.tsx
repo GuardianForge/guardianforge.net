@@ -4,19 +4,17 @@ import styled from 'styled-components'
 import colors from '../../colors'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 // @ts-ignore
-import { GlobalContext } from '../../contexts/GlobalContext'
-import { InventoryManager, Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-utils'
-import EquipmentItem from './components/EquipmentItem'
-import EquipmentItemCard from './components/EquipmentItemCard'
-import Subclass from './components/Subclass'
-import { State } from './models/Enums'
-import Loading from './components/Loading'
-import ButtonBar from './components/forms/ButtonBar'
-import Seperator from './components/ui/Seperator'
-import { faExclamationTriangle, faVideo } from '@fortawesome/free-solid-svg-icons'
-import Input from './components/forms/Input'
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { InventoryManager, Item, Enums  } from '@guardianforge/destiny-data-utils'
+import EquipmentItem from '../../components/app/EquipmentItem'
+import Subclass from '../../components/app/Subclass'
+import { State } from '../../models/Enums'
+import Loading from '../../components/app/Loading'
+import ButtonBar from '../../components/app/forms/ButtonBar'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import Input from '../../components/app/forms/Input'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
-import YouTubeEmbed from './components/YouTubeEmbed'
+import YouTubeEmbed from '../../components/app/YouTubeEmbed'
 
 const Wrapper = styled.div`
   padding: 20px;

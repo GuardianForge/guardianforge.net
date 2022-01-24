@@ -2,8 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import styled from 'styled-components';
-import colors from '../../../colors';
-import Build from '../models/Build';
+import colors from '../../colors';
+import Build from '../../models/Build';
 import UpvoteButton from './UpvoteButton'
 import copy from "copy-to-clipboard";
 

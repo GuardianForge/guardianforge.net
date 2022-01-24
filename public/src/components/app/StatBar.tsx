@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { BuildStatCollection } from '../models/Build'
+import { BuildStatCollection } from '../../models/Build'
 import Stat from './Stat'
 import Card from './ui/Card'
 

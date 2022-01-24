@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import colors from '../../../../colors';
+import colors from '../../../colors';
 
 const Wrapper = styled.div`
   background-color: ${colors.theme2.dark2};

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import styled from 'styled-components'
-import colors from '../../../colors'
+import colors from '../../colors'
 import { Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-utils'
 import EquipmentItemCard from './EquipmentItemCard'
 import ForgeButton from './forms/Button'

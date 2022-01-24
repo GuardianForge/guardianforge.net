@@ -4,9 +4,9 @@ import { navigate } from 'gatsby'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import UpvoteIcon from './UpvoteIcon'
 // @ts-ignore
-import { imageFixerMap } from '../../../utils/shims'
-import BuildSummary from '../models/BuildSummary'
-import colors from "../../../colors"
+import { imageFixerMap } from "../../utils/shims"
+import BuildSummary from '../../models/BuildSummary'
+import colors from "../../colors"
 
 const Wrapper = styled.div`
   padding: 5px 10px;

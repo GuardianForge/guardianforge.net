@@ -1,8 +1,8 @@
 import React, { MouseEventHandler } from 'react'
 import styled from 'styled-components'
-import colors from '../../../colors'
+import colors from '../../colors'
 // @ts-ignore
-import { classes, races } from "../../../constants"
+import { classes, races } from "../../constants"
 
 const Wrapper = styled.div`
 	height: 96px;

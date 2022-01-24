@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { navigate } from 'gatsby'
-import GuardianCard from '../components/GuardianCard'
-import Loading from '../components/Loading'
+import GuardianCard from '../../../components/app/GuardianCard'
+import Loading from '../../../components/app/Loading'
 // @ts-ignore
 import { GlobalContext } from '../../../contexts/GlobalContext'
 import userUtils from "../../../utils/userUtils"
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import BuildSummaryCard from '../components/BuildSummaryCard'
-import Guardian from '../models/Guardian'
-import User from '../models/User'
-import DestinyMembership from '../models/DestinyMembership'
+import BuildSummaryCard from '../../../components/app/BuildSummaryCard'
+import Guardian from '../../../models/Guardian'
+import User from '../../../models/User'
+import DestinyMembership from '../../../models/DestinyMembership'
 
 const UserMenuWrapper = styled.div`
   padding: 10px;

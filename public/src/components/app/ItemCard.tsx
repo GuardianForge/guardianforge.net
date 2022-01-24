@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Plug from './Plug'
 import styled from 'styled-components'
-import { BuildItem, BuildItemPlug } from '../models/Build'
+import { BuildItem, BuildItemPlug } from '../../models/Build'
 import Card from './ui/Card'
 
 const Wrapper = styled(Card)`

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react"
 import styled from 'styled-components'
 // @ts-ignore
-import { GlobalContext } from '../../contexts/GlobalContext'
-import { State } from "./models/Enums"
-import Loading from './components/Loading'
-import BuildSummaryCard from "./components/BuildSummaryCard"
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { State } from "../../models/Enums"
+import Loading from '../../components/app/Loading'
+import BuildSummaryCard from "../../components/app/BuildSummaryCard"
 import { Helmet } from 'react-helmet'
 import { Container, Row } from "react-bootstrap"
-import BuildSummary from "./models/BuildSummary"
+import BuildSummary from "../../models/BuildSummary"
 
 const Wrapper = styled.div`
   margin-top: 10px;

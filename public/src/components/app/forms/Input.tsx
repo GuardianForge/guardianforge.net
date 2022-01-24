@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import colors from "../../../../colors"
+import colors from "../../../colors"
 
 const Wrapper = styled.div`
   color: #eee;

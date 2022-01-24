@@ -1,11 +1,11 @@
 import { Link } from 'gatsby'
 import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { GlobalContext } from '../../../contexts/GlobalContext'
+import { GlobalContext } from '../../contexts/GlobalContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styled from 'styled-components'
-import User from '../models/User'
-import colors from "../../../colors"
+import User from '../../models/User'
+import colors from "../../colors"
 
 const Wrapper = styled.div`
   display: flex;

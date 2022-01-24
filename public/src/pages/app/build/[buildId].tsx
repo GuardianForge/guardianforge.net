@@ -4,23 +4,19 @@ import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
 import { GlobalContext } from '../../../contexts/GlobalContext'
-import Loading from "../components/Loading"
-import SubclassCard from '../components/SubclassCard'
-import ItemCard from '../components/ItemCard'
+import Loading from "../../../components/app/Loading"
+import SubclassCard from '../../../components/app/SubclassCard'
+import ItemCard from '../../../components/app/ItemCard'
 import { Helmet } from 'react-helmet'
 import BuildAd from '../../../components/ads/BuildAd';
-import StatBar from '../components/StatBar';
-import BuildMetaPanel from '../../../components/build/BuildMetaPanel'
+import StatBar from '../../../components/app/StatBar';
 import { Col, Container, Row } from 'react-bootstrap'
-import CommandsBar from '../components/CommandsBar'
+import CommandsBar from '../../../components/app/CommandsBar'
 import BuildData from '../models/Build'
-import colors from '../../../colors'
-import { Link } from 'gatsby'
 import User from '../models/User'
-import PlayerInfoCard from '../components/PlayerInfoCard'
-import Card from '../components/ui/Card'
-import BuildNotesCard from '../components/BuildNotesCard'
-import VideoReviewCard from '../components/VideoReviewCard'
+import PlayerInfoCard from '../../../components/app/PlayerInfoCard'
+import BuildNotesCard from '../../../components/app/BuildNotesCard'
+import VideoReviewCard from '../../../components/app/VideoReviewCard'
 
 const Wrapper = styled.div`
   margin: 0px 10px;

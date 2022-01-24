@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import styled from 'styled-components'
 // @ts-ignore
-import { imageFixerMap } from '../../../utils/shims'
+import { imageFixerMap } from "../../utils/shims"
 
 const Wrapper = styled.div`
   display: flex;

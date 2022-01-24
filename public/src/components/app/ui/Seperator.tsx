@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import colors from '../../../../colors';
+import colors from '../../../colors';
 
 const Horizontal = styled.div`
   border-top: 2px solid ${colors.theme2.dark1}

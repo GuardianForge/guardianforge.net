@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Form, Button, InputGroup, Col, Container, Row } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // @ts-ignore
-import { GlobalContext } from '../../contexts/GlobalContext'
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
 
 function Profile() {
   const { isUserDataLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)

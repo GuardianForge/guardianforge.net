@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Helmet } from 'react-helmet';
 import { Container, Dropdown } from 'react-bootstrap';
-import BuildSummaryCard from './components/BuildSummaryCard'
+import BuildSummaryCard from '../../components/app/BuildSummaryCard'
 // @ts-ignore
 import searchUtils from "../../utils/searchUtils"
 // @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext"
-import Loading from "./components/Loading"
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import Loading from "../../components/Loading"
 import colors from "../../colors"
 
 const Wrapper = styled(Container)`

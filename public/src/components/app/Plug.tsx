@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
-import { GlobalContext } from '../../../contexts/GlobalContext.jsx'
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 // @ts-ignore
-import { imageFixerMap } from '../../../utils/shims'
-import { BuildItemPlug } from '../models/Build'
+import { imageFixerMap } from '../../utils/shims'
+import { BuildItemPlug } from '../../models/Build'
 
 const Wrapper = styled.div`
   display: flex;
@@ -72,7 +72,7 @@ function Plug(props: Props) {
     }
     const { ManifestService } = window.services
     if(!plugName) {
-      let def = ManifestService.getItem("DestinyInventoryItemDefinition", plug.plugHash)
+      let def = ManifestService.getItem("DestinyInventoryItemDefinition", plug.plugHash as string)
       if(def.displayProperties) {
         setPlugName(def.displayProperties.name)
       }

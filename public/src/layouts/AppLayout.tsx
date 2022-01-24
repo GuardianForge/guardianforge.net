@@ -4,16 +4,15 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faTimes, faSearch, faCube, faArrowLeft, faUser, faBookmark, faUsers, faCubes, faPlus, faBook } from '@fortawesome/free-solid-svg-icons'
 import './AppLayout.css'
-import colors from "../../../colors"
+import colors from "../colors"
 // @ts-ignore
-import { GlobalContext } from "../../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../contexts/GlobalContext.jsx"
 import { Enums } from '@guardianforge/destiny-data-utils'
-import Guardian from '../models/Guardian'
-import UserMenu from '../components/UserMenu'
+import UserMenu from '../components/app/UserMenu'
 import { Image } from 'react-bootstrap'
 // @ts-ignore
-import SiteLogo from "../../../images/site-logo.png"
-import Input from '../components/forms/Input'
+import SiteLogo from "../images/site-logo.png"
+import Input from '../components/app/forms/Input'
 
 
 const Layout = styled.div`
@@ -229,7 +228,6 @@ function AppLayout(props: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { children, location } = props
   const { isInitDone, initApp, pageTitle, setPageTitle } = useContext(GlobalContext)
-  const [guardians, setGuardians] = useState<Array<Guardian>>([])
   // const [pageTitle, setPageTitle] = useState("")
   const [search, setSearch] = useState("")
 

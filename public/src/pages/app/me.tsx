@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components'
 // @ts-ignore
-import { GlobalContext } from '../../contexts/GlobalContext'
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
 import { Link } from 'gatsby'
 import { Container, Row } from 'react-bootstrap';
 import colors from '../../colors'
@@ -84,7 +84,7 @@ function Me() {
                 </span>
               )}
             </div>
-            <div className="user-nav">
+            {/* <div className="user-nav">
               <Link to="/me" className={`user-nav-link ${location && location.pathname == '/me' ? 'user-nav-link-active' : ''}`}>
                 Profile
               </Link>
@@ -100,7 +100,7 @@ function Me() {
               <Link to="/me/private-builds" className={`user-nav-link ${location && location.pathname == '/me/private-builds' ? 'user-nav-link-active' : ''}`}>
                 Private Builds
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="col-md-8">

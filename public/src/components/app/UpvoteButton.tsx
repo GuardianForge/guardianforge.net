@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
-import { GlobalContext } from '../../../contexts/GlobalContext'
+import { GlobalContext } from '../../contexts/GlobalContext'
 import UpvoteIcon from './UpvoteIcon'
 // @ts-ignore
-import buildUtils from '../../../utils/buildUtils'
+import buildUtils from '../../utils/buildUtils'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Build from '../models/Build'
+import Build from '../../models/Build'
 import styled from 'styled-components'
-import colors from '../../../colors'
+import colors from '../../colors'
 
 const Wrapper = styled.div`
   button {

@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { GlobalContext } from '../../contexts/GlobalContext'
-import MeLayout from '../../layouts/MeLayout'
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
 import GuardianCard from '../../components/GuardianCard'
 import { navigate } from 'gatsby-link'
 import userUtils from '../../utils/userUtils'

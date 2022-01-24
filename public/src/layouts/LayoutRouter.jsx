@@ -1,7 +1,7 @@
 import React from 'react'
 import MainLayout from './MainLayout'
 import MeLayout from './MeLayout'
-import AppLayout from '../pages/app/layout/AppLayout'
+import AppLayout from './AppLayout'
 
 function LayoutRouter({ children, location, pageContext }) {
   if(pageContext.layout === "MeLayout") {

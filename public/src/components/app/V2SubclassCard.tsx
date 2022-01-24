@@ -4,7 +4,7 @@ import { Item } from '@guardianforge/destiny-data-utils';
 import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import colors from '../../../colors';
+import colors from '../../colors';
 import ForgeModal from './Modal';
 import V2SuperTree from './V2SuperTree';
 

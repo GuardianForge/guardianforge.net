@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Plug from './Plug'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
-import { BuildItem } from '../models/Build'
+import { BuildItem } from '../../models/Build'
 import Card from './ui/Card'
 
 const Wrapper = styled(Card)`

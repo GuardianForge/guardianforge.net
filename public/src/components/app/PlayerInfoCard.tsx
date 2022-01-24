@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { UserInfo } from '../models/User';
+import { UserInfo } from '../../models/User';
 import Card from './ui/Card';
 import { Link } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

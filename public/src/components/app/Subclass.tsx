@@ -1,14 +1,12 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
-import colors from '../../../colors'
+import colors from '../../colors'
 import { Item  } from '@guardianforge/destiny-data-utils'
 import ForgeButton from './forms/Button'
-import ForgeModal from '../components/Modal'
+import ForgeModal from './Modal'
 import { Button, Col, Container, Row } from 'react-bootstrap'
-import { faCog, faExchangeAlt, faLessThanEqual } from '@fortawesome/free-solid-svg-icons'
 import V3SubclassCard from './V3SubclassCard'
 import V2SubclassCard from './V2SubclassCard'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Wrapper = styled.div`
   display: flex;

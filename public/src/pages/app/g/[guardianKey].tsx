@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 // @ts-ignore
 import { GlobalContext } from '../../../contexts/GlobalContext'
-import Loading from '../components/Loading'
-import SubclassCard from '../components/SubclassCard'
-import ItemCard from '../components/ItemCard'
+import Loading from '../../../components/app/Loading'
+import SubclassCard from '../../../components/app/SubclassCard'
+import ItemCard from '../../../components/app/ItemCard'
 import styled from 'styled-components'
 // @ts-ignore
 import { classes } from '../../../constants'
@@ -11,16 +11,16 @@ import { classes } from '../../../constants'
 import buildUtils from "../../../utils/buildUtils"
 import { navigate } from 'gatsby'
 import { Helmet } from 'react-helmet'
-import StatBar from '../components/StatBar'
-import BuildAd from '../components/ads/BuildAd'
-import { Button, ButtonGroup, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
+import StatBar from '../../../components/app/StatBar'
+import BuildAd from '../../../components/app/ads/BuildAd'
+import { Button, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import User from '../models/User'
-import { BuildItemCollection } from '../models/Build'
-import ButtonBar from '../components/forms/ButtonBar'
+import User from '../../../models/User'
+import { BuildItemCollection } from '../../../models/Build'
+import ButtonBar from '../../../components/app/forms/ButtonBar'
 import copy from "copy-to-clipboard";
 import { faCube, faLink, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
-import Card from '../components/ui/Card'
+import Card from '../../../components/app/ui/Card'
 
 const Wrapper = styled.div`
   .items {

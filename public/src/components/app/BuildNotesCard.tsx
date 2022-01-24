@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Build from '../models/Build';
+import Build from '../../models/Build';
 // @ts-ignore TODO: Move this into the API
-import activityOptions from '../../../utils/activityOptions'
-import ActivityOption from '../models/ActivityOption';
+import activityOptions from '../../utils/activityOptions'
+import ActivityOption from '../../models/ActivityOption';
 import Card from './ui/Card';
 import styled from 'styled-components';
-import colors from '../../../colors';
+import colors from '../../colors';
 import ForgeModal from './Modal';
 import ForgeButton from './forms/Button';
 

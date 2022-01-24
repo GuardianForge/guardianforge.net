@@ -1,9 +1,9 @@
 import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Item } from '@guardianforge/destiny-data-utils';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import colors from '../../../colors';
+import colors from '../../colors';
 
 const Wrapper = styled.div`
   display: flex;

@@ -1,7 +1,7 @@
 import React from 'react'
 import { navigate } from 'gatsby'
 import styled from 'styled-components'
-import User from '../models/User'
+import User from '../../models/User'
 
 const Wrapper = styled.div`
 	display: flex;

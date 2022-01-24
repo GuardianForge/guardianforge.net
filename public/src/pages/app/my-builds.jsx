@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from "react"
 import styled from 'styled-components'
-import { GlobalContext } from '../../contexts/GlobalContext'
-import MeLayout from '../../layouts/MeLayout'
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
 import COMP_STATE from '../../utils/compStates'
 import Loading from '../../components/Loading'
-import BuildSummaryCard from "./components/BuildSummaryCard"
+import BuildSummaryCard from "../../components/app/BuildSummaryCard"
 import { Helmet } from 'react-helmet'
 import { Container } from "react-bootstrap"
 

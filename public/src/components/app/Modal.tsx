@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Modal, Button } from 'react-bootstrap';
 import styled from 'styled-components'
-import colors from '../../../colors'
+import colors from '../../colors'
 
 const Wrapper = styled(Modal)`
   border: 1px solid ${colors.theme2.border};
