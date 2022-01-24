@@ -13,6 +13,10 @@ import { State } from './models/Enums'
 import Loading from './components/Loading'
 import ButtonBar from './components/forms/ButtonBar'
 import Seperator from './components/ui/Seperator'
+import { faExclamationTriangle, faVideo } from '@fortawesome/free-solid-svg-icons'
+import Input from './components/forms/Input'
+import { faYoutube } from '@fortawesome/free-brands-svg-icons'
+import YouTubeEmbed from './components/YouTubeEmbed'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -41,16 +45,31 @@ function CreateBuild(props: Props) {
   const [isInventoryLoaded, setIsInventoryLoaded] = useState(false)
   const [buildData, setBuildData] = useState<any>({
     items: {
-      kinetic: {},
-      energy: {},
-      power: {},
-      helmet: {},
-      arms: {},
-      chest: {},
-      legs: {},
-      classItem: {},
+      subclass: null,
+      kinetic: null,
+      energy: null,
+      power: null,
+      helmet: null,
+      arms: null,
+      chest: null,
+      legs: null,
+      classItem: null,
     }
   })
+
+  // Meta
+  const [name, setName] = useState<string>();
+  const [notes, setNotes] = useState<string>();
+  const [inputStype, setInputStyle] = useState<number>();
+  const [activity, setActivity] = useState<string>();
+  const [videoReviewUrl, setVideoReviewUrl] = useState<string>("");
+
+  // Validateion
+  const [isBuildValid, setIsBuildValid] = useState(false)
+  const [isWeaponConfigValid, setIsWeaponConfigValid] = useState(false)
+  const [weaponConfigValidationMessage, setWeaponConfigValidationMessage] = useState<string>()
+  const [isArmorConfigValid, setIsArmorConfigValid] = useState(false)
+  const [armorConfigValidationMessage, setArmorConfigValidationMessage] = useState<string>()
 
   useEffect(() => {
     setPageTitle("Create Build")
@@ -80,6 +99,7 @@ function CreateBuild(props: Props) {
   }, [isInitDone])
 
   function onItemUpdated(item: Item) {
+    console.log(item)
     console.log("onItemUpdated", item)
     let bd = buildData
     switch(item.slot) {
@@ -107,9 +127,57 @@ function CreateBuild(props: Props) {
       case Enums.BucketTypeEnum.ClassItem:
         bd.items.classItem = item;
         break;
+      case Enums.BucketTypeEnum.Subclass:
+        bd.items.subclass = item;
+        break;
     }
     console.log("bd", buildData)
     setBuildData(bd)
+
+    // Validate build
+    // - Weapons can only contain one exotic
+    let weaponExoticCount = 0
+    if(bd.items.kinetic && bd.items.kinetic.isExotic) weaponExoticCount++;
+    if(bd.items.energy && bd.items.energy.isExotic) weaponExoticCount++;
+    if(bd.items.power && bd.items.power.isExotic) weaponExoticCount++;
+    if(weaponExoticCount > 1) {
+      setIsWeaponConfigValid(false)
+      setWeaponConfigValidationMessage("You may only equip one Exotic weapon at a time.")
+    } else {
+      setIsWeaponConfigValid(true)
+      setWeaponConfigValidationMessage("")
+    }
+
+    // - Armor can only containe ONE exotic
+    let armorExoticCount = 0
+    if(bd.items.helmet && bd.items.helmet.isExotic) armorExoticCount++;
+    if(bd.items.arms && bd.items.arms.isExotic) armorExoticCount++;
+    if(bd.items.chest && bd.items.chest.isExotic) armorExoticCount++;
+    if(bd.items.legs && bd.items.legs.isExotic) armorExoticCount++;
+    if(bd.items.classItem && bd.items.classItem.isExotic) armorExoticCount++;
+    if(armorExoticCount > 1) {
+      setIsArmorConfigValid(false)
+      setArmorConfigValidationMessage("You may only equip one Exotic armor piece at a time.")
+    } else {
+      setIsArmorConfigValid(true)
+      setArmorConfigValidationMessage("")
+    }
+
+    validateBuildData()
+  }
+
+  function validateBuildData() {
+    let isValid = true
+    if(!buildData.items.subclass) isValid = false
+    if(!buildData.items.kinetic) isValid = false
+    if(!buildData.items.energy) isValid = false
+    if(!buildData.items.power) isValid = false
+    if(!buildData.items.helmet) isValid = false
+    if(!buildData.items.arms) isValid = false
+    if(!buildData.items.chest) isValid = false
+    if(!buildData.items.legs) isValid = false
+    if(!buildData.items.classItem) isValid = false
+    setIsBuildValid(isValid && isArmorConfigValid && isWeaponConfigValid)
   }
 
   return (
@@ -122,7 +190,7 @@ function CreateBuild(props: Props) {
           <Row>
             <Col>
               <ButtonBar>
-                <Button>Save</Button>
+                <Button disabled={!isBuildValid}>Save</Button>
                 <Button>Optimize</Button>
                 {/* <Seperator vertical />
                 <div>
@@ -133,87 +201,85 @@ function CreateBuild(props: Props) {
           </Row>
           <Row>
             <Col md="9">
-              <div className="row">
-                <div className="col-md-12">
+              <Row className="mb-3">
+                <Col md="12">
                   <h4>Subclass</h4>
-                </div>
-                <div className="col-md-12">
-                  <Subclass />
-                </div>
-              </div>
+                </Col>
+                <Col md="12">
+                  <Subclass onSubclassUpdated={onItemUpdated} />
+                </Col>
+              </Row>
 
-              <div className="row">
-                <div className="col-md-12 mt-3">
+              <Row>
+                <Col md="12">
                   <h4>Weapons</h4>
-                </div>
-                <div className="col-md-4">
+                  {weaponConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{weaponConfigValidationMessage}</span>}
+                </Col>
+                <Col md="4">
                   <EquipmentItem item={buildData.items.kinetic} slot={Enums.BucketTypeEnum.Kinetic} classType={selectedClass} onItemUpdated={onItemUpdated}>
                     Select Kinetic
                   </EquipmentItem>
-                </div>
-                <div className="col-md-4">
-                  {buildData.items && buildData.items.energy && (
-                    <EquipmentItem item={buildData.items.energy} slot={Enums.BucketTypeEnum.Energy} classType={selectedClass}  onItemUpdated={onItemUpdated}>
-                      Select Energy
-                    </EquipmentItem>
-                  )}
-                </div>
-                <div className="col-md-4">
-                  {buildData.items && buildData.items.power && (
-                    <EquipmentItem item={buildData.items.power} slot={Enums.BucketTypeEnum.Power} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                      Select Power
-                    </EquipmentItem>
-                  )}
-                </div>
-              </div>
+                </Col>
+                <Col md="4">
+                  <EquipmentItem item={buildData.items.energy} slot={Enums.BucketTypeEnum.Energy} classType={selectedClass}  onItemUpdated={onItemUpdated}>
+                    Select Energy
+                  </EquipmentItem>
+                </Col>
+                <Col md="4">
+                  <EquipmentItem item={buildData.items.power} slot={Enums.BucketTypeEnum.Power} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                    Select Power
+                  </EquipmentItem>
+                </Col>
+              </Row>
 
               <div className="row">
                 <div className="col-md-12 mt-3">
                   <h4>Armor</h4>
+                  {armorConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{armorConfigValidationMessage}</span>}
                 </div>
                 <div className="col-md-4">
-                  {buildData.items && buildData.items.helmet && (
-                    <EquipmentItem  item={buildData.items.helmet} slot={Enums.BucketTypeEnum.Helmet} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                      Select Helmet
-                    </EquipmentItem>
-                  )}
+                  <EquipmentItem  item={buildData.items.helmet} slot={Enums.BucketTypeEnum.Helmet} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                    Select Helmet
+                  </EquipmentItem>
                 </div>
                 <div className="col-md-4">
-                  {buildData.items && buildData.items.arms && (
-                    <EquipmentItem item={buildData.items.arms} slot={Enums.BucketTypeEnum.Arms} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                      Select Arms
-                    </EquipmentItem>
-                  )}
-
+                  <EquipmentItem item={buildData.items.arms} slot={Enums.BucketTypeEnum.Arms} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                    Select Arms
+                  </EquipmentItem>
                 </div>
                 <div className="col-md-4">
-                  {buildData.items && buildData.items.chest && (
-                    <EquipmentItem item={buildData.items.chest} slot={Enums.BucketTypeEnum.Chest} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                      Select Chest
-                    </EquipmentItem>
-                  )}
-
+                  <EquipmentItem item={buildData.items.chest} slot={Enums.BucketTypeEnum.Chest} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                    Select Chest
+                  </EquipmentItem>
                 </div>
                 <div className="col-md-4">
-                  {buildData.items && buildData.items.legs && (
-                    <EquipmentItem item={buildData.items.legs} slot={Enums.BucketTypeEnum.Legs} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                      Select Legs
-                    </EquipmentItem>
-                  )}
+                  <EquipmentItem item={buildData.items.legs} slot={Enums.BucketTypeEnum.Legs} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                    Select Legs
+                  </EquipmentItem>
                 </div>
                 <div className="col-md-4">
-                  {buildData.items && buildData.items.classItem && (
-                    <EquipmentItem item={buildData.items.classItem} slot={Enums.BucketTypeEnum.ClassItem} classType={selectedClass} onItemUpdated={onItemUpdated}>
-                      Select Class Item
-                    </EquipmentItem>
-                  )}
+                  <EquipmentItem item={buildData.items.classItem} slot={Enums.BucketTypeEnum.ClassItem} classType={selectedClass} onItemUpdated={onItemUpdated}>
+                    Select Class Item
+                  </EquipmentItem>
                 </div>
               </div>
             </Col>
             <Col md="3">
-              <h4>Build Info</h4>
+              <h4>Notes & Play Style</h4>
+              <div className="build-info-card mb-3">
+                TODO: Notes
+                TODO: Input Stype
+                TODO: Activity
+              </div>
+              <h4>Video Review</h4>
               <div className="build-info-card">
-                Misc info here
+                <Input
+                  prefixIcon={faYoutube}
+                  placeholder="Add a YouTube link"
+                  value={videoReviewUrl}
+                  className="mb-3"
+                  onChange={(e: any) => setVideoReviewUrl(e.target.value)} />
+                <YouTubeEmbed youtubeUrl={videoReviewUrl} showPlaceholder />
               </div>
             </Col>
           </Row>

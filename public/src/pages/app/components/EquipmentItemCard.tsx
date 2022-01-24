@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styled from 'styled-components'
 import colors from '../../../colors'
 import { Item, Enums  } from '@guardianforge/destiny-data-utils'
+import { ItemTierData } from '@guardianforge/destiny-data-utils/dist/models/Item'
 
 const EquipmentItemCardStyles = styled.div`
   width: 100%;
@@ -20,9 +21,30 @@ const EquipmentItemCardStyles = styled.div`
     align-items: center;
     font-size: 14px;
 
+    .item-tier-1 {
+      color: ${colors.elements.Arc};
+    }
+
+    .item-tier-2 {
+      color: ${colors.elements.Solar} !important;
+    }
+
+    .item-tier-3 {
+      color: ${colors.elements.Void};
+    }
+
+    .item-tier-4 {
+      color: ${colors.elements.Void};
+    }
+
+    .item-tier-6 {
+      color: ${colors.elements.Stasis};
+    }
+
     .affinity-icon {
       height: auto;
       max-width: 15px;
+      margin-right: 3px;
     }
   }
 
@@ -90,11 +112,12 @@ const EquipmentItemCardStyles = styled.div`
     display: flex;
     justify-content: space-between;
     border-bottom: 2px solid ${colors.theme2.dark1};
+    padding-bottom: 5px;
     margin-bottom: 7px;
 
     img {
       max-width: 25px;
-      height: auto;
+      max-height: 25px;
       border-radius: 5px;
     }
   }
@@ -112,16 +135,25 @@ type EquipmentItemCardProps = {
   showLocation?: boolean
 }
 
-
 function EquipmentItemCard(props: EquipmentItemCardProps) {
   const { item, configurable, onConfigureItemClicked, onSwapItemClicked, showLocation } = props
+
+  const [itemTierData, setItemTierData] = useState<ItemTierData>()
+
+  useEffect(() => {
+    setItemTierData(item.getItemTier())
+  }, [])
+
 
   return (
     <EquipmentItemCardStyles>
       <div className="selected-item-left">
         <img className="selected-item-img" src={item.iconUrl} />
         <div className="item-base-stats">
-          <span>{ item.getAffinityIcon() && <img className="affinity-icon" src={item.getAffinityIcon() as string} /> }</span>
+          <span>
+            { itemTierData && itemTierData.icon && <img className="affinity-icon" src={itemTierData.icon} /> }
+          </span>
+          { itemTierData && itemTierData.tier !== undefined && <span className={`item-tier item-tier-${itemTierData.damageType}`}>{itemTierData.tier} </span>}
           <span>{ item.getPower() }</span>
         </div>
         {configurable && (

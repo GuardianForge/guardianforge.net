@@ -6,6 +6,8 @@ import { Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-ut
 import EquipmentItemCard from './EquipmentItemCard'
 import ForgeButton from './forms/Button'
 import ForgeModal from './Modal'
+import Input from './forms/Input'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
 
 const SelectItemWrapper = styled.div`
@@ -136,8 +138,11 @@ const ItemSelectorModal = styled(ForgeModal)`
     margin: 10px 0px;
     display: flex;
 
+    &> div {
+      width: 100%;
+    }
+
     input {
-      border: 1px solid #777;
       border-radius: 3px;
       width: 100%;
     }
@@ -228,7 +233,7 @@ function EquipmentItem(props: EquipmentItemProps) {
 
   function setEquippedPlug(socket: Socket, plug: SocketItem) {
     let i = item
-    if(i && i.sockets && socket.position && i.sockets[socket.position]) {
+    if(i && i.sockets && socket.position !== undefined && i.sockets[socket.position]) {
       i.sockets[socket.position].equippedPlug = plug
     }
     setItem(i)
@@ -297,7 +302,11 @@ function EquipmentItem(props: EquipmentItemProps) {
         >
         <div>
           <div className="filter">
-            <input placeholder="Start typing to filter items..." type="text" value={inventoryFilter} onChange={(e: any) => onInventoryFilterChanged(e.target.value)} />
+            <Input placeholder="Start typing to filter items..."
+              type="text"
+              value={inventoryFilter}
+              prefixIcon={faFilter}
+              onChange={(e: any) => onInventoryFilterChanged(e.target.value)} />
           </div>
           <div className="row">
             {filteredInventorySubset.map((i: Item, idx: number) => (

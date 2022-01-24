@@ -142,10 +142,11 @@ enum AffinityEnum {
 type Props = {
   subclass: Item
   onChangeSubclassClicked: MouseEventHandler
+  onSubclassUpdated: Function
 }
 
 function V2SubclassCard(props: Props) {
-  const { subclass, onChangeSubclassClicked } = props
+  const { subclass, onChangeSubclassClicked, onSubclassUpdated } = props
   const [specialty, setSpecialty] = useState<any>()
   const [grenade, setGrenade] = useState<any>()
   const [movement, setMovement] = useState<any>()

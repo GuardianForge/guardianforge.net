@@ -67,7 +67,12 @@ const SelectSubclassButton = styled(Button)`
   }
 `
 
-function Subclass() {
+type Props = {
+  onSubclassUpdated: Function
+}
+
+function Subclass(props: Props) {
+  const { onSubclassUpdated } = props
   const [availableSubclasses, setAvailableSubclass] = useState<Array<Item>>([])
   const [selectedSubclass, setSelectedSubclass] = useState<Item>()
   const [isSelectingSubclass, setIsSelectingSubclass] = useState(false)
@@ -90,6 +95,7 @@ function Subclass() {
     }
     setSelectedSubclass(item)
     setIsSelectingSubclass(false)
+    onSubclassUpdated(item)
   }
 
   function configureSubclass() {
@@ -106,9 +112,13 @@ function Subclass() {
         <>
           <div className="selected-subclass">
             {isV3Subclass ? (
-              <V3SubclassCard subclass={selectedSubclass} />
+              <V3SubclassCard subclass={selectedSubclass}
+                onChangeSubclassClicked={() => selectSubclass()}
+                onSubclassUpdated={onSubclassUpdated}/>
             ) : (
-              <V2SubclassCard subclass={selectedSubclass} onChangeSubclassClicked={() => selectSubclass()} />
+              <V2SubclassCard subclass={selectedSubclass}
+                onChangeSubclassClicked={() => selectSubclass()}
+                onSubclassUpdated={onSubclassUpdated} />
             )}
           </div>
         </>
@@ -123,7 +133,7 @@ function Subclass() {
           <Row>
             <Col>
               {availableSubclasses.map((i: Item) => (
-                <SelectSubclassButton key={`subclass=${i.hash}`} onClick={() => onSubclassSelected(i)}>
+                <SelectSubclassButton key={`subclass-${i.hash}`} onClick={() => onSubclassSelected(i)}>
                   <img src={i.iconUrl} />
                   <span>{ i.name }</span>
                 </SelectSubclassButton>

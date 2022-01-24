@@ -1,5 +1,7 @@
+import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Item } from '@guardianforge/destiny-data-utils';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import colors from '../../../colors';
 
@@ -55,20 +57,28 @@ const Wrapper = styled.div`
 
 type Props = {
   subclass: Item
+  onSubclassUpdated: Function
+  onChangeSubclassClicked: React.MouseEventHandler
 }
 
 function V3SubclassCard(props: Props) {
-  const { subclass } = props
+  const { subclass, onSubclassUpdated, onChangeSubclassClicked } = props
+  const [isConfigureSubclassModalShown, setIsConfigureSubclassModalShown] = useState(false)
 
-  useEffect(() => {
-    // console.log(subclass)
-  }, [])
+  function onConfigureSubclassClicked() {
+    setIsConfigureSubclassModalShown(true)
+  }
 
   return (
     <Wrapper>
       <div className="subclass-left">
         <img className="icon" src={subclass.iconUrl} />
         {/* // TODO: Stat bumps */}
+
+        <div className="icon-btns">
+          <FontAwesomeIcon icon={faCog} onClick={onConfigureSubclassClicked} />
+          <FontAwesomeIcon icon={faExchangeAlt} onClick={onChangeSubclassClicked} />
+        </div>
       </div>
       <div className="subclass-right">
         <span className="name">{ subclass.name }</span>

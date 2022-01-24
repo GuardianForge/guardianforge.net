@@ -18,6 +18,7 @@ export default {
   elements: {
     Arc: "#6B9DB9",
     Void: "#826787",
-    Solar: "#D86013"
+    Solar: "#D86013",
+    Stasis: "#4C88FF"
   }
 }

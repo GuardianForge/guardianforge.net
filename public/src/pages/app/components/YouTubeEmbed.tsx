@@ -14,15 +14,29 @@ const Wrapper = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
+    border-radius: 5px;
+  }
+
+  .video-embed-placeholder {
+    height: 200px;
+    background-color: rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #aaa;
+    font-style: italic;
+    border-radius: 5px;
+    text-align: center;
   }
 `
 
 type Props = {
   youtubeUrl: string
+  showPlaceholder?: boolean
 }
 
 function YouTubeEmbed(props: Props) {
-  const { youtubeUrl } = props
+  const { youtubeUrl, showPlaceholder } = props
 
   const [videoId, setVideoId] = useState("")
 
@@ -31,7 +45,7 @@ function YouTubeEmbed(props: Props) {
     let videoId = splitUrl[splitUrl.length - 1]
     videoId = videoId.replace("watch?v=", "")
     setVideoId(videoId)
-  }, [])
+  }, [youtubeUrl])
 
   return (
     <Wrapper>
@@ -42,6 +56,11 @@ function YouTubeEmbed(props: Props) {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen>
         </iframe>
+      )}
+      {showPlaceholder && videoId === "" && (
+        <div className="video-embed-placeholder">
+          Paste a link above to preview the video.
+        </div>
       )}
     </Wrapper>
   )

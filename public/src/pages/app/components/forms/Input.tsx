@@ -66,10 +66,12 @@ type Props = {
   placeholder?: string
   right?: React.ReactFragment
   gutter?: React.ReactFragment
+  type?: string
+  className?: string
 }
 
 function Input(props: Props) {
-  const { value, onChange, prefixIcon, placeholder, right, gutter } = props
+  const { className, value, onChange, prefixIcon, placeholder, right, gutter, type } = props
   // const [value, setValue] = useState<string>("")
 
   function onChangeHandler(e: any) {
@@ -80,13 +82,14 @@ function Input(props: Props) {
   }
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <div className="main">
         <div className="left">
           {prefixIcon && <FontAwesomeIcon icon={prefixIcon} />}
           <input placeholder={placeholder ? placeholder : ""}
             value={value}
-            onChange={onChangeHandler} />
+            onChange={onChangeHandler}
+            type={type} />
         </div>
         {right && (
           <div className="right">

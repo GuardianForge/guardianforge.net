@@ -214,7 +214,7 @@ const Content = styled.div`
 
 const SidebarOverlay = styled.div`
   position: absolute;
-  z-index: 100;
+  z-index: 150;
   background-color: rgba(0, 0, 0, 0.4);
   height: 100%;
   width: 100%;
@@ -318,8 +318,8 @@ function AppLayout(props: Props) {
 
   return (
     <Layout id="appLayout">
-      <SidebarOverlay className={`d-lg-none ${isMenuOpen ? "" : "d-none"}`}/>
-      <Sidebar className={isMenuOpen ? "" : "d-none d-lg-flex"}>
+      <SidebarOverlay className={`d-xl-none ${isMenuOpen ? "" : "d-none"}`} onClick={() => setIsMenuOpen(false)}/>
+      <Sidebar className={isMenuOpen ? "" : "d-none d-xl-flex"}>
         <div className="nav-header">
           <div className="branding">
             <Link to="/app">
@@ -336,8 +336,8 @@ function AppLayout(props: Props) {
           ))} */}
           <div className="nav-section">
             <ul>
-              {navItems.map((ni: any) => (
-                <li>
+              {navItems.map((ni: any, idx: any) => (
+                <li key={`nav-item-${idx}`}>
                   <Link className={`nav-link ${location.pathname === ni.path ? 'nav-link-active' : ''}`} to={ni.path}>
                     <div className="nav-icon-wrapper"><FontAwesomeIcon icon={ni.icon} /></div> {ni.name}
                   </Link>
@@ -353,7 +353,7 @@ function AppLayout(props: Props) {
       <Main id="appLayoutMain">
         <AppBar>
           <div className="app-bar-left">
-            <FontAwesomeIcon onClick={onMenuBtnClicked} icon={faBars} className="menu-btn d-block d-lg-none d-xl-none" />
+            <FontAwesomeIcon onClick={onMenuBtnClicked} icon={faBars} className="menu-btn d-block d-xl-none d-xxl-none" />
 
             <div className="app-bar-title">
               {pageTitle}
