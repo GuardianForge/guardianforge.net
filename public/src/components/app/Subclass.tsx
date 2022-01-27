@@ -1,12 +1,13 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import colors from '../../colors'
-import { Item  } from '@guardianforge/destiny-data-utils'
+import { Enums, Item  } from '@guardianforge/destiny-data-utils'
 import ForgeButton from './forms/Button'
 import ForgeModal from './Modal'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import V3SubclassCard from './V3SubclassCard'
 import V2SubclassCard from './V2SubclassCard'
+import { BuildItem } from '../../models/Build'
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,27 +67,46 @@ const SelectSubclassButton = styled(Button)`
 `
 
 type Props = {
+  configurable?: boolean
   onSubclassUpdated: Function
+  selectedClass?: Enums.ClassEnum
+  buildItem?: BuildItem
 }
 
 function Subclass(props: Props) {
-  const { onSubclassUpdated } = props
+  const { onSubclassUpdated, selectedClass, buildItem, configurable } = props
   const [availableSubclasses, setAvailableSubclass] = useState<Array<Item>>([])
   const [selectedSubclass, setSelectedSubclass] = useState<Item>()
   const [isSelectingSubclass, setIsSelectingSubclass] = useState(false)
   const [isV3Subclass, setIsV3Subclass] = useState(false)
 
+  useEffect(() => {
+    if(buildItem) {
+      console.log(buildItem)
+      if(buildItem.abilities && buildItem.abilities.length > 0) {
+        setIsV3Subclass(true)
+      } else if(buildItem.superConfig) {
+        setIsV3Subclass(false)
+      }
+
+      if(configurable) {
+        // TODO: Lookup instance from inventory
+      }
+    }
+  }, [buildItem])
+
   function selectSubclass() {
-    const selectedClass = 0
     const { InventoryManager } = window.services
-    let subclasses = InventoryManager.getAvailableSubclasses(selectedClass)
-    setAvailableSubclass(subclasses)
-    setIsSelectingSubclass(true)
+    if(selectedClass) {
+      let subclasses = InventoryManager.getAvailableSubclasses(selectedClass)
+      setAvailableSubclass(subclasses)
+      setIsSelectingSubclass(true)
+    }
   }
 
   function onSubclassSelected(item: Item) {
     console.log(item)
-    if(item._meta && item._meta.sockets) {
+    if(item.getSubclassVersion() === 3) {
       setIsV3Subclass(true)
     } else {
       setIsV3Subclass(false)
@@ -96,31 +116,55 @@ function Subclass(props: Props) {
     onSubclassUpdated(item)
   }
 
-  function configureSubclass() {
-
-  }
-
   const footer = (
     <ForgeButton onClick={() => setIsSelectingSubclass(false)}>Close</ForgeButton>
   )
 
   return (
     <Wrapper>
-      {selectedSubclass ? (
+      {(buildItem || selectedSubclass) && (
+        <div className="selected-subclass">
+          {isV3Subclass ? (
+            <V3SubclassCard
+              buildItem={buildItem}
+              subclass={selectedSubclass}
+              onChangeSubclassClicked={() => selectSubclass()}
+              onSubclassUpdated={onSubclassUpdated}
+              configurable={configurable} />
+          ) : (
+            <V2SubclassCard
+              buildItem={buildItem}
+              subclass={selectedSubclass}
+              onChangeSubclassClicked={() => selectSubclass()}
+              onSubclassUpdated={onSubclassUpdated}
+              configurable={configurable} />
+          )}
+        </div>
+      )}
+
+      {/* {selectedSubclass && (
         <>
           <div className="selected-subclass">
             {isV3Subclass ? (
-              <V3SubclassCard subclass={selectedSubclass}
+              <V3SubclassCard
+                buildItem={buildItem}
+                subclass={selectedSubclass}
                 onChangeSubclassClicked={() => selectSubclass()}
-                onSubclassUpdated={onSubclassUpdated}/>
+                onSubclassUpdated={onSubclassUpdated}
+                configurable={configurable} />
             ) : (
-              <V2SubclassCard subclass={selectedSubclass}
+              <V2SubclassCard
+                buildItem={buildItem}
+                subclass={selectedSubclass}
                 onChangeSubclassClicked={() => selectSubclass()}
-                onSubclassUpdated={onSubclassUpdated} />
+                onSubclassUpdated={onSubclassUpdated}
+                configurable={configurable} />
             )}
           </div>
         </>
-      ) : (
+      )} */}
+
+      {!buildItem && !selectedSubclass && (
         <SelectSubclassButtonWrapper>
           <ForgeButton onClick={() => selectSubclass()}>Select Subclass</ForgeButton>
         </SelectSubclassButtonWrapper>

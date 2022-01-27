@@ -53,9 +53,11 @@ function Plug(props: Props) {
       setPlugName(plug.name)
     }
     let classes = ""
-    let isHighlighted = highlights.find(el => el === `${plugType}-${plug.itemInstanceId}-${plug.socketIndex}-${plug.plugHash}`)
-    if(isHighlighted) {
-      classes += "highlighted "
+    if(highlights) {
+      let isHighlighted = highlights.find(el => el === `${plugType}-${plug.itemInstanceId}-${plug.socketIndex}-${plug.plugHash}`)
+      if(isHighlighted) {
+        classes += "highlighted "
+      }
     }
     if(!plug.isEmpty) {
       classes += "highlightable "

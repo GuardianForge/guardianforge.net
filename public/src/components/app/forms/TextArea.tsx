@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import colors from "../../../colors"
+import { Form } from 'react-bootstrap';
 
 const Wrapper = styled.div`
   color: #eee;
@@ -15,10 +16,12 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
 
-    input {
+    textarea {
       color: #eee;
       background-color: inherit !important;
       border: 0;
+      width: 100%;
+      height: auto;
 
       &:focus {
         outline: none;
@@ -27,12 +30,12 @@ const Wrapper = styled.div`
 
     .left {
       display: flex;
-      align-items: center;
+      align-items: top0;
       flex: 1;
 
       svg {
         color: ${colors.theme2.dark1};
-        margin: 0px 3px;
+        margin: 5px 3px;
       }
 
       input {
@@ -68,10 +71,11 @@ type Props = {
   gutter?: React.ReactFragment
   type?: string
   className?: string
+  rows?: number
 }
 
-function Input(props: Props) {
-  const { className, value, onChange, prefixIcon, placeholder, right, gutter, type } = props
+function TextArea(props: Props) {
+  const { className, value, onChange, prefixIcon, placeholder, right, gutter, rows } = props
   // const [value, setValue] = useState<string>("")
 
   function onChangeHandler(e: any) {
@@ -86,10 +90,10 @@ function Input(props: Props) {
       <div className="main">
         <div className="left">
           {prefixIcon && <FontAwesomeIcon icon={prefixIcon} />}
-          <input placeholder={placeholder ? placeholder : ""}
+          <textarea placeholder={placeholder ? placeholder : ""}
+            rows={rows ? rows : 3}
             value={value}
-            onChange={onChangeHandler}
-            type={type} />
+            onChange={onChangeHandler} />
         </div>
         {right && (
           <div className="right">
@@ -106,4 +110,4 @@ function Input(props: Props) {
   )
 }
 
-export default Input
+export default TextArea

@@ -5,6 +5,7 @@ import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import colors from '../../colors';
+import { BuildItem } from '../../models/Build';
 import ForgeModal from './Modal';
 import V2SuperTree from './V2SuperTree';
 
@@ -133,20 +134,16 @@ const SubclassConfigModalBody = styled(Container)`
   }
 `
 
-enum AffinityEnum {
-  Arc = 2,
-  Solar = 3,
-  Void = 4
-}
-
 type Props = {
-  subclass: Item
+  subclass?: Item
+  buildItem?: BuildItem
   onChangeSubclassClicked: MouseEventHandler
   onSubclassUpdated: Function
+  configurable?: boolean
 }
 
 function V2SubclassCard(props: Props) {
-  const { subclass, onChangeSubclassClicked, onSubclassUpdated } = props
+  const { subclass, onChangeSubclassClicked, buildItem, onSubclassUpdated, configurable } = props
   const [specialty, setSpecialty] = useState<any>()
   const [grenade, setGrenade] = useState<any>()
   const [movement, setMovement] = useState<any>()
@@ -159,30 +156,58 @@ function V2SubclassCard(props: Props) {
   const [isConfigureSubclassModalShown, setIsConfigureSubclassModalShown] = useState(false)
 
   useEffect(() => {
-    setSpecialty(subclass.getEquippedClassSpecialty())
-    setGrenade(subclass.getEquippedGrenade())
-    setMovement(subclass.getEquippedMovementMode())
-    setTree(subclass.getEquippedSuperTree())
+    if(subclass) {
+      console.log("subclass hit")
+      setSpecialty(subclass.getEquippedClassSpecialty())
+      setGrenade(subclass.getEquippedGrenade())
+      setMovement(subclass.getEquippedMovementMode())
+      setTree(subclass.getEquippedSuperTree())
 
-    if(subclass.name === "Striker") {
-      setAffinity(AffinityEnum.Arc)
+      if(subclass.damageType) {
+        setAffinity(subclass.damageType)
+      }
+
+      // Setup modal
+      // TODO: Set custom titles based on class (ex: Barricade, Rift, Dodge...)
+      setAvailableSpecialties(subclass.getAvailableClassSpecialties())
+      setAvailableGrenades(subclass.getAvailableGrenades())
+      setAvailableMovementModes(subclass.getAvailableMovementModes())
+      setAvailableSuperTrees(subclass.getAvailableSuperTrees())
+    } else if(buildItem && buildItem.superConfig) {
+      if(buildItem.superConfig.grenade) {
+        setGrenade(buildItem.superConfig.grenade)
+      }
+
+      if(buildItem.superConfig.movement) {
+        setMovement(buildItem.superConfig.movement)
+      }
+
+      if(buildItem.superConfig.grenade) {
+        setSpecialty(buildItem.superConfig.specialty)
+      }
+
+      if(buildItem.superConfig.damageType) {
+        setAffinity(buildItem.superConfig.damageType)
+      }
+
+      if(buildItem.superConfig.treeNodes) {
+        let tree = {
+          name: buildItem.superConfig.treeTitle,
+          pos: buildItem.superConfig.tree,
+          perks: []
+        }
+        buildItem.superConfig.treeNodes.forEach((tn: any) => {
+          let perk = {
+            icon: tn.iconUrl,
+            name: tn.name
+          }
+          // @ts-ignore
+          tree.perks.push(perk)
+        })
+        setTree(tree)
+      }
     }
-    if(subclass.name === "Sunbreaker") {
-      setAffinity(AffinityEnum.Solar)
-
-    }
-    if(subclass.name === "Sentinel") {
-      setAffinity(AffinityEnum.Void)
-    }
-
-    // Setup modal
-    // TODO: Set custom titles based on class (ex: Barricade, Rift, Dodge...)
-    setAvailableSpecialties(subclass.getAvailableClassSpecialties())
-    setAvailableGrenades(subclass.getAvailableGrenades())
-    setAvailableMovementModes(subclass.getAvailableMovementModes())
-    setAvailableSuperTrees(subclass.getAvailableSuperTrees())
-
-  }, [subclass])
+  }, [subclass, buildItem])
 
   function onConfigureSubclassClicked() {
     setIsConfigureSubclassModalShown(true)
@@ -192,112 +217,228 @@ function V2SubclassCard(props: Props) {
     setTree(tree)
   }
 
-  return (
-    <Wrapper>
-      <div className="subclass-left">
-        <div className="subclass-left-top">
-          <img className="icon" src={subclass.iconUrl} />
+  if(subclass) {
+    return (
+      <Wrapper>
+        <div className="subclass-left">
+          <div className="subclass-left-top">
+            <img className="icon" src={subclass.iconUrl} />
+          </div>
+          {configurable && (
+            <div>
+              <div className="icon-btns">
+                <FontAwesomeIcon icon={faCog} onClick={onConfigureSubclassClicked} />
+                <FontAwesomeIcon icon={faExchangeAlt} onClick={onChangeSubclassClicked} />
+              </div>
+            </div>
+          )}
         </div>
-        <div>
-          <div className="icon-btns">
-            <FontAwesomeIcon icon={faCog} onClick={onConfigureSubclassClicked} />
-            <FontAwesomeIcon icon={faExchangeAlt} onClick={onChangeSubclassClicked} />
+        <div className="subclass-right">
+          <span className="name">{ subclass.name } {tree ? `• ${tree.name}` : ""}</span>
+          <div className="subclass-right-lower">
+            <div className="perks-col">
+              {grenade && (
+                <div className="perk">
+                  <img src={`https://www.bungie.net${grenade.icon}`} />
+                  <span className="perk-title">{grenade.name}</span>
+                </div>
+              )}
+              {specialty && (
+                <div className="perk">
+                  <img src={`https://www.bungie.net${specialty.icon}`} />
+                  <span className="perk-title">{specialty.name}</span>
+                </div>
+              )}
+              {movement && (
+                <div className="perk">
+                  <img src={`https://www.bungie.net${movement.icon}`} />
+                  <span className="perk-title">{movement.name}</span>
+                </div>
+              )}
+            </div>
+            {tree && <V2SuperTree className="equipped-tree" tree={tree} affinity={affinity} hideName/>}
           </div>
         </div>
-      </div>
-      <div className="subclass-right">
-        <span className="name">{ subclass.name } {tree ? `• ${tree.name}` : ""}</span>
-        <div className="subclass-right-lower">
-          <div className="perks-col">
-            {grenade && (
-              <div className="perk">
-                <img src={`https://www.bungie.net${grenade.icon}`} />
-                <span className="perk-title">{grenade.name}</span>
-              </div>
-            )}
-            {specialty && (
-              <div className="perk">
-                <img src={`https://www.bungie.net${specialty.icon}`} />
-                <span className="perk-title">{specialty.name}</span>
-              </div>
-            )}
-            {movement && (
-              <div className="perk">
-                <img src={`https://www.bungie.net${movement.icon}`} />
-                <span className="perk-title">{movement.name}</span>
-              </div>
-            )}
-          </div>
-          {tree && <V2SuperTree className="equipped-tree" tree={tree} affinity={affinity} hideName/>}
-        </div>
-      </div>
 
-      <ForgeModal
-        size="xl"
-        show={isConfigureSubclassModalShown}
-        title={subclass.name}
-        footer={<Button onClick={() => setIsConfigureSubclassModalShown(false)}>Close</Button>}>
-        <SubclassConfigModalBody>
-          <Row>
-            <Col>
-              <span className="perk-title">Grenades</span>
-              <div className="perk-row">
-                {availableGrenades && availableGrenades.map((p: any) => (
-                  <div>
-                    <img className={p.name === grenade.name ? "available-perk selected" : "available-perk"}
-                      src={`https://www.bungie.net${p.icon}`}
-                      onClick={() => setGrenade(p)} />
-                  </div>
-                ))}
-              </div>
-            </Col>
-            <Col>
-              <span className="perk-title">Class Specialty</span>
-              <div className="perk-row">
-                {availableSpecialties && availableSpecialties.map((p: any) => (
-                  <div>
-                    <img className={p.name === specialty.name ? "available-perk selected" : "available-perk"}
-                      src={`https://www.bungie.net${p.icon}`}
-                      onClick={() => setSpecialty(p)} />
-                  </div>
-                ))}
-              </div>
-            </Col>
-            <Col>
-              <span className="perk-title">Movement Modes</span>
-              <div className="perk-row">
-                {availableMovementModes && availableMovementModes.map((p: any) => (
-                  <div>
-                    <img className={p.name === movement.name ? "available-perk selected" : "available-perk"}
-                      src={`https://www.bungie.net${p.icon}`}
-                      onClick={() => setMovement(p)} />
-                  </div>
-                ))}
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <span className="perk-title super-tree-title">Super Trees</span>
-            </Col>
-          </Row>
-          <Row>
-            {availableSuperTress && availableSuperTress.map((t: any, idx: number) => (
-              <Col key={`available-super-tree-${idx}`}>
-                <div className="tree-diamond-container">
-                  <V2SuperTree
-                    tree={t}
-                    affinity={affinity}
-                    onClick={onTreeClicked}
-                    selected={tree.name === t.name} />
+        <ForgeModal
+          size="xl"
+          show={isConfigureSubclassModalShown}
+          title={subclass.name}
+          footer={<Button onClick={() => setIsConfigureSubclassModalShown(false)}>Close</Button>}>
+          <SubclassConfigModalBody>
+            <Row>
+              <Col>
+                <span className="perk-title">Grenades</span>
+                <div className="perk-row">
+                  {availableGrenades && availableGrenades.map((p: any) => (
+                    <div>
+                      <img className={p.name === grenade.name ? "available-perk selected" : "available-perk"}
+                        src={`https://www.bungie.net${p.icon}`}
+                        onClick={() => setGrenade(p)} />
+                    </div>
+                  ))}
                 </div>
               </Col>
-            ))}
-          </Row>
-        </SubclassConfigModalBody>
-      </ForgeModal>
-    </Wrapper>
-  )
+              <Col>
+                <span className="perk-title">Class Specialty</span>
+                <div className="perk-row">
+                  {availableSpecialties && availableSpecialties.map((p: any) => (
+                    <div>
+                      <img className={p.name === specialty.name ? "available-perk selected" : "available-perk"}
+                        src={`https://www.bungie.net${p.icon}`}
+                        onClick={() => setSpecialty(p)} />
+                    </div>
+                  ))}
+                </div>
+              </Col>
+              <Col>
+                <span className="perk-title">Movement Modes</span>
+                <div className="perk-row">
+                  {availableMovementModes && availableMovementModes.map((p: any) => (
+                    <div>
+                      <img className={p.name === movement.name ? "available-perk selected" : "available-perk"}
+                        src={`https://www.bungie.net${p.icon}`}
+                        onClick={() => setMovement(p)} />
+                    </div>
+                  ))}
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <span className="perk-title super-tree-title">Super Trees</span>
+              </Col>
+            </Row>
+            <Row>
+              {availableSuperTress && availableSuperTress.map((t: any, idx: number) => (
+                <Col key={`available-super-tree-${idx}`}>
+                  <div className="tree-diamond-container">
+                    <V2SuperTree
+                      tree={t}
+                      affinity={affinity}
+                      onClick={onTreeClicked}
+                      selected={tree.name === t.name} />
+                  </div>
+                </Col>
+              ))}
+            </Row>
+          </SubclassConfigModalBody>
+        </ForgeModal>
+      </Wrapper>
+    )
+  }
+
+  if(buildItem) {
+    return (
+      <Wrapper>
+        <div className="subclass-left">
+          <div className="subclass-left-top">
+            <img className="icon" src={buildItem.iconUrl} />
+          </div>
+          {configurable && (
+            <div>
+              <div className="icon-btns">
+                <FontAwesomeIcon icon={faCog} onClick={onConfigureSubclassClicked} />
+                <FontAwesomeIcon icon={faExchangeAlt} onClick={onChangeSubclassClicked} />
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="subclass-right">
+          <span className="name">{ buildItem.name } {tree ? `• ${tree.name}` : ""}</span>
+          <div className="subclass-right-lower">
+            <div className="perks-col">
+              {grenade && (
+                <div className="perk">
+                  <img src={grenade.iconUrl.startsWith("http") ? grenade.iconUrl : `https://www.bungie.net${grenade.iconUrl}`} />
+                  <span className="perk-title">{grenade.name}</span>
+                </div>
+              )}
+              {specialty && (
+                <div className="perk">
+                <img src={specialty.iconUrl.startsWith("http") ? specialty.iconUrl : `https://www.bungie.net${specialty.iconUrl}`} />
+                  <span className="perk-title">{specialty.name}</span>
+                </div>
+              )}
+              {movement && (
+                <div className="perk">
+                  <img src={movement.iconUrl.startsWith("http") ? movement.iconUrl : `https://www.bungie.net${movement.iconUrl}`} />
+                  <span className="perk-title">{movement.name}</span>
+                </div>
+              )}
+            </div>
+            {tree && <V2SuperTree className="equipped-tree" tree={tree} affinity={affinity} hideName/>}
+          </div>
+        </div>
+
+        <ForgeModal
+          size="xl"
+          show={isConfigureSubclassModalShown}
+          title={buildItem.name}
+          footer={<Button onClick={() => setIsConfigureSubclassModalShown(false)}>Close</Button>}>
+          <SubclassConfigModalBody>
+            <Row>
+              <Col>
+                <span className="perk-title">Grenades</span>
+                <div className="perk-row">
+                  {availableGrenades && availableGrenades.map((p: any) => (
+                    <div>
+                      <img className={p.name === grenade.name ? "available-perk selected" : "available-perk"}
+                        src={`https://www.bungie.net${p.icon}`}
+                        onClick={() => setGrenade(p)} />
+                    </div>
+                  ))}
+                </div>
+              </Col>
+              <Col>
+                <span className="perk-title">Class Specialty</span>
+                <div className="perk-row">
+                  {availableSpecialties && availableSpecialties.map((p: any) => (
+                    <div>
+                      <img className={p.name === specialty.name ? "available-perk selected" : "available-perk"}
+                        src={`https://www.bungie.net${p.icon}`}
+                        onClick={() => setSpecialty(p)} />
+                    </div>
+                  ))}
+                </div>
+              </Col>
+              <Col>
+                <span className="perk-title">Movement Modes</span>
+                <div className="perk-row">
+                  {availableMovementModes && availableMovementModes.map((p: any) => (
+                    <div>
+                      <img className={p.name === movement.name ? "available-perk selected" : "available-perk"}
+                        src={`https://www.bungie.net${p.icon}`}
+                        onClick={() => setMovement(p)} />
+                    </div>
+                  ))}
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <span className="perk-title super-tree-title">Super Trees</span>
+              </Col>
+            </Row>
+            <Row>
+              {availableSuperTress && availableSuperTress.map((t: any, idx: number) => (
+                <Col key={`available-super-tree-${idx}`}>
+                  <div className="tree-diamond-container">
+                    <V2SuperTree
+                      tree={t}
+                      affinity={affinity}
+                      onClick={onTreeClicked}
+                      selected={tree.name === t.name} />
+                  </div>
+                </Col>
+              ))}
+            </Row>
+          </SubclassConfigModalBody>
+        </ForgeModal>
+      </Wrapper>
+    )
+  }
+  return <div />
 }
 
 export default V2SubclassCard;

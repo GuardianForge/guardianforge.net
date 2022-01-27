@@ -33,7 +33,7 @@ const Wrapper = styled.div`
 
 type Props = {
   iconUrl?: string
-  value?: string
+  value?: number
   name: string
   onClick?: Function
   highlights: Array<string>

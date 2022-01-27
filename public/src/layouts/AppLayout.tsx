@@ -345,14 +345,13 @@ function AppLayout(props: Props) {
           </div>
         </div>
         <div className="nav-footer">
-          <FontAwesomeIcon icon={faArrowLeft} />
+          {/* <FontAwesomeIcon icon={faArrowLeft} /> */}
         </div>
       </Sidebar>
       <Main id="appLayoutMain">
         <AppBar>
           <div className="app-bar-left">
             <FontAwesomeIcon onClick={onMenuBtnClicked} icon={faBars} className="menu-btn d-block d-xl-none d-xxl-none" />
-
             <div className="app-bar-title">
               {pageTitle}
             </div>

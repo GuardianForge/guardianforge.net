@@ -7,31 +7,20 @@ import EquipmentItemCard from './EquipmentItemCard'
 import ForgeButton from './forms/Button'
 import ForgeModal from './Modal'
 import Input from './forms/Input'
-import { faCog, faExchangeAlt, faFilter } from '@fortawesome/free-solid-svg-icons'
-import { BuildItem } from '../../models/Build'
-import ItemCard from './ItemCard'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
 
-const Wrapper = styled.div`
+const SelectItemWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background-color: ${colors.theme2.dark2};
   border-radius: 5px;
+`
+
+const SelectWeaponArmorWrapper = styled(SelectItemWrapper)`
   margin-top: 20px;
   min-height: 100px;
-
-  .card-content {
-    margin-bottom: 0px !important;
-  }
-
-  .select-item-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100px;
-  }
 `
 
 const ItemConfigModal = styled(ForgeModal)`
@@ -167,28 +156,16 @@ const ItemSelectorModal = styled(ForgeModal)`
 `
 
 type EquipmentItemProps = {
-  // TODO: Remove the ?
-  buildItem: BuildItem | undefined
+  item: Item
+  children: any
   slot: Enums.BucketTypeEnum
-  classType?: Enums.ClassEnum
+  classType: Enums.ClassEnum
   onItemUpdated: Function
-  onItemClicked?: Function
-  onPlugClicked?: Function
-  highlights: Array<string>
-  configurable?: boolean
 }
 
 
 function EquipmentItem(props: EquipmentItemProps) {
-  const {
-    slot,
-    classType,
-    onItemUpdated,
-    buildItem,
-    highlights,
-    onItemClicked,
-    onPlugClicked,
-    configurable } = props
+  const { children, slot, classType, onItemUpdated } = props
 
   const [isEditingItem, setIsEditingItem] = useState(false)
   const [isSelectingItem, setIsSelectingItem] = useState(false)
@@ -197,43 +174,8 @@ function EquipmentItem(props: EquipmentItemProps) {
   const [inventoryFilter, setInventoryFilter] = useState("")
   const [item, setItem] = useState<Item>()
   const [mods, setMods] = useState<Map<number, Item[]>>()
-  const [buttonText, setButtonText] = useState("")
 
-  useEffect(() => {
-    if(configurable && buildItem) {
-      const { InventoryManager } = window.services
-      setItem(InventoryManager.getItemForInstanceId(buildItem?.itemInstanceId))
-    }
-  }, [configurable])
-
-  useEffect(() => {
-    switch(slot) {
-      case Enums.BucketTypeEnum.Kinetic:
-        setButtonText("Select Kinetic");
-        break;
-      case Enums.BucketTypeEnum.Energy:
-        setButtonText("Select Energy");
-        break;
-      case Enums.BucketTypeEnum.Power:
-        setButtonText("Select Power");
-        break;
-      case Enums.BucketTypeEnum.Helmet:
-        setButtonText("Select Helmet");
-        break;
-      case Enums.BucketTypeEnum.Arms:
-        setButtonText("Select Arms");
-        break;
-      case Enums.BucketTypeEnum.Chest:
-        setButtonText("Select Chest");
-        break;
-      case Enums.BucketTypeEnum.Legs:
-        setButtonText("Select Legs");
-        break;
-      case Enums.BucketTypeEnum.ClassItem:
-        setButtonText("Select Class Item");
-        break;
-    }
-  }, [])
+  const [iterator, setIterator] = useState(1)
 
   useEffect(() => {
     if(item) {
@@ -295,7 +237,7 @@ function EquipmentItem(props: EquipmentItemProps) {
       i.sockets[socket.position].equippedPlug = plug
     }
     setItem(i)
-    onItemUpdated(i)
+    setIterator(iterator + 1)
   }
 
   function onInventoryFilterChanged(filter: string) {
@@ -335,33 +277,15 @@ function EquipmentItem(props: EquipmentItemProps) {
     }
   }
 
-  function onItemClickedHandler() {
-    if(item && onItemClicked) {
-      onItemClicked(item._meta.inventoryItem.itemInstanceId)
-    }
-  }
-
-  function onPlugClickedHandler(type: string, instanceId: string, socketIndex: string, plugHash: string) {
-    if(item && onPlugClicked) {
-      onPlugClicked(type, item._meta.inventoryItem.itemInstanceId, socketIndex, plugHash)
-    }
-  }
-
   return (
-    <Wrapper>
-      {buildItem && <ItemCard item={buildItem}
-          highlights={highlights}
-          configurable={configurable}
-          itemTierData={item ? item.getItemTier() : undefined}
-          power={item ? item.getPower() : undefined}
-          onItemClicked={onItemClickedHandler}
-          onPlugClicked={onPlugClickedHandler}
+    <SelectWeaponArmorWrapper>
+      {item ? (
+        <EquipmentItemCard item={item}
+          configurable
           onConfigureItemClicked={() => setIsEditingItem(true)}
-          onSwapItemClicked={() => selectItem()} />}
-      {!item && !buildItem && (
-        <div className="select-item-wrapper">
-          <ForgeButton onClick={selectItem}>{ buttonText }</ForgeButton>
-        </div>
+          onSwapItemClicked={() => selectItem()} />
+      ) : (
+        <ForgeButton onClick={selectItem}>{ children }</ForgeButton>
       )}
 
       {/* Item Selector Modal */}
@@ -371,7 +295,7 @@ function EquipmentItem(props: EquipmentItemProps) {
         size="xl"
         fullscreen="xl-down"
         scrollable
-        title={buttonText}
+        title={children}
         footer={
           <Button onClick={() => setIsSelectingItem(false)}>Close</Button>
         }
@@ -429,7 +353,7 @@ function EquipmentItem(props: EquipmentItemProps) {
               <div className="perks">
                 {item?.getPerkSockets()?.map((socket: Socket) => (
                   <div className="perk-column">
-                    {socket.availablePlugs ? socket.availablePlugs?.map((plug: SocketItem) => (
+                    {iterator && socket.availablePlugs ? socket.availablePlugs?.map((plug: SocketItem) => (
                       <img onClick={() => setEquippedPlug(socket, plug)} className={`available ${socket.equippedPlug?._meta?.manifestDefinition?.hash === plug._meta?.manifestDefinition?.hash ? 'equipped' : ""}`} src={plug.iconUrl} />
                     )) : (
                       <img className="equipped" src={socket.equippedPlug?.iconUrl} />
@@ -463,7 +387,7 @@ function EquipmentItem(props: EquipmentItemProps) {
         </div>
       </ItemConfigModal>
 
-    </Wrapper>
+    </SelectWeaponArmorWrapper>
   )
 }
 

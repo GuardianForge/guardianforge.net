@@ -96,7 +96,7 @@ function V2SuperTree(props: Props) {
         {tree.perks && tree.perks.map((p: any, idx: number) => (
           <div className={`img-wrapper-outer ${tree.pos === idx ? `img-wrapper-outer-${idx}` : ""}`}>
             <div className={`img-wrapper img-wrapper-${affinity}`}>
-              <img src={`https://www.bungie.net${p.icon}`} />
+              <img src={p.icon.startsWith("http") ? p.icon : `https://www.bungie.net${p.icon}`} />
             </div>
           </div>
         ))}

@@ -20,5 +20,10 @@ export default {
     Void: "#826787",
     Solar: "#D86013",
     Stasis: "#4C88FF"
+  },
+  classes: {
+    Titan: "rgb(188,58,34)",
+    Hunter: "rgb(105,164,182)",
+    Warlock: "rgb(234,178,59)"
   }
 }
