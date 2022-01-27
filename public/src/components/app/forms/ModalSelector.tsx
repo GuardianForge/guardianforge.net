@@ -71,7 +71,7 @@ const SelectItemButton = styled(Button)`
   display: flex !important;
   align-items: center;
   justify-content: start;
-  font-size: 24px !important;
+  font-size: 18px !important;
   margin-bottom: 10px;
 
   &:hover {
@@ -79,8 +79,8 @@ const SelectItemButton = styled(Button)`
   }
 
   img {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     margin-right: 10px;
   }
 `
@@ -91,10 +91,13 @@ type Props = {
   options: Array<ModalSelectorOption>
   className?: string
   title: string
+  component?: React.ReactFragment
+  header?: React.ReactFragment,
+  children?: React.ReactFragment
 }
 
 function ModalSelector(props: Props) {
-  const { value, onChange, options, className, title } = props
+  const { value, onChange, options, className, title, component, header, children } = props
   const [areOptionsOpen, setAreOptionsOpen] = useState(false)
 
   function onOptionClicked(opt: ModalSelectorOption) {
@@ -108,21 +111,31 @@ function ModalSelector(props: Props) {
 
   return (
     <Wrapper className={className}>
-      <ForgeButton className="activity-select-activator" onClick={showOptions}>
-        <Selection>
-          {value.iconUrl && <img className="activity-icon" src={value.iconUrl} />}
-          <span>{ value.display }</span>
-        </Selection>
-        <span><FontAwesomeIcon icon="caret-down" /></span>
-      </ForgeButton>
+      {children ? (children) : (
+        <ForgeButton className="activity-select-activator" onClick={showOptions}>
+          <Selection>
+            {value.iconUrl && <img className="activity-icon" src={value.iconUrl} />}
+            <span>{ value.display }</span>
+          </Selection>
+          <span><FontAwesomeIcon icon="caret-down" /></span>
+        </ForgeButton>
+      )}
       <ForgeModal
+        centered
         show={areOptionsOpen}
         title={title}
         footer={<ForgeButton onClick={() => setAreOptionsOpen(false)}>Close</ForgeButton>}>
+        {header && (header)}
         {options.map((el: ModalSelectorOption, idx: number) => (
           <SelectItemButton key={`activity-${idx}`} className="activity-option" onClick={() => onOptionClicked(el)}>
-            {el.iconUrl && <img className="activity-icon" src={el.iconUrl} />}
-            { el.display }
+            {component ? (
+              component
+            ) : (
+              <>
+                {el.iconUrl && <img className="activity-icon" src={el.iconUrl} />}
+                { el.display }
+              </>
+            )}
           </SelectItemButton>
         ))}
       </ForgeModal>

@@ -144,22 +144,28 @@ function CreateBuild(props: Props) {
       setIsInventoryLoaded(true)
 
       if(location && location.state && location.state.guardianKey) {
-        // TODO: Init from existing guardian
         let b = await Build.FromGuardianKey(BungieApiService, ManifestService, location.state.guardianKey)
         console.log(b)
-        setKinetic(b.items.kinetic)
-        setEnergy(b.items.energy)
-        setPower(b.items.power)
-        setHelmet(b.items.helmet)
-        setArms(b.items.arms)
-        setChest(b.items.chest)
-        setLegs(b.items.legs)
-        setClassItem(b.items.classItem)
-        setSubclass(b.items.subclass)
-        setStats(b.stats)
-        setName(b.name)
+        if(b.items) {
+          setKinetic(b.items.kinetic)
+          setEnergy(b.items.energy)
+          setPower(b.items.power)
+          setHelmet(b.items.helmet)
+          setArms(b.items.arms)
+          setChest(b.items.chest)
+          setLegs(b.items.legs)
+          setClassItem(b.items.classItem)
+          setSubclass(b.items.subclass)
+        }
+        if(b.stats) {
+          setStats(b.stats)
+        }
+        if(b.name) {
+          setName(b.name)
+        }
         setSelectedUser(b.selectedUser)
         setSelectedClass(b.class)
+        setIsBuildValid(true)
 
         if(b.selectedUser?.bungieNetUserId === ForgeClient.userData.bungieNetUser.membershipId) {
           setIsOwner(true)
@@ -172,6 +178,39 @@ function CreateBuild(props: Props) {
     }
     init()
   }, [isInitDone])
+
+  function resetBuild() {
+    setKinetic(undefined)
+    setEnergy(undefined)
+    setPower(undefined)
+    setHelmet(undefined)
+    setArms(undefined)
+    setChest(undefined)
+    setLegs(undefined)
+    setClassItem(undefined)
+    setSubclass(undefined)
+    setHighlights([])
+    setIsPrivate(false)
+    setName("")
+    setNotes("")
+    setStats(new BuildStatCollection())
+    setInputStyle({ value: "0", display: "None"});
+    setActivity({ value: "1", display: "Any Activity" });
+    setBuildData({
+      items: {
+        subclass: null,
+        kinetic: null,
+        energy: null,
+        power: null,
+        helmet: null,
+        arms: null,
+        chest: null,
+        legs: null,
+        classItem: null,
+      }
+    })
+    setVideoLink("")
+  }
 
   function onItemUpdated(item: Item) {
     console.log("onItemUpdated", item)
@@ -341,41 +380,52 @@ function CreateBuild(props: Props) {
       }
     }
 
-    build.items = {}
-    build.items.subclass = BuildItem.FromItem(buildData.items.subclass)
-    build.items.kinetic = BuildItem.FromItem(buildData.items.kinetic)
-    build.items.energy = BuildItem.FromItem(buildData.items.energy)
-    build.items.power = BuildItem.FromItem(buildData.items.power)
-    build.items.helmet = BuildItem.FromItem(buildData.items.helmet)
-    build.items.arms = BuildItem.FromItem(buildData.items.arms)
-    build.items.chest = BuildItem.FromItem(buildData.items.chest)
-    build.items.legs = BuildItem.FromItem(buildData.items.legs)
-    build.items.classItem = BuildItem.FromItem(buildData.items.classItem)
+    build.items = {
+      subclass,
+      kinetic,
+      energy,
+      power,
+      helmet,
+      arms,
+      chest,
+      legs,
+      classItem
+    }
 
-    // try {
-    //   setState(State.SAVING)
+    try {
+      setState(State.SAVING)
 
-    //   let token = null
-    //   if(ForgeClient.isLoggedIn()) {
-    //     token = await ForgeClient.getToken()
-    //     if(ForgeClient.userData && ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser.membershipId) {
-    //       build.createdBy = ForgeClient.userData.bungieNetUser.membershipId
-    //     }
-    //   }
-
-    //   const buildId = await ForgeApiService.createBuild(build, token)
-    //   navigate(`/app/build/${buildId}`)
-    // } catch(err) {
-    //   // TODO: HANDLE
-    //   console.error(err)
-    //   setState(State.DONE)
-    // }
+      // TODO: Move this into the new Client
+      let token = await ForgeClient.getToken()
+      const buildId = await ForgeApiService.createBuild(build, token)
+      navigate(`/app/build/${buildId}`)
+    } catch(err) {
+      // TODO: HANDLE
+      console.error(err)
+      setState(State.DONE)
+    }
   }
 
   function onClassSelected(classType: Enums.ClassEnum) {
+    const { ForgeClient } = window.services
     setSelectedClass(classType)
+    let className = ""
+    if(classType === Enums.ClassEnum.Titan) {
+      className = "Titan"
+    }
+    if(classType === Enums.ClassEnum.Hunter) {
+      className = "Hunter"
+    }
+    if(classType === Enums.ClassEnum.Warlock) {
+      className = "Warlock"
+    }
+    console.log(ForgeClient.userData.bungieNetUser)
+    if(ForgeClient && ForgeClient.userData && ForgeClient.userData.bungieNetUser) {
+      console.log("hit")
+      setName(`${ForgeClient.userData.bungieNetUser.uniqueName}'s ${className}`)
+    }
     setIsClassSelectModalOpen(false)
-    // TODO: Wipe old items
+    resetBuild();
     setState(State.DONE)
   }
 

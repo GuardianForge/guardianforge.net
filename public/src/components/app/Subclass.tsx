@@ -82,6 +82,7 @@ function Subclass(props: Props) {
 
   useEffect(() => {
     if(buildItem) {
+      let { InventoryManager } = window.services
       console.log(buildItem)
       if(buildItem.abilities && buildItem.abilities.length > 0) {
         setIsV3Subclass(true)
@@ -90,7 +91,7 @@ function Subclass(props: Props) {
       }
 
       if(configurable) {
-        // TODO: Lookup instance from inventory
+        setSelectedSubclass(InventoryManager.getItemForInstanceId(buildItem?.itemInstanceId))
       }
     }
   }, [buildItem])

@@ -73,7 +73,7 @@ const SelectItemButton = styled(Button)`
   display: flex !important;
   align-items: center;
   justify-content: start;
-  font-size: 24px !important;
+  font-size: 18px !important;
   margin-bottom: 10px;
 
   &:hover {
@@ -81,8 +81,8 @@ const SelectItemButton = styled(Button)`
   }
 
   img {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     margin-right: 10px;
   }
 `
@@ -121,6 +121,7 @@ function ActivitySelector(props: Props) {
         <span><FontAwesomeIcon icon="caret-down" /></span>
       </ForgeButton>
       <ForgeModal
+        scrollable
         show={areOptionsOpen}
         title="Select Activity"
         footer={<ForgeButton onClick={() => setAreOptionsOpen(false)}>Close</ForgeButton>}>

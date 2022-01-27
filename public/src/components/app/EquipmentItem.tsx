@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import { Modal, Button, Row, Col } from 'react-bootstrap'
 import styled from 'styled-components'
 import colors from '../../colors'
 import { Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-utils'
@@ -11,6 +11,7 @@ import { faCog, faExchangeAlt, faFilter } from '@fortawesome/free-solid-svg-icon
 import { BuildItem } from '../../models/Build'
 import ItemCard from './ItemCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ModalSelector from './forms/ModalSelector'
 
 
 const Wrapper = styled.div`
@@ -166,6 +167,44 @@ const ItemSelectorModal = styled(ForgeModal)`
   }
 `
 
+const SelectItemButton = styled(Button)`
+  width: 100%;
+  background-color: ${colors.theme2.dark2} !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: start;
+  font-size: 18px !important;
+  margin-bottom: 10px;
+
+  &:hover {
+    background-color: ${colors.theme2.dark3} !important;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+
+    .energy-cost {
+      font-style: italic;
+      font-size: 16px;
+    }
+
+    .energy-cost-over {
+      color: #ff3939;
+      font-weight: bold;
+    }
+  }
+`
+
 type EquipmentItemProps = {
   // TODO: Remove the ?
   buildItem: BuildItem | undefined
@@ -314,14 +353,23 @@ function EquipmentItem(props: EquipmentItemProps) {
   const [isModDrawerOpen, setIsModDrawerOpen] = useState(false)
   const [availableMods, setAvailableMods] = useState<Array<Item>>()
   const [socketBeingEdited, setSocketBeingEdited] = useState<Socket>()
+  const [maxModCostAllowed, setMaxModCostAllowed] = useState(0)
   function showModDrawer(socket: Socket) {
     console.log(socket)
     if(socket.position !== undefined) {
       let am = mods?.get(socket.position)
-      console.log(am)
       setAvailableMods(am)
+      let itemTier = item?.getItemTier()
+      if(itemTier && itemTier.tier) {
+        let currentConsumption = item.getModEnergyConsumption()
+        console.log("before", itemTier.tier, currentConsumption)
+        if(socket.equippedPlug && socket.equippedPlug.cost) {
+          currentConsumption = currentConsumption - socket.equippedPlug.cost
+        }
+        console.log("after", itemTier.tier, currentConsumption, "max:" , itemTier.tier - currentConsumption)
+        setMaxModCostAllowed(itemTier.tier - currentConsumption)
+      }
       setSocketBeingEdited(socket)
-      // setSocketEditPosition(socket.position)
       setIsModDrawerOpen(true)
     }
   }
@@ -331,6 +379,7 @@ function EquipmentItem(props: EquipmentItemProps) {
       setEquippedPlug(socketBeingEdited, plug)
       setAvailableMods(undefined)
       setSocketBeingEdited(undefined)
+      setMaxModCostAllowed(0)
       setIsModDrawerOpen(false)
     }
   }
@@ -358,7 +407,8 @@ function EquipmentItem(props: EquipmentItemProps) {
           onPlugClicked={onPlugClickedHandler}
           onConfigureItemClicked={() => setIsEditingItem(true)}
           onSwapItemClicked={() => selectItem()} />}
-      {!item && !buildItem && (
+
+      {!buildItem && (
         <div className="select-item-wrapper">
           <ForgeButton onClick={selectItem}>{ buttonText }</ForgeButton>
         </div>
@@ -445,24 +495,37 @@ function EquipmentItem(props: EquipmentItemProps) {
               <div className="mod-sockets">
                 {item?.getModSockets()?.map((socket: Socket) => (
                   <div className="mod-socket">
-                    <img onClick={() => showModDrawer(socket)}
-                      className={socketBeingEdited?.position === socket.position ? "is-editing" : ""}
-                      src={socket.equippedPlug?.iconUrl} />
+                    <img onClick={() => showModDrawer(socket)} src={socket.equippedPlug?.iconUrl} />
                   </div>
                 ))}
               </div>
-              {isModDrawerOpen && (
-                <div className="mod-drawer">
-                  {availableMods && availableMods.map((plug: Item) => (
-                    <img src={plug.iconUrl} onClick={() => onSocketPlugClicked(plug)} />
+              <ForgeModal
+                centered
+                size="xl"
+                show={isModDrawerOpen}
+                title="Select Mod"
+                footer={<Button onClick={() => setIsModDrawerOpen(false)}>Close</Button>}>
+                <Row>
+                  {availableMods && availableMods.map((plug: Item, idx: number) => (
+                    <Col md="4" key={`plug-${idx}`} >
+                      <SelectItemButton disabled={plug.cost > maxModCostAllowed} className="activity-option" onClick={() => onSocketPlugClicked(plug)}>
+                        { plug.iconUrl && <img className="plug-icon" src={plug.iconUrl} />}
+                        <div className="right">
+                          <div>{ plug.name }</div>
+                          {plug.cost && (
+                            <div className="energy-cost">Cost: <span className={plug.cost > maxModCostAllowed ? "energy-cost-over" : ""}>{plug.cost}</span></div>
+                          )}
+                          Energy Type: {plug.energyType}
+                        </div>
+                      </SelectItemButton>
+                    </Col>
                   ))}
-                </div>
-              )}
+                </Row>
+              </ForgeModal>
             </div>
           )}
         </div>
       </ItemConfigModal>
-
     </Wrapper>
   )
 }
