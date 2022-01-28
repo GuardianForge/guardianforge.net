@@ -12,12 +12,9 @@ import BuildSummaryCard from '../../../components/app/BuildSummaryCard'
 import Guardian from '../../../models/Guardian'
 import User from '../../../models/User'
 import DestinyMembership from '../../../models/DestinyMembership'
+import Card from '../../../components/app/ui/Card'
 
-const UserMenuWrapper = styled.div`
-  padding: 10px;
-  background-color: #1e1f24;
-  border-radius: 5px;
-
+const UserMenuWrapper = styled(Card)`
 	.user-info {
 		display: flex;
     flex-direction: column;
