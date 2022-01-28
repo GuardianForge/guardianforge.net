@@ -26,6 +26,7 @@ import StatBar from '../../components/app/StatBar'
 import ForgeModal from '../../components/app/Modal'
 import ForgeButton from '../../components/app/forms/Button'
 import ClassCard from '../../components/app/ClassCard'
+import userUtils from '../../utils/userUtils'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -135,8 +136,8 @@ function CreateBuild(props: Props) {
       const { ForgeClient, BungieApiService, ManifestService } = window.services
 
       // TODO: Pull this from ForgeClient user info
-      const membershipType = 2
-      const membershipId = "4611686018462801516"
+
+      let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(ForgeClient.userData)
       let token = await ForgeClient.getToken()
 
       window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)

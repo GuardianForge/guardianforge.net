@@ -53,7 +53,6 @@ const ItemConfigModal = styled(ForgeModal)`
     }
 
     img {
-      background-color: black;
       height: 50px;
       max-width: 50px;
       margin-right: 10px;
@@ -206,7 +205,6 @@ const SelectItemButton = styled(Button)`
 `
 
 type EquipmentItemProps = {
-  // TODO: Remove the ?
   buildItem: BuildItem | undefined
   slot: Enums.BucketTypeEnum
   classType?: Enums.ClassEnum
@@ -241,7 +239,11 @@ function EquipmentItem(props: EquipmentItemProps) {
   useEffect(() => {
     if(configurable && buildItem) {
       const { InventoryManager } = window.services
-      setItem(InventoryManager.getItemForInstanceId(buildItem?.itemInstanceId))
+      let itemSelected = InventoryManager.getItemForInstanceId(buildItem?.itemInstanceId)
+      if(itemSelected) {
+        setItem(itemSelected)
+        onItemUpdated(itemSelected)
+      }
     }
   }, [configurable])
 
@@ -355,18 +357,17 @@ function EquipmentItem(props: EquipmentItemProps) {
   const [socketBeingEdited, setSocketBeingEdited] = useState<Socket>()
   const [maxModCostAllowed, setMaxModCostAllowed] = useState(0)
   function showModDrawer(socket: Socket) {
-    console.log(socket)
+    console.log(socket, item)
     if(socket.position !== undefined) {
       let am = mods?.get(socket.position)
+      am = am?.filter((i: Item) => (i.energyType === 0 || i.energyType === item.energyType))
       setAvailableMods(am)
       let itemTier = item?.getItemTier()
       if(itemTier && itemTier.tier) {
         let currentConsumption = item.getModEnergyConsumption()
-        console.log("before", itemTier.tier, currentConsumption)
         if(socket.equippedPlug && socket.equippedPlug.cost) {
           currentConsumption = currentConsumption - socket.equippedPlug.cost
         }
-        console.log("after", itemTier.tier, currentConsumption, "max:" , itemTier.tier - currentConsumption)
         setMaxModCostAllowed(itemTier.tier - currentConsumption)
       }
       setSocketBeingEdited(socket)
@@ -494,9 +495,13 @@ function EquipmentItem(props: EquipmentItemProps) {
               <div className="row-header">Mods</div>
               <div className="mod-sockets">
                 {item?.getModSockets()?.map((socket: Socket) => (
-                  <div className="mod-socket">
-                    <img onClick={() => showModDrawer(socket)} src={socket.equippedPlug?.iconUrl} />
-                  </div>
+                  <>
+                    {!socket.isItemTierSocket && (
+                      <div className="mod-socket">
+                        <img onClick={() => showModDrawer(socket)} src={socket.equippedPlug?.iconUrl} />
+                      </div>
+                    )}
+                  </>
                 ))}
               </div>
               <ForgeModal
@@ -515,7 +520,6 @@ function EquipmentItem(props: EquipmentItemProps) {
                           {plug.cost && (
                             <div className="energy-cost">Cost: <span className={plug.cost > maxModCostAllowed ? "energy-cost-over" : ""}>{plug.cost}</span></div>
                           )}
-                          Energy Type: {plug.energyType}
                         </div>
                       </SelectItemButton>
                     </Col>

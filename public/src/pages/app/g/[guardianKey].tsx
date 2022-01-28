@@ -193,7 +193,7 @@ function Guardian(props: Props) {
       </Helmet>
       {compState === COMP_STATE.LOADING && (<div style={{ marginTop: "20px" }}> <Loading/> </div>)}
       {compState === COMP_STATE.DONE && (
-        <Container fluid>
+        <Container>
           <Row>
             <Col>
               <ButtonBar>
@@ -212,7 +212,7 @@ function Guardian(props: Props) {
             </Col>
           </Row>
           <Row>
-            <Col md="8">
+            <Col md="12">
               <BuildAd />
               <StatBar stats={stats} highlights={highlights}/>
 
@@ -239,12 +239,12 @@ function Guardian(props: Props) {
 
               <BuildAd />
             </Col>
-
+{/*
             <Col md="4">
               <Card title="User Info">
                 User info here
               </Card>
-            </Col>
+            </Col> */}
           </Row>
         </Container>
       )}

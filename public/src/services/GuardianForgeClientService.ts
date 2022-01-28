@@ -10,6 +10,7 @@ export default class GuardianForgeClientService {
   config: AppConfig
   bungieApiService: BungieApiService
   forgeApiService: GuardianForgeApiService
+  latestBuilds: any
   // TODO: Make models of all these
   userData: any
   authData: any

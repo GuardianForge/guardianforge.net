@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from "react"
 import styled from 'styled-components'
+// @ts-ignore
 import { GlobalContext } from "../../contexts/GlobalContext.jsx"
-import COMP_STATE from '../../utils/compStates'
-import Loading from '../../components/Loading'
+import State from '../../utils/compStates'
+import Loading from '../../components/app/Loading'
 import BuildSummaryCard from "../../components/app/BuildSummaryCard"
 import { Helmet } from 'react-helmet'
-import { Container } from "react-bootstrap"
+import { Container, Row } from "react-bootstrap"
+import BuildSummary from "../../models/BuildSummary.js"
 
 const Wrapper = styled(Container)`
   margin-top: 10px;
@@ -13,8 +15,8 @@ const Wrapper = styled(Container)`
 
 function UserBuilds() {
   const { isInitDone, setPageTitle } = useContext(GlobalContext)
-  const [builds, setBuilds] = useState([])
-  const [compState, setCompState] = useState(COMP_STATE.LOADING)
+  const [builds, setBuilds] = useState<Array<BuildSummary>>([])
+  const [compState, setCompState] = useState(State.LOADING)
 
   useEffect(() => {
     setPageTitle("My Builds")
@@ -25,28 +27,26 @@ function UserBuilds() {
         if(ForgeClient.userBuilds) {
           setBuilds(ForgeClient.userBuilds)
         }
-        setCompState(COMP_STATE.DONE)
-      } else {
-        // TODO: Redirect to login
+        setCompState(State.DONE)
       }
     }
     init()
   }, [isInitDone])
 
   return (
-    <Wrapper fluid>
+    <Wrapper>
       <Helmet>
         <title>My Builds - GuardianForge</title>
       </Helmet>
-      {compState === COMP_STATE.LOADING && <Loading />}
-      {compState === COMP_STATE.DONE && (
-        <div className="row">
+      {compState === State.LOADING && <Loading />}
+      {compState === State.DONE && (
+        <Row>
           {builds.map(bs => (
             <div key={bs.id} className="col-md-6 col-lg-4">
-              <BuildSummaryCard buildSummary={bs} showArchiveButton />
+              <BuildSummaryCard buildSummary={bs} />
             </div>
           ))}
-        </div>
+        </Row>
       )}
     </Wrapper>
   )

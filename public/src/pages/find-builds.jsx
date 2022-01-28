@@ -7,6 +7,7 @@ import BuildSummaryCard from '../components/BuildSummaryCard'
 import searchUtils from "../utils/searchUtils"
 import { GlobalContext } from "../contexts/GlobalContext"
 import Loading from "../components/Loading"
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 
 const Wrapper = styled.div`
   @media screen and (max-width: 500px) {
@@ -139,6 +140,7 @@ const COMP_STATE = {
 }
 
 const pageSize = 18
+const maxPageIterationsToDisplay = 2
 
 function Search() {
   const { isConfigLoaded } = useContext(GlobalContext)
@@ -338,16 +340,33 @@ function Search() {
                 onClick={() => goToPage(page - 1)}>
                 <FontAwesomeIcon icon="caret-left" />
               </button>
+              {(page - maxPageIterationsToDisplay) > 1 && <button className="btn btn-secondary" disabled><FontAwesomeIcon icon={faEllipsisH} /></button>}
               {Array.from(Array(totalPages), (el, idx) => {
-                return (
-                  <button
-                    className={`btn btn-secondary ${page === idx + 1 ? 'active-page': ''}`}
-                    key={`page-${idx + 1}`}
-                    onClick={() => goToPage(idx + 1)}>
-                    { idx + 1 }
-                  </button>
-                )
+                let paginatorBeingRendered = idx + 1
+                let low = page - maxPageIterationsToDisplay
+                let high = page + maxPageIterationsToDisplay
+                while(low < 1) {
+                  low++
+                  high++
+                }
+                while(high > totalPages) {
+                  low--
+                  high--
+                }
+                console.log(low, high)
+                if(low <= paginatorBeingRendered && paginatorBeingRendered <= high) {
+                  return (
+                    <button
+                      className={`btn btn-secondary ${page === idx + 1 ? 'active-page': ''}`}
+                      key={`page-${idx + 1}`}
+                      onClick={() => goToPage(idx + 1)}>
+                      { idx + 1 }
+                    </button>
+                  )
+                }
+                return <></>
               })}
+              {(page + maxPageIterationsToDisplay) < totalPages && <button className="btn btn-secondary" disabled><FontAwesomeIcon icon={faEllipsisH} /></button>}
               <button className="btn btn-secondary"
                 disabled={page == totalPages}
                 onClick={() => goToPage(page + 1)}>
@@ -356,7 +375,6 @@ function Search() {
             </div>
           </div>
         </div>
-
       )}
     </Wrapper>
   )

@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Helmet } from 'react-helmet';
-import { Container, Dropdown } from 'react-bootstrap';
+import { Container, Dropdown, Pagination } from 'react-bootstrap';
 import BuildSummaryCard from '../../components/app/BuildSummaryCard'
 // @ts-ignore
 import searchUtils from "../../utils/searchUtils"
 // @ts-ignore
 import { GlobalContext } from "../../contexts/GlobalContext.jsx"
-import Loading from "../../components/Loading"
+import Loading from "../../components/app/Loading"
 import colors from "../../colors"
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 
 const Wrapper = styled(Container)`
   @media screen and (max-width: 500px) {
@@ -74,7 +75,7 @@ const Wrapper = styled(Container)`
           }
 
           .filters-menu {
-            background-color: #222 !important;
+            background-color: ${colors.theme2.dark1} !important;
             max-height: 65vh;
             overflow-y: scroll;
           }
@@ -93,7 +94,7 @@ const Wrapper = styled(Container)`
           margin-right: 20px;
           border: 0;
           border-radius: 5px;
-          background-color: #555
+          background-color: ${colors.theme2.dark2};
         }
 
         .submit-button {
@@ -141,6 +142,7 @@ const COMP_STATE = {
 }
 
 const pageSize = 18
+const maxPageIterationsToDisplay = 2
 
 function Search() {
   const { isConfigLoaded, setPageTitle } = useContext(GlobalContext)
@@ -233,7 +235,7 @@ function Search() {
     }
   }
 
-  function goToPage(pageNumber) {
+  function goToPage(pageNumber: number) {
     let start = pageSize * (pageNumber - 1)
     let end = start + pageSize
     let _displayedBuilds = hits.slice(start, end)
@@ -245,19 +247,21 @@ function Search() {
     })
   }
 
-  function addFilter(filter) {
+  // TODO: Create a model around this
+  function addFilter(filter: any) {
     if(!filters.find(el => el.id === filter.id)) {
       setFilters([...filters, filter])
     }
   }
 
-  function removeFilter(id) {
+  // TODO: Figure out what this data type is
+  function removeFilter(id: any) {
     let _filters = [...filters]
     _filters = _filters.filter(el => el.id !== id)
     setFilters(_filters)
   }
 
-  function onKeyPressHandler(e) {
+  function onKeyPressHandler(e: any) {
     if(e.key === "Enter") {
       go()
     }
@@ -324,7 +328,7 @@ function Search() {
       </div>
       <div className="col-md-12 mt-3">
         <div className="row">
-          {displayedBuilds.map((el, idx) => (
+          {displayedBuilds.map((el: any, idx: number) => (
             <div key={`search-${idx}`} className="col-md-4">
               <BuildSummaryCard buildSummary={el.summary} />
             </div>
@@ -340,16 +344,33 @@ function Search() {
                 onClick={() => goToPage(page - 1)}>
                 <FontAwesomeIcon icon="caret-left" />
               </button>
+              {(page - maxPageIterationsToDisplay) > 1 && <button className="btn btn-secondary" disabled><FontAwesomeIcon icon={faEllipsisH} /></button>}
               {Array.from(Array(totalPages), (el, idx) => {
-                return (
-                  <button
-                    className={`btn btn-secondary ${page === idx + 1 ? 'active-page': ''}`}
-                    key={`page-${idx + 1}`}
-                    onClick={() => goToPage(idx + 1)}>
-                    { idx + 1 }
-                  </button>
-                )
+                let paginatorBeingRendered = idx + 1
+                let low = page - maxPageIterationsToDisplay
+                let high = page + maxPageIterationsToDisplay
+                while(low < 1) {
+                  low++
+                  high++
+                }
+                while(high > totalPages) {
+                  low--
+                  high--
+                }
+                console.log(low, high)
+                if(low <= paginatorBeingRendered && paginatorBeingRendered <= high) {
+                  return (
+                    <button
+                      className={`btn btn-secondary ${page === idx + 1 ? 'active-page': ''}`}
+                      key={`page-${idx + 1}`}
+                      onClick={() => goToPage(idx + 1)}>
+                      { idx + 1 }
+                    </button>
+                  )
+                }
+                return <></>
               })}
+              {(page + maxPageIterationsToDisplay) < totalPages && <button className="btn btn-secondary" disabled><FontAwesomeIcon icon={faEllipsisH} /></button>}
               <button className="btn btn-secondary"
                 disabled={page == totalPages}
                 onClick={() => goToPage(page + 1)}>
@@ -358,7 +379,6 @@ function Search() {
             </div>
           </div>
         </div>
-
       )}
     </Wrapper>
   )

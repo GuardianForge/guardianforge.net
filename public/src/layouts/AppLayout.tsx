@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react'
 import { Link, navigate } from 'gatsby'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faTimes, faSearch, faCube, faArrowLeft, faUser, faBookmark, faUsers, faCubes, faPlus, faBook } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faTimes, faSearch, faCube, faArrowLeft, faUser, faBookmark, faUsers, faCubes, faPlus, faBook, faHome } from '@fortawesome/free-solid-svg-icons'
 import './AppLayout.css'
 import colors from "../colors"
 // @ts-ignore
@@ -283,14 +283,14 @@ function AppLayout(props: Props) {
 
   const navItems = [
     {
-      name: "My Profile",
-      icon: faUser,
-      path: "/app/me"
+      name: "Home",
+      icon: faHome,
+      path: "/app"
     },
     {
-      name: "My Guardians",
-      icon: faCube,
-      path: "/app/guardians"
+      name: "Create Build",
+      icon: faPlus,
+      path: "/app/create-build"
     },
     {
       name: "My Builds",
@@ -357,10 +357,10 @@ function AppLayout(props: Props) {
             </div>
           </div>
           <div className="app-bar-right">
-            <FontAwesomeIcon icon={faSearch} />
-            <a className="create-build-icon" href="#" onClick={showCreateBuildModal}>
+            {/* <FontAwesomeIcon icon={faSearch} /> */}
+            {/* <a className="create-build-icon" href="#" onClick={showCreateBuildModal}>
               <FontAwesomeIcon icon={faPlus} />
-            </a>
+            </a> */}
             {/* <div className='search-wrapper'>
               <Input placeholder='Search...' prefixIcon={faSearch} value={search} onChange={(e: any) => setSearch(e.target.value)} />
             </div> */}

@@ -98,7 +98,7 @@ function Subclass(props: Props) {
 
   function selectSubclass() {
     const { InventoryManager } = window.services
-    if(selectedClass) {
+    if(selectedClass !== undefined) {
       let subclasses = InventoryManager.getAvailableSubclasses(selectedClass)
       setAvailableSubclass(subclasses)
       setIsSelectingSubclass(true)
@@ -106,7 +106,6 @@ function Subclass(props: Props) {
   }
 
   function onSubclassSelected(item: Item) {
-    console.log(item)
     if(item.getSubclassVersion() === 3) {
       setIsV3Subclass(true)
     } else {

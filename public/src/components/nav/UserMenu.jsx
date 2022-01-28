@@ -90,6 +90,9 @@ function UserMenu() {
                 <Link className="dropdown-item" to="/me/private-builds">Private Builds</Link>
               </li>
               <li>
+                <Link className="dropdown-item" to="/app">✨ Try the New Forge!</Link>
+              </li>
+              <li>
                 <a className="dropdown-item" href="#" onClick={logout}>Log Out</a>
               </li>
               {isAdmin && <hr />}
