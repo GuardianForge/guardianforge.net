@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styled from 'styled-components'
 import User from '../../models/User'
 import colors from "../../colors"
+import { faUserGraduate } from '@fortawesome/free-solid-svg-icons'
 
 const Wrapper = styled.div`
   display: flex;
@@ -119,6 +120,11 @@ function UserMenu() {
               )}
             </a>
             <ul className="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+              {userData && userData.bungieNetUser && (
+                <li>
+                  <Link className="dropdown-item" to={`/app/u/${userData.bungieNetUser.uniqueName}`}>My Profile</Link>
+                </li>
+              )}
               <li>
                 <Link className="dropdown-item" to="/app/edit-profile">Edit Profile</Link>
               </li>

@@ -8,12 +8,14 @@ type User = {
   displayName?: string
   userInfo?: UserInfo
   builds?: Array<BuildSummary>
+  user?: UserInfo
 }
 
 export type BungieNetUser = {
   displayName?: string
   membershipId?: string
   profilePicturePath?: string
+  uniqueName?: string
 }
 
 export type UserInfo = {

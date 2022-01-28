@@ -101,7 +101,7 @@ type Props = {
 function PublicProfile(props: Props) {
   const { username, location } = props
 
-  const { isConfigLoaded } = useContext(GlobalContext)
+  const { isConfigLoaded, setPageTitle } = useContext(GlobalContext)
   const [user, setUser] = useState<User>({})
   const [forgeUser, setForgeUser] = useState<User>({})
   const [membership, setMembership] = useState<DestinyMembership>({})
@@ -121,6 +121,8 @@ function PublicProfile(props: Props) {
         let user = searchRes.find((el: User) => el.bungieGlobalDisplayName === username && el.bungieGlobalDisplayNameCode === Number(code))
         setUser(user)
 
+        setPageTitle(`${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`)
+
         if(user.bungieNetMembershipId) {
           let forgeUser = await ForgeApiService.fetchForgeUser(user.bungieNetMembershipId)
           if(forgeUser) {
@@ -134,7 +136,6 @@ function PublicProfile(props: Props) {
         let res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
         let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
         if(guardians.length > 0) {
-          // guardians.sort((a: Guardian, b: Guardian) => new Date(b.dateLastPlayed) - new Date(a.dateLastPlayed))
           setGuardians(guardians)
           setCompState(COMPSTATE.DONE)
         } else {
@@ -173,28 +174,28 @@ function PublicProfile(props: Props) {
                       {user.bungieGlobalDisplayName}#{user.bungieGlobalDisplayNameCode}
                     </span>
                   )}
-                  {forgeUser && forgeUser.userInfo && (
+                  {forgeUser && forgeUser.user && (
                     <ForgeUserInfoWrapper>
-                      {forgeUser.userInfo.about && <span>"{ forgeUser.userInfo.about }"</span>}
-                      {forgeUser.userInfo.social && (
+                      {forgeUser.user.about && <span>"{ forgeUser.user.about }"</span>}
+                      {forgeUser.user.social && (
                         <div className="socials">
-                          {forgeUser.userInfo.social.twitter && (
-                            <a href={forgeUser.userInfo.social.twitter} className="twitter-link" target="_blank">
+                          {forgeUser.user.social.twitter && (
+                            <a href={forgeUser.user.social.twitter} className="twitter-link" target="_blank">
                               <FontAwesomeIcon icon={['fab', 'twitter']} />
                             </a>
                           )}
-                          {forgeUser.userInfo.social.twitch && (
-                            <a href={forgeUser.userInfo.social.twitch} className="twitch-link" target="_blank">
+                          {forgeUser.user.social.twitch && (
+                            <a href={forgeUser.user.social.twitch} className="twitch-link" target="_blank">
                               <FontAwesomeIcon icon={['fab', 'twitch']} />
                             </a>
                           )}
-                          {forgeUser.userInfo.social.youtube && (
-                            <a href={forgeUser.userInfo.social.youtube} className="youtube-link" target="_blank">
+                          {forgeUser.user.social.youtube && (
+                            <a href={forgeUser.user.social.youtube} className="youtube-link" target="_blank">
                               <FontAwesomeIcon icon={['fab', 'youtube']} />
                             </a>
                           )}
-                          {forgeUser.userInfo.social.facebook && (
-                            <a href={forgeUser.userInfo.social.facebook} className="facebook-link" target="_blank">
+                          {forgeUser.user.social.facebook && (
+                            <a href={forgeUser.user.social.facebook} className="facebook-link" target="_blank">
                               <FontAwesomeIcon icon={['fab', 'facebook']} />
                             </a>
                           )}
