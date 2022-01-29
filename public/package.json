@@ -20,7 +20,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
-    "@guardianforge/destiny-data-utils": "^0.1.5",
+    "@guardianforge/destiny-data-utils": "^0.1.6",
     "algoliasearch": "^4.10.5",
     "babel-plugin-styled-components": "^1.13.2",
     "bootstrap": "^5.1.3",
