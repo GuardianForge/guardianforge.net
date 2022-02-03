@@ -41,9 +41,12 @@ const Wrapper = styled.div`
 
     &-lower {
       display: flex;
+      flex-wrap: wrap;
+
+
 
       .perks-col {
-        margin-right: 30px;
+        margin-right: 50px;
 
         .perk {
           margin-bottom: 20px;
@@ -55,9 +58,10 @@ const Wrapper = styled.div`
       }
 
       .equipped-tree {
-        margin-left: 70px;
+        /* margin-left: 70px; */
         margin-top: 40px;
-        margin-bottom: 20px;
+        /* margin-bottom: 20px; */
+        margin-bottom: 60px;
       }
     }
 

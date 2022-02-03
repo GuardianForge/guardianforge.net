@@ -7,10 +7,10 @@ import Card from './ui/Card'
 const Wrapper = styled(Card)`
   .card-content {
     display: flex;
+    flex-wrap: wrap;
   }
 
   @media (max-width: 576px) {
-    max-width: 287px;
     margin: 0 auto;
 
     img {

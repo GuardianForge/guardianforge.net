@@ -173,7 +173,7 @@ function EquipmentItem(props: EquipmentItemProps) {
   const [filteredInventorySubset, setFilteredInventorySubset] = useState<Array<Item>>([])
   const [inventoryFilter, setInventoryFilter] = useState("")
   const [item, setItem] = useState<Item>()
-  const [mods, setMods] = useState<Map<number, Item[]>>()
+  const [plugs, setPlugs] = useState<Map<number, Item[]>>()
 
   const [iterator, setIterator] = useState(1)
 
@@ -182,9 +182,9 @@ function EquipmentItem(props: EquipmentItemProps) {
       // @ts-ignore
       const { InventoryManager } = window.services
       if(InventoryManager) {
-        let itemMods = InventoryManager.getModsForItem(item)
-        if(itemMods) {
-          setMods(itemMods)
+        let plugs = InventoryManager.getSocketPlugMapForItem(item)
+        if(plugs) {
+          setPlugs(plugs)
         }
       }
     }
@@ -231,9 +231,10 @@ function EquipmentItem(props: EquipmentItemProps) {
     setIsSelectingItem(true)
   }
 
-  function setEquippedPlug(socket: Socket, plug: SocketItem) {
+  function setEquippedPlug(socket: Socket, plug: (SocketItem | Item)) {
     let i = item
     if(i && i.sockets && socket.position !== undefined && i.sockets[socket.position]) {
+      // @ts-ignore TODO: Remove this when DDU is refactored to use Items on Sockets
       i.sockets[socket.position].equippedPlug = plug
     }
     setItem(i)
@@ -259,7 +260,7 @@ function EquipmentItem(props: EquipmentItemProps) {
   function showModDrawer(socket: Socket) {
     console.log(socket)
     if(socket.position !== undefined) {
-      let am = mods?.get(socket.position)
+      let am = plugs?.get(socket.position)
       console.log(am)
       setAvailableMods(am)
       setSocketBeingEdited(socket)

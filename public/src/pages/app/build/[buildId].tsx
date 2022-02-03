@@ -177,7 +177,22 @@ function Build(props: Props) {
             </Col>
           </Row>
           <Row>
-            <Col md="8">
+            {(buildData.inputStyle || buildData.notes || buildData.primaryActivity) && (
+              <Col md="8" className="d-block d-xxl-none">
+                <BuildNotesCard notes={buildData.notes} inputStyle={buildData.inputStyle} primaryActivityKey={buildData.primaryActivity} />
+              </Col>
+            )}
+            {(createdBy || guardianOf || buildData.videoLink) && (
+              <Col md="4" className="d-block d-xxl-none">
+                {(createdBy || guardianOf) && (
+                  <PlayerInfoCard createdBy={createdBy} guardianOf={guardianOf} />
+                )}
+                {buildData.videoLink && (
+                  <VideoReviewCard youtubeUrl={buildData.videoLink} />
+                )}
+              </Col>
+            )}
+            <Col xl="12" xxl="8">
               <BuildAd />
 
               <StatBar stats={buildData.stats} highlights={buildData.highlights} />
@@ -189,22 +204,22 @@ function Build(props: Props) {
 
               <h4>Weapons</h4>
               <div className="weapons row">
-                {buildData.items.kinetic && (<ItemCard className="col-md-4" item={buildData.items.kinetic} highlights={highlights} />)}
-                {buildData.items.energy && (<ItemCard className="col-md-4" item={buildData.items.energy} highlights={highlights}  />)}
-                {buildData.items.power && (<ItemCard className="col-md-4" item={buildData.items.power} highlights={highlights}  />)}
+                {buildData.items.kinetic && (<ItemCard className="col-xs-12 col-md-6 col-lg-4" item={buildData.items.kinetic} highlights={highlights} />)}
+                {buildData.items.energy && (<ItemCard className="col-xs-12 col-md-6 col-lg-4" item={buildData.items.energy} highlights={highlights}  />)}
+                {buildData.items.power && (<ItemCard className="col-xs-12 col-md-6 col-lg-4" item={buildData.items.power} highlights={highlights}  />)}
               </div>
 
               <h4>Armor</h4>
               <div className="armor row">
-                {buildData.items.helmet && (<ItemCard className="col-md-4" item={buildData.items.helmet} highlights={highlights}  />)}
-                {buildData.items.arms && (<ItemCard className="col-md-4" item={buildData.items.arms} highlights={highlights}  />)}
-                {buildData.items.chest && (<ItemCard className="col-md-4" item={buildData.items.chest} highlights={highlights}  />)}
-                {buildData.items.legs && (<ItemCard className="col-md-4" item={buildData.items.legs} highlights={highlights}  />)}
-                {buildData.items.classItem && (<ItemCard className="col-md-4" item={buildData.items.classItem} highlights={highlights}  />)}
+                {buildData.items.helmet && (<ItemCard className="col-xs-12 col-md-6 col-lg-4" item={buildData.items.helmet} highlights={highlights}  />)}
+                {buildData.items.arms && (<ItemCard className="col-xs-12 col-md-6 col-lg-4" item={buildData.items.arms} highlights={highlights}  />)}
+                {buildData.items.chest && (<ItemCard className="col-xs-12 col-md-6 col-lg-4" item={buildData.items.chest} highlights={highlights}  />)}
+                {buildData.items.legs && (<ItemCard className="col-xs-12 col-md-6 col-lg-4" item={buildData.items.legs} highlights={highlights}  />)}
+                {buildData.items.classItem && (<ItemCard className="col-xs-12 col-md-6 col-lg-4" item={buildData.items.classItem} highlights={highlights}  />)}
               </div>
               <BuildAd />
             </Col>
-            <Col md="4">
+            <Col xxl="4" className="d-none d-xxl-block">
               {(buildData.inputStyle || buildData.notes || buildData.primaryActivity) && (
                 <BuildNotesCard notes={buildData.notes} inputStyle={buildData.inputStyle} primaryActivityKey={buildData.primaryActivity} />
               )}
@@ -212,15 +227,6 @@ function Build(props: Props) {
               {buildData.videoLink && <VideoReviewCard youtubeUrl={buildData.videoLink} />}
             </Col>
           </Row>
-
-          {/* <BuildMetaPanel
-            buildId={buildId}
-            buildData={buildData}
-            onBuildUpdated={onBuildUpdated}
-            onBuildUpdateFailed={onBuildUpdateFailed} /> */}
-
-
-
         </Container>
       )}
     </Wrapper>

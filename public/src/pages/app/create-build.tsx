@@ -27,6 +27,7 @@ import ForgeModal from '../../components/app/Modal'
 import ForgeButton from '../../components/app/forms/Button'
 import ClassCard from '../../components/app/ClassCard'
 import userUtils from '../../utils/userUtils'
+import BuildAd from '../../components/app/ads/BuildAd'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -502,13 +503,83 @@ function CreateBuild(props: Props) {
               </ButtonBar>
             </Col>
           </Row>
+          <Row className="d-xl-none d-block">
+            <Col md="12">
+              <h4>Build Info</h4>
+              <div className="build-info-card mb-3">
+                <Row>
+                  <Col md="4" sm="6">
+                    <span>Name</span>
+                    <Input
+                      prefixIcon={faCube}
+                      placeholder='Give your build a name'
+                      value={name}
+                      onChange={(e: any) => setName(e.target.value)}
+                      className="mb-3" />
+                    <span>Notes</span>
+                    <TextArea
+                      className="mb-3"
+                      prefixIcon={faStickyNote}
+                      rows={10}
+                      placeholder="Add some notes on how to use the build"
+                      value={notes}
+                      onChange={(e: any) => setNotes(e.target.value)}/>
+                  </Col>
+                  <Col md="4" sm="6">
+                    <span>Primary Activity</span>
+                    <ActivitySelector
+                      className="mb-3"
+                      value={activity}
+                      onChange={(opt: ActivityOption) => setActivity(opt)} />
+                    <span>Input Style</span>
+                    <ModalSelector
+                      title="Input Style"
+                      className="mb-3"
+                      options={inputStyleOptions}
+                      value={inputStyle}
+                      onChange={(opt: ModalSelectorOption) => setInputStyle(opt)} />
+                    <span>Visibility</span>
+                    <div className="form-group mb-3">
+                      <ButtonGroup>
+                        <Button className={isPrivate ? "visibility-disabled" : "visibility-enabled"} onClick={() => {setIsPrivate(false)}}>
+                          <FontAwesomeIcon icon="eye" />
+                        </Button>
+                        <Button className={isPrivate ? "visibility-enabled" : "visibility-disabled"} onClick={() => setIsPrivate(true)}>
+                          <FontAwesomeIcon icon="eye-slash" />
+                        </Button>
+                      </ButtonGroup>
+                      {isPrivate === true ? (
+                        <label className="form-label mx-2">
+                          <i>Private</i>
+                        </label>
+                      ) : (
+                        <label className="form-label mx-2">
+                          <i>Public</i>
+                        </label>
+                      )}
+                    </div>
+                  </Col>
+                  <Col md="4" sm="6">
+                    <span>Video Review</span>
+                    <Input
+                      prefixIcon={faYoutube}
+                      placeholder="Add a YouTube link"
+                      value={videoLink}
+                      className="mb-3"
+                      onChange={(e: any) => setVideoLink(e.target.value)} />
+                    <YouTubeEmbed youtubeUrl={videoLink} showPlaceholder />
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+          </Row>
           <Row>
-            <Col md="9">
+            <Col lg="12" xl="9">
               <Row className="mb-3">
-                <Col md="3">
+                <Col md="12" lg="3">
                   <ClassCard classType={selectedClass} />
                 </Col>
-                <Col md="9">
+                <Col md="12" lg="9">
                   <StatBar stats={stats} highlights={highlights} onStatClicked={onStatClicked} />
                 </Col>
                 <Col md="12">
@@ -527,7 +598,7 @@ function CreateBuild(props: Props) {
                   <h4>Weapons</h4>
                   {weaponConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{weaponConfigValidationMessage}</span>}
                 </Col>
-                <Col md="4">
+                <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={kinetic}
                     slot={Enums.BucketTypeEnum.Kinetic}
                     classType={selectedClass}
@@ -537,7 +608,7 @@ function CreateBuild(props: Props) {
                     onPlugClicked={onPlugClicked}
                     configurable={isOwner} />
                 </Col>
-                <Col md="4">
+                <Col lg="4"  md="6" sm="6">
                   <EquipmentItem buildItem={energy}
                     slot={Enums.BucketTypeEnum.Energy}
                     classType={selectedClass}
@@ -547,7 +618,7 @@ function CreateBuild(props: Props) {
                     onPlugClicked={onPlugClicked}
                     configurable={isOwner} />
                 </Col>
-                <Col md="4">
+                <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={power}
                     slot={Enums.BucketTypeEnum.Power}
                     classType={selectedClass}
@@ -564,7 +635,7 @@ function CreateBuild(props: Props) {
                   <h4>Armor</h4>
                   {armorConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{armorConfigValidationMessage}</span>}
                 </div>
-                <div className="col-md-4">
+                <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={helmet}
                     slot={Enums.BucketTypeEnum.Helmet}
                     classType={selectedClass}
@@ -573,8 +644,8 @@ function CreateBuild(props: Props) {
                     onItemClicked={onItemClicked}
                     onPlugClicked={onPlugClicked}
                     configurable={isOwner} />
-                </div>
-                <div className="col-md-4">
+                </Col>
+                <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={arms}
                     slot={Enums.BucketTypeEnum.Arms}
                     classType={selectedClass}
@@ -583,8 +654,8 @@ function CreateBuild(props: Props) {
                     onItemClicked={onItemClicked}
                     onPlugClicked={onPlugClicked}
                     configurable={isOwner} />
-                </div>
-                <div className="col-md-4">
+                </Col>
+                <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={chest}
                     slot={Enums.BucketTypeEnum.Chest}
                     classType={selectedClass}
@@ -593,8 +664,8 @@ function CreateBuild(props: Props) {
                     onItemClicked={onItemClicked}
                     onPlugClicked={onPlugClicked}
                     configurable={isOwner} />
-                </div>
-                <div className="col-md-4">
+                </Col>
+                <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={legs}
                     slot={Enums.BucketTypeEnum.Legs}
                     classType={selectedClass}
@@ -603,8 +674,8 @@ function CreateBuild(props: Props) {
                     onItemClicked={onItemClicked}
                     onPlugClicked={onPlugClicked}
                     configurable={isOwner} />
-                </div>
-                <div className="col-md-4">
+                </Col>
+                <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={classItem}
                     slot={Enums.BucketTypeEnum.ClassItem}
                     classType={selectedClass}
@@ -613,10 +684,11 @@ function CreateBuild(props: Props) {
                     onItemClicked={onItemClicked}
                     onPlugClicked={onPlugClicked}
                     configurable={isOwner} />
-                </div>
+                </Col>
               </div>
             </Col>
-            <Col md="3">
+
+            <Col xl="3" className="d-none d-xl-block">
               <h4>Build Info</h4>
               <div className="build-info-card mb-3">
                 <span>Name</span>
@@ -668,10 +740,6 @@ function CreateBuild(props: Props) {
                   )}
                 </div>
               </div>
-              {/* <h4>User Info & Visibility</h4>
-              <div className="build-info-card mb-3">
-                TODO: User info & visibilty opts here
-              </div> */}
               <h4>Video Review</h4>
               <div className="build-info-card">
                 <Input
@@ -684,6 +752,7 @@ function CreateBuild(props: Props) {
               </div>
             </Col>
           </Row>
+          <BuildAd />
         </Container>
       )}
 

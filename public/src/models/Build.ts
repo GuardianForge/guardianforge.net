@@ -17,6 +17,7 @@ class Build {
   highlights?: Array<string>
   class?: number
 
+
   static async FromGuardianKey(bungieApiService: BungieApiService, manifestService: ManifestService, guardianKey: string): Promise<Build> {
     const build = new Build()
     let split = guardianKey.split("-")

@@ -233,11 +233,11 @@ function EquipmentItem(props: EquipmentItemProps) {
   const [filteredInventorySubset, setFilteredInventorySubset] = useState<Array<Item>>([])
   const [inventoryFilter, setInventoryFilter] = useState("")
   const [item, setItem] = useState<Item>()
-  const [mods, setMods] = useState<Map<number, Item[]>>()
+  const [plugs, setPlugs] = useState<Map<number, Item[]>>()
   const [buttonText, setButtonText] = useState("")
 
   useEffect(() => {
-    if(configurable && buildItem) {
+    if(configurable && buildItem && buildItem.itemInstanceId) {
       const { InventoryManager } = window.services
       let itemSelected = InventoryManager.getItemForInstanceId(buildItem?.itemInstanceId)
       if(itemSelected) {
@@ -281,9 +281,9 @@ function EquipmentItem(props: EquipmentItemProps) {
       // @ts-ignore
       const { InventoryManager } = window.services
       if(InventoryManager) {
-        let itemMods = InventoryManager.getModsForItem(item)
-        if(itemMods) {
-          setMods(itemMods)
+        let plugs = InventoryManager.getSocketPlugMapForItem(item)
+        if(plugs) {
+          setPlugs(plugs)
         }
       }
     }
@@ -330,9 +330,10 @@ function EquipmentItem(props: EquipmentItemProps) {
     setIsSelectingItem(true)
   }
 
-  function setEquippedPlug(socket: Socket, plug: SocketItem) {
+  function setEquippedPlug(socket: Socket, plug: (SocketItem | Item)) {
     let i = item
     if(i && i.sockets && socket.position !== undefined && i.sockets[socket.position]) {
+      // @ts-ignore TODO: Remove with DDU has been refactored to use Items for Sockets
       i.sockets[socket.position].equippedPlug = plug
     }
     setItem(i)
@@ -351,24 +352,24 @@ function EquipmentItem(props: EquipmentItemProps) {
     setInventoryFilter(filter)
   }
 
-
   const [isModDrawerOpen, setIsModDrawerOpen] = useState(false)
   const [availableMods, setAvailableMods] = useState<Array<Item>>()
   const [socketBeingEdited, setSocketBeingEdited] = useState<Socket>()
   const [maxModCostAllowed, setMaxModCostAllowed] = useState(0)
   function showModDrawer(socket: Socket) {
-    console.log(socket, item)
-    if(socket.position !== undefined) {
-      let am = mods?.get(socket.position)
+    if(item && socket.position !== undefined) {
+      let am = plugs?.get(socket.position)
       am = am?.filter((i: Item) => (i.energyType === 0 || i.energyType === item.energyType))
       setAvailableMods(am)
       let itemTier = item?.getItemTier()
       if(itemTier && itemTier.tier) {
         let currentConsumption = item.getModEnergyConsumption()
-        if(socket.equippedPlug && socket.equippedPlug.cost) {
-          currentConsumption = currentConsumption - socket.equippedPlug.cost
+        if(currentConsumption) {
+          if(socket.equippedPlug && socket.equippedPlug.cost) {
+            currentConsumption = currentConsumption - socket.equippedPlug.cost
+          }
+          setMaxModCostAllowed(itemTier.tier - currentConsumption)
         }
-        setMaxModCostAllowed(itemTier.tier - currentConsumption)
       }
       setSocketBeingEdited(socket)
       setIsModDrawerOpen(true)

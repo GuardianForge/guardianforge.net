@@ -28,7 +28,6 @@ const Wrapper = styled(Card)`
     display: flex;
     flex-direction: row;
     text-align: left;
-    min-width: 287px;
   }
 
   .item-icon-wrapper {
