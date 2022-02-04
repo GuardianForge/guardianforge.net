@@ -11,6 +11,10 @@ const Wrapper = styled(Card)`
   }
 
   @media (max-width: 576px) {
+    .card-content {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr);
+    }
     margin: 0 auto;
 
     img {

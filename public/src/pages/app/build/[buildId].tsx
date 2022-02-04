@@ -19,7 +19,7 @@ import BuildNotesCard from '../../../components/app/BuildNotesCard'
 import VideoReviewCard from '../../../components/app/VideoReviewCard'
 
 const Wrapper = styled.div`
-  margin: 0px 10px;
+  /* margin: 0px 10px; */
   @media (max-width: 576px) {
     h1, h2, h3 {
       text-align: center

@@ -30,7 +30,7 @@ import userUtils from '../../utils/userUtils'
 import BuildAd from '../../components/app/ads/BuildAd'
 
 const Wrapper = styled.div`
-  padding: 20px;
+  padding-bottom: 20px;
 
   .selected-item {
 

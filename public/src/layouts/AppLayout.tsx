@@ -372,7 +372,7 @@ function AppLayout(props: Props) {
         </Content>
       </Main>
 
-      <div style={{
+      {/* <div style={{
         position: "fixed",
         top: "90%",
         left: "50%",
@@ -388,7 +388,7 @@ function AppLayout(props: Props) {
         <div className="d-none d-lg-block d-xl-none">Large (lg)</div>
         <div className="d-none d-xl-block d-xxl-none" >X-Large (xl)</div>
         <div className="d-none d-xxl-block" >XX-Large (xxl)</div>
-      </div>
+      </div> */}
     </Layout>
   )
 }
