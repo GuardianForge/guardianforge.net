@@ -12,8 +12,11 @@ import (
 )
 
 type UpdateBuildRequest struct {
-	Name  *string `json:"name"`
-	Notes *string `json:"notes"`
+	Name            *string `json:"name"`
+	Notes           *string `json:"notes"`
+	PrimaryActivity *string `json:"primaryActivity"`
+	VideoLink       *string `json:"videoLink"`
+	InputStyle      *string `json:"inputStyle"`
 }
 
 var sess *session.Session
@@ -75,6 +78,15 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 	if requestModel.Notes != nil {
 		build.Notes = *requestModel.Notes
+	}
+	if requestModel.InputStyle != nil {
+		build.InputStyle = *requestModel.InputStyle
+	}
+	if requestModel.PrimaryActivity != nil {
+		build.PrimaryActivity = *requestModel.PrimaryActivity
+	}
+	if requestModel.VideoLink != nil {
+		build.VideoLink = *requestModel.VideoLink
 	}
 
 	// Save it back to S3

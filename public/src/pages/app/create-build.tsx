@@ -147,7 +147,6 @@ function CreateBuild(props: Props) {
 
       if(location && location.state && location.state.guardianKey) {
         let b = await Build.FromGuardianKey(BungieApiService, ManifestService, location.state.guardianKey)
-        console.log(b)
         if(b.items) {
           setKinetic(b.items.kinetic)
           setEnergy(b.items.energy)
@@ -215,7 +214,6 @@ function CreateBuild(props: Props) {
   }
 
   function onItemUpdated(item: Item) {
-    console.log("onItemUpdated", item)
     let bd = buildData
     switch(item.slot) {
       case Enums.BucketTypeEnum.Kinetic:
@@ -424,9 +422,7 @@ function CreateBuild(props: Props) {
     if(classType === Enums.ClassEnum.Warlock) {
       className = "Warlock"
     }
-    console.log(ForgeClient.userData.bungieNetUser)
     if(ForgeClient && ForgeClient.userData && ForgeClient.userData.bungieNetUser) {
-      console.log("hit")
       setName(`${ForgeClient.userData.bungieNetUser.uniqueName}'s ${className}`)
     }
     setIsClassSelectModalOpen(false)

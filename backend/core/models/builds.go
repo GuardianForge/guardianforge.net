@@ -21,6 +21,7 @@ type Build struct {
 	PrimaryActivity string          `json:"primaryActivity"`
 	VideoLink       string          `json:"videoLink"`
 	IsPrivate       bool            `json:"isPrivate"`
+	InputStyle      string          `json:"inputStyle"`
 }
 
 func (b *Build) ToDbRecord(buildId string, publishedOn int64, membershipId *string) dbModels.Build {

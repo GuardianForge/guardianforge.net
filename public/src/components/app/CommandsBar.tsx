@@ -1,14 +1,28 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import React, { useEffect, useState, useContext } from 'react';
+import { Button, Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import colors from '../../colors';
 import Build from '../../models/Build';
 import UpvoteButton from './UpvoteButton'
 import copy from "copy-to-clipboard";
-import { faBan, faBox, faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faBox, faCube, faEdit, faSave, faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import ForgeButton from './forms/Button';
 import ForgeModal from './Modal';
+import Input from './forms/Input';
+import TextArea from './forms/TextArea';
+import ActivitySelector from './ActivitySelector';
+import ModalSelector from './forms/ModalSelector';
+import YouTubeEmbed from './YouTubeEmbed';
+import ActivityOption from '../../models/ActivityOption';
+import ModalSelectorOption from '../../models/ModalSelectorOption';
+import { faYoutube } from '@fortawesome/free-brands-svg-icons';
+// @ts-ignore
+import activityOptions from "../../utils/activityOptions"
+// @ts-ignore
+import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { navigate } from 'gatsby';
+import BuildSummary from '../../models/BuildSummary';
 
 const Wrapper = styled.div`
   display: flex;
@@ -49,14 +63,13 @@ type Props = {
   buildId: string
   buildData: Build
   isOwner?: boolean
-  onEditBuild?: Function
-  onSaveBuild?: Function
-  onCancelEdit?: Function
+  onBuildUpdated?: Function
   onBuildArchived?: Function
 }
 
 function CommandsBar(props: Props) {
-  const { buildId, buildData, isOwner, onEditBuild, onSaveBuild, onCancelEdit, onBuildArchived } = props
+  const { buildId, buildData, isOwner, onBuildUpdated, onBuildArchived } = props
+  const { dispatchAlert } = useContext(GlobalContext)
   const [isBuildArchived, setIsBuildArchived] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const [shareLink, setShareLink] = useState("")
@@ -79,28 +92,107 @@ function CommandsBar(props: Props) {
   }
 
   function editBuild() {
-    //   let notes = ""
-    //   if(buildData.notes) {
-    //     notes = buildData.notes.replace(/<br\/>/g, "\n")
-    //   }
-    //   setBuildName(buildData.name)
-    //   setBuildNotes(notes)
+    let notes = ""
+    if(buildData.notes) {
+      notes = buildData.notes.replace(/<br\/>/g, "\n")
+    }
+    if(buildData.name) {
+      setName(buildData.name)
+    }
+    setNotes(notes)
+    if(buildData.videoLink) setVideoLink(buildData.videoLink)
+    if(buildData.primaryActivity) {
+      let a = activityOptions.find((opt: ActivityOption) => opt.value === buildData.primaryActivity)
+      if(a) {
+        setActivity(a)
+      }
+    }
+
+    if(buildData.inputStyle) {
+      let is = inputStyleOptions.find((opt: ModalSelectorOption) => opt.value === buildData.inputStyle)
+      if(is) {
+        setInputStyle(is)
+      }
+    }
     setIsEditing(true)
   }
 
-  function saveBuild() {
-    // TODO: Implement
-    setIsEditing(false)
+  async function saveBuild() {
+    try {
+      setIsSaving(true)
+      let updates = {
+        name,
+        notes,
+        primaryActivity: activity.value,
+        inputStyle: inputStyle.value,
+        videoLink
+      }
+
+      let { ForgeClient, ForgeApiService } = window.services
+      let token = await ForgeClient.getToken()
+      await ForgeApiService.updateBuild(buildId, updates, token)
+
+      // Update cache
+      ForgeClient.userBuilds.forEach((b: BuildSummary) => {
+        if(b.id === buildId) {
+          b.name = name
+        }
+      })
+      setIsEditing(false)
+      if(onBuildUpdated) {
+        onBuildUpdated(updates)
+      }
+    } catch (err) {
+      dispatchAlert({
+        title: "Updating Build",
+        body: "An error occurred while updating this build. Please try again later...",
+        isError: true,
+        autohide: false,
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
-  function cancelEdit() {
-    // TODO: Cancel edits
-    setIsEditing(false)
+  async function archiveBuild() {
+    let { ForgeClient, ForgeApiService } = window.services
+    try {
+      setIsSaving(true)
+      let token = await ForgeClient.getToken()
+      await ForgeApiService.archiveBuild(buildId, token)
+      ForgeClient.userBuilds = ForgeClient.userBuilds.filter((b: BuildSummary) => b.id !== buildId)
+      setIsBuildArchived(true)
+    } catch (err) {
+      dispatchAlert({
+        title: "Archiving Build",
+        body: "An error occurred while archiving this build. Please try again later...",
+        isError: true,
+        autohide: false,
+      })
+    } finally {
+      setIsArchiveBuildModalOpen(false)
+      setIsSaving(false)
+    }
   }
 
-  function archiveBuild() {
-    setIsArchiveBuildModalOpen(false)
-  }
+  const [name, setName] = useState("")
+  const [notes, setNotes] = useState("")
+  const [videoLink, setVideoLink] = useState("")
+  const [activity, setActivity] = useState<ActivityOption>({ value: "1", display: "Any Activity" })
+  const [inputStyle, setInputStyle] = useState<ModalSelectorOption>({ value: "0", display: "None"})
+  const [isSaving, setIsSaving] = useState(false)
+  const inputStyleOptions: Array<ModalSelectorOption> = [
+    {
+      iconUrl: "/img/input-icons/mnk.png",
+      value: "1",
+      display: "Mouse & Keyboard"
+    },
+    {
+      iconUrl: "/img/input-icons/controller.png",
+      value: "2",
+      display: "Controller"
+    }
+  ]
 
   return (
     <Wrapper>
@@ -117,7 +209,7 @@ function CommandsBar(props: Props) {
       <Button as="a" className="btn-twitter" href={twitterLink} target="_blank">
         <FontAwesomeIcon icon={['fab', 'twitter']} /> Share
       </Button>
-      {isOwner && (
+      {isOwner && !isBuildArchived && (
         <>
           <Seperator />
           {!isEditing && (
@@ -130,16 +222,6 @@ function CommandsBar(props: Props) {
               <FontAwesomeIcon icon={faEdit} /> Edit
             </Button>
           )}
-          {isEditing && (
-            <Button onClick={() => saveBuild()}>
-              <FontAwesomeIcon icon={faSave} /> Save
-            </Button>
-          )}
-          {isEditing && (
-            <Button onClick={() => cancelEdit()}>
-              <FontAwesomeIcon icon={faBan} /> Cancel
-            </Button>
-          )}
         </>
       )}
 
@@ -149,8 +231,8 @@ function CommandsBar(props: Props) {
       title="Archive Build"
       footer={
         <div>
-          <ForgeButton onClick={() => setIsArchiveBuildModalOpen(false)}>Cancel</ForgeButton>
-          <ForgeButton style={{marginLeft: "10px"}} onClick={() => archiveBuild()}>Archive</ForgeButton>
+          <ForgeButton disabled={isSaving} onClick={() => setIsArchiveBuildModalOpen(false)}>Cancel</ForgeButton>
+          <ForgeButton disabled={isSaving} style={{marginLeft: "10px"}} onClick={() => archiveBuild()}>Archive</ForgeButton>
         </div>
       }>
         <p>
@@ -163,6 +245,61 @@ function CommandsBar(props: Props) {
         </ul>
         <p>Direct links & bookmarks will still be valid. </p>
         <p><b>This operation CANNOT be undone.</b></p>
+    </ForgeModal>
+
+    <ForgeModal
+      show={isEditing}
+      title="Edit Build Info"
+      size="lg"
+      footer={
+        <div>
+          <ForgeButton disabled={isSaving} onClick={() => setIsEditing(false)}>Cancel</ForgeButton>
+          <ForgeButton disabled={isSaving} style={{marginLeft: "10px"}} onClick={() => saveBuild()}>Save</ForgeButton>
+        </div>
+      }>
+        <Row>
+          <Col>
+            <div className="build-info-card mb-3">
+              <span>Name</span>
+              <Input
+                prefixIcon={faCube}
+                placeholder='Give your build a name'
+                value={name}
+                onChange={(e: any) => setName(e.target.value)}
+                className="mb-3" />
+              <span>Notes</span>
+              <TextArea
+                className="mb-3"
+                prefixIcon={faStickyNote}
+                rows={10}
+                placeholder="Add some notes on how to use the build"
+                value={notes}
+                onChange={(e: any) => setNotes(e.target.value)}/>
+              <span>Primary Activity</span>
+              <ActivitySelector
+                className="mb-3"
+                value={activity}
+                onChange={(opt: ActivityOption) => setActivity(opt)} />
+              <span>Input Style</span>
+              <ModalSelector
+                title="Input Style"
+                className="mb-3"
+                options={inputStyleOptions}
+                value={inputStyle}
+                onChange={(opt: ModalSelectorOption) => setInputStyle(opt)} />
+            </div>
+            <h4>Video Review</h4>
+            <div className="build-info-card">
+              <Input
+                prefixIcon={faYoutube}
+                placeholder="Add a YouTube link"
+                value={videoLink}
+                className="mb-3"
+                onChange={(e: any) => setVideoLink(e.target.value)} />
+              <YouTubeEmbed youtubeUrl={videoLink} showPlaceholder />
+            </div>
+          </Col>
+        </Row>
       </ForgeModal>
     </Wrapper>
   )

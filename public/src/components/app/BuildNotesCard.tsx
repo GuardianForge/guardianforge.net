@@ -39,9 +39,9 @@ function BuildNotesCard(props: Props) {
   const [displayNotes, setDisplayNotes] = useState<string>()
   const [areNotesLong, setAreNotesLong] = useState(false)
   const [isNotesDialogDisplayed, setIsNotesDialogDisplayed] = useState(false)
+  const [reformattedNotes, setReformattedNotes] = useState("")
 
   useEffect(() => {
-    console.log("inputStype", inputStyle)
     if(primaryActivityKey) {
       let activity = activityOptions.find((el: ActivityOption) => el.value === primaryActivityKey)
       if(activity && activity.value !== '1') {
@@ -50,11 +50,13 @@ function BuildNotesCard(props: Props) {
     }
 
     if(notes) {
+      let reformatted = notes.replace(/\n/g, "<br/>")
+      setReformattedNotes(reformatted)
       if(notes.length > 500) {
-        setDisplayNotes(notes.slice(0, 499) + "...")
+        setDisplayNotes(reformatted.slice(0, 499) + "...")
         setAreNotesLong(true)
       } else {
-        setDisplayNotes(notes)
+        setDisplayNotes(reformatted)
       }
     }
   }, [])
@@ -72,7 +74,7 @@ function BuildNotesCard(props: Props) {
       </div>
       <ForgeModal show={isNotesDialogDisplayed} title="Build Notes" size="lg" scrollable footer={<ForgeButton onClick={() => setIsNotesDialogDisplayed(false)}>Close</ForgeButton>}>
         <>
-          {notes && <div dangerouslySetInnerHTML={{__html: notes}} />}
+          {notes && <div dangerouslySetInnerHTML={{__html: reformattedNotes}} />}
         </>
       </ForgeModal>
     </Wrapper>

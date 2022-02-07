@@ -12,11 +12,11 @@ import BuildAd from '../../../components/ads/BuildAd';
 import StatBar from '../../../components/app/StatBar';
 import { Col, Container, Row } from 'react-bootstrap'
 import CommandsBar from '../../../components/app/CommandsBar'
-import BuildData from '../models/Build'
 import User from '../models/User'
 import PlayerInfoCard from '../../../components/app/PlayerInfoCard'
 import BuildNotesCard from '../../../components/app/BuildNotesCard'
 import VideoReviewCard from '../../../components/app/VideoReviewCard'
+import BuildData from '../../../models/Build'
 
 const Wrapper = styled.div`
   /* margin: 0px 10px; */
@@ -78,10 +78,6 @@ function Build(props: Props) {
         setPageTitle(name)
       }
 
-      if(buildData.notes) {
-        buildData.notes = buildData.notes.replace(/\n/g, "<br/>")
-      }
-
       if(buildData.highlights) {
         setHighlights(buildData.highlights)
       }
@@ -100,7 +96,6 @@ function Build(props: Props) {
           if(guardianOfForgeUser && guardianOfForgeUser.user.social) {
             guardianOfUser.social = guardianOfForgeUser.user.social
           }
-          console.log(guardianOfUser)
           setGuardianOf(guardianOfUser)
         }
       }
@@ -125,38 +120,33 @@ function Build(props: Props) {
     init()
   }, [isConfigLoaded])
 
-  function onBuildUpdated(updates) {
+  function onBuildUpdated(updates: BuildData) {
+    setCompState(COMP_STATE.LOADING)
     let _buildData = buildData
 
     if(updates.name) {
       _buildData.name = updates.name
-      setBuildName(updates.name)
+      setPageTitle(updates.name)
     }
 
     if(updates.notes) {
       _buildData.notes = updates.notes
     }
 
-    console.log(updates)
+    if(updates.inputStyle) {
+      _buildData.inputStyle = updates.inputStyle
+    }
+
+    if(updates.primaryActivity) {
+      _buildData.primaryActivity = updates.primaryActivity
+    }
+
+    if(updates.videoLink) {
+      _buildData.videoLink = updates.videoLink
+    }
 
     setBuildData(_buildData)
-  }
-
-  function onBuildUpdateFailed(error) {
-    dispatchAlert({
-      title: "Updating Build Failed",
-      body: "An error occurred while updating this build. Please try again later...",
-      isError: true,
-      autohide: false,
-      // buttons: [
-      //   {
-      //     title: "Report",
-      //     fn: function () {
-      //       console.log("reported!")
-      //     }
-      //   }
-      // ]
-    })
+    setCompState(COMP_STATE.DONE)
   }
 
   return (
@@ -173,7 +163,7 @@ function Build(props: Props) {
         <Container fluid id="build">
           <Row>
             <Col md="12">
-              <CommandsBar buildId={buildId} buildData={buildData} isOwner={isOwner} />
+              <CommandsBar buildId={buildId} buildData={buildData} isOwner={isOwner} onBuildUpdated={onBuildUpdated} />
             </Col>
           </Row>
           <Row>

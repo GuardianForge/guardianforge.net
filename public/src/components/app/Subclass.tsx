@@ -83,18 +83,21 @@ function Subclass(props: Props) {
   useEffect(() => {
     if(buildItem) {
       let { InventoryManager } = window.services
-      console.log(buildItem)
       if(buildItem.abilities && buildItem.abilities.length > 0) {
         setIsV3Subclass(true)
       } else if(buildItem.superConfig) {
         setIsV3Subclass(false)
       }
 
-      if(configurable) {
-        setSelectedSubclass(InventoryManager.getItemForInstanceId(buildItem?.itemInstanceId))
+      if(buildItem.itemInstanceId && configurable) {
+        let sc = InventoryManager.getItemForInstanceId(buildItem?.itemInstanceId)
+        if(sc) {
+          setSelectedSubclass(sc)
+          onSubclassUpdated(sc)
+        }
       }
     }
-  }, [buildItem])
+  }, [])
 
   function selectSubclass() {
     const { InventoryManager } = window.services
@@ -141,28 +144,6 @@ function Subclass(props: Props) {
           )}
         </div>
       )}
-
-      {/* {selectedSubclass && (
-        <>
-          <div className="selected-subclass">
-            {isV3Subclass ? (
-              <V3SubclassCard
-                buildItem={buildItem}
-                subclass={selectedSubclass}
-                onChangeSubclassClicked={() => selectSubclass()}
-                onSubclassUpdated={onSubclassUpdated}
-                configurable={configurable} />
-            ) : (
-              <V2SubclassCard
-                buildItem={buildItem}
-                subclass={selectedSubclass}
-                onChangeSubclassClicked={() => selectSubclass()}
-                onSubclassUpdated={onSubclassUpdated}
-                configurable={configurable} />
-            )}
-          </div>
-        </>
-      )} */}
 
       {!buildItem && !selectedSubclass && (
         <SelectSubclassButtonWrapper>
