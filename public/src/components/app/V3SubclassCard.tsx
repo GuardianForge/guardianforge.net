@@ -73,6 +73,7 @@ const SubclassConfigModalBody = styled(Container)`
     background-color: #111;
     border-radius: 5px;
     margin-right: 5px;
+    margin-bottom: 5px;
     /* border: 1px solid rgba(0,0,0,0); */
 
     &:hover {
@@ -84,6 +85,7 @@ const SubclassConfigModalBody = styled(Container)`
   .perk-row {
     display: flex;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 
     .available-perk {
       height: 50px;
@@ -259,10 +261,11 @@ function V3SubclassCard(props: Props) {
       // Remove equipped fragmets in positions over whats available
       let fragmentSockets = s.sockets.filter((s: Socket) => s._meta?.categoryDefinition.displayProperties.name === "FRAGMENTS")
       fragmentSockets.forEach((socket: Socket, idx: number) => {
-        if(fragmentSlots !== null && socket.position && (idx + 1 > fragmentSlots)) {
+        if(s && s.sockets && fragmentSlots !== null && socket.position && (idx + 1 > fragmentSlots)) {
           let plugsForSocket = socketPlugMap?.get(socket.position)
           let emptyFragmentPlug = plugsForSocket?.find(p => p.name === "Empty Fragment Socket")
           if(emptyFragmentPlug && s.sockets[socket.position]) {
+            // @ts-ignore TODO: Update once Im using items for sockets
             s.sockets[socket.position].equippedPlug = emptyFragmentPlug
           }
         }

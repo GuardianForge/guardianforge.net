@@ -6,6 +6,9 @@ import colors from '../../colors';
 import Build from '../../models/Build';
 import UpvoteButton from './UpvoteButton'
 import copy from "copy-to-clipboard";
+import { faBan, faBox, faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
+import ForgeButton from './forms/Button';
+import ForgeModal from './Modal';
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,7 +24,19 @@ const Wrapper = styled.div`
     border: none;
 
     &:hover {
-      background-color: ${colors.theme2.dark3}
+      background-color: ${colors.theme2.dark3};
+    }
+
+    &:focus {
+      background-color: ${colors.theme2.dark3};
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    &:active {
+      background-color: ${colors.theme2.dark3};
+      border: none !important;
+      box-shadow: none !important;
     }
   }
 `
@@ -34,15 +49,20 @@ type Props = {
   buildId: string
   buildData: Build
   isOwner?: boolean
+  onEditBuild?: Function
+  onSaveBuild?: Function
+  onCancelEdit?: Function
+  onBuildArchived?: Function
 }
 
 function CommandsBar(props: Props) {
-  const { buildId, buildData, isOwner } = props
+  const { buildId, buildData, isOwner, onEditBuild, onSaveBuild, onCancelEdit, onBuildArchived } = props
   const [isBuildArchived, setIsBuildArchived] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const [shareLink, setShareLink] = useState("")
   const [twitterLink, setTwitterLink] = useState("")
   const [isEditing, setIsEditing] = useState(false)
+  const [isArchiveBuildModalOpen, setIsArchiveBuildModalOpen] = useState(false)
 
   useEffect(() => {
     setShareLink(`${location.origin}/build/${buildId}`)
@@ -68,6 +88,20 @@ function CommandsBar(props: Props) {
     setIsEditing(true)
   }
 
+  function saveBuild() {
+    // TODO: Implement
+    setIsEditing(false)
+  }
+
+  function cancelEdit() {
+    // TODO: Cancel edits
+    setIsEditing(false)
+  }
+
+  function archiveBuild() {
+    setIsArchiveBuildModalOpen(false)
+  }
+
   return (
     <Wrapper>
       <UpvoteButton buildId={buildId} buildData={buildData} isBuildArchived={isBuildArchived} />
@@ -83,12 +117,53 @@ function CommandsBar(props: Props) {
       <Button as="a" className="btn-twitter" href={twitterLink} target="_blank">
         <FontAwesomeIcon icon={['fab', 'twitter']} /> Share
       </Button>
-      <Seperator />
-      {isOwner && !isEditing && (
-        <Button onClick={() => editBuild()}>
-          <FontAwesomeIcon icon="edit" /> Edit
-        </Button>
+      {isOwner && (
+        <>
+          <Seperator />
+          {!isEditing && (
+            <Button onClick={() => setIsArchiveBuildModalOpen(true)}>
+              <FontAwesomeIcon icon={faBox} /> Archive
+            </Button>
+          )}
+          {!isEditing && (
+            <Button onClick={() => editBuild()}>
+              <FontAwesomeIcon icon={faEdit} /> Edit
+            </Button>
+          )}
+          {isEditing && (
+            <Button onClick={() => saveBuild()}>
+              <FontAwesomeIcon icon={faSave} /> Save
+            </Button>
+          )}
+          {isEditing && (
+            <Button onClick={() => cancelEdit()}>
+              <FontAwesomeIcon icon={faBan} /> Cancel
+            </Button>
+          )}
+        </>
       )}
+
+
+    <ForgeModal
+      show={isArchiveBuildModalOpen}
+      title="Archive Build"
+      footer={
+        <div>
+          <ForgeButton onClick={() => setIsArchiveBuildModalOpen(false)}>Cancel</ForgeButton>
+          <ForgeButton style={{marginLeft: "10px"}} onClick={() => archiveBuild()}>Archive</ForgeButton>
+        </div>
+      }>
+        <p>
+          Archiving a build will do the following:
+        </p>
+        <ul>
+          <li>Remove from "My Builds"</li>
+          <li>Remove from search & other public build lists</li>
+          <li>Remove upvote & ownership information</li>
+        </ul>
+        <p>Direct links & bookmarks will still be valid. </p>
+        <p><b>This operation CANNOT be undone.</b></p>
+      </ForgeModal>
     </Wrapper>
   )
 }

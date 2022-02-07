@@ -265,6 +265,7 @@ function V2SubclassCard(props: Props) {
         </div>
 
         <ForgeModal
+          scrollable
           size="xl"
           show={isConfigureSubclassModalShown}
           title={subclass.name}

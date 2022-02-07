@@ -7,6 +7,7 @@ import UpvoteIcon from './UpvoteIcon'
 import { imageFixerMap } from "../../utils/shims"
 import BuildSummary from '../../models/BuildSummary'
 import colors from "../../colors"
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
 const Wrapper = styled.div`
   padding: 5px 10px;
@@ -149,6 +150,7 @@ function BuildSummaryCard(props: Props) {
         <div>
           <FontAwesomeIcon icon="user"/> { buildSummary.username }
         </div>
+        {buildSummary.isPrivate && <FontAwesomeIcon icon={faEyeSlash} />}
         {buildSummary.upvotes !== undefined && buildSummary.upvotes > 0 && (
           <div>
             <UpvoteIcon filled />

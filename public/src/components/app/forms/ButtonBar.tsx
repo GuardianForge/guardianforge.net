@@ -10,13 +10,33 @@ const Wrapper = styled.div`
   color: ${colors.theme2.text};
   margin: 5px 0px 10px 0px;
 
+  .btn:disabled {
+    background-color: ${colors.theme2.dark3} !important;
+
+    &:hover {
+      cursor: not-allowed !important;
+    }
+  }
+
   button, a {
     color: #eee;
     background-color: rgba(0,0,0,0);
     border: none;
 
     &:hover {
-      background-color: ${colors.theme2.dark3}
+      background-color: ${colors.theme2.dark3};
+    }
+
+    &:focus {
+      background-color: ${colors.theme2.dark3};
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    &:active {
+      background-color: ${colors.theme2.dark3};
+      border: none !important;
+      box-shadow: none !important;
     }
   }
 `

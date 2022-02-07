@@ -3,6 +3,15 @@ import { ItemTypeEnum } from "@guardianforge/destiny-data-utils/dist/models/Enum
 // @ts-ignore
 import buildUtils from "../utils/buildUtils"
 
+type DIMModsByBucket = {
+  [bucket: string]: Array<number>
+}
+
+type DIMLoadoutModel = {
+  mods?: Array<number>
+  modsByBucket?: DIMModsByBucket
+}
+
 class Build {
   primaryActivity?: string
   inputStyle?: string
@@ -17,6 +26,11 @@ class Build {
   highlights?: Array<string>
   class?: number
 
+
+  toDIMLink(): string {
+    let url = `https://app.destinyitemmanager.com/optimizer?class=${this.class}&p=`
+
+  }
 
   static async FromGuardianKey(bungieApiService: BungieApiService, manifestService: ManifestService, guardianKey: string): Promise<Build> {
     const build = new Build()

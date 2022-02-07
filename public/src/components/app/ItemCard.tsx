@@ -10,8 +10,8 @@ import { ItemTierData } from '@guardianforge/destiny-data-utils/dist/models/Item
 const Wrapper = styled(Card)`
 
   @media screen and (max-width: 796px) {
-    display: flex;
-    justify-content: center;
+    /* display: flex;
+    justify-content: center; */
   }
 
   .item-card-left {

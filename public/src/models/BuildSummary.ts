@@ -5,6 +5,7 @@ type BuildSummary = {
   primaryIconSet: string
   upvotes: number
   username: string
+  isPrivate?: boolean
 }
 
 export default BuildSummary

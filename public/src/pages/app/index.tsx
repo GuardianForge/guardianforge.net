@@ -79,38 +79,41 @@ function AppIndex() {
     <Container>
 
       {compState === State.LOADING && <Loading />}
-      {compState === State.DONE}
-      <Row className="mb-3">
-        <Col>
-          <h3>My Guardians</h3>
-          <div>
-            {/* TODO: Make this betterer */}
-            {guardians.map((g: any) => (
-              <GuardianCard key={g.characterId}
-                classType={g.classType}
-                raceType={g.raceType}
-                light={g.light}
-                emblemUrl={g.emblemBackgroundPath}
-                onClick={() => goToGuardian(g.characterId)} />
-            ))}
-          </div>
-        </Col>
-        {/* <Col>Latest News (latest blog post)</Col> */}
-      </Row>
-      <Row>
-        <Col md="12">
-          <h3>Latest Builds</h3>
-        </Col>
-        <Col md="12">
-          <Row>
-            {latestBuilds.map((bs: BuildSummary) => (
-              <Col md="4" key={bs.id}>
-                <BuildSummaryCard key={bs.id} buildSummary={bs} />
-              </Col>
-            ))}
+      {compState === State.DONE &&
+        <>
+          <Row className="mb-3">
+            <Col>
+              <h3>My Guardians</h3>
+              <div>
+                {/* TODO: Make this betterer */}
+                {guardians.map((g: any) => (
+                  <GuardianCard key={g.characterId}
+                    classType={g.classType}
+                    raceType={g.raceType}
+                    light={g.light}
+                    emblemUrl={g.emblemBackgroundPath}
+                    onClick={() => goToGuardian(g.characterId)} />
+                ))}
+              </div>
+            </Col>
+            {/* <Col>Latest News (latest blog post)</Col> */}
           </Row>
-        </Col>
-      </Row>
+          <Row>
+            <Col md="12">
+              <h3>Latest Builds</h3>
+            </Col>
+            <Col md="12">
+              <Row>
+                {latestBuilds.map((bs: BuildSummary) => (
+                  <Col md="4" key={bs.id}>
+                    <BuildSummaryCard key={bs.id} buildSummary={bs} />
+                  </Col>
+                ))}
+              </Row>
+            </Col>
+          </Row>
+        </>
+      }
     </Container>
   )
 }

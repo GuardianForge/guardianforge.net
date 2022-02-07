@@ -311,27 +311,30 @@ function CreateBuild(props: Props) {
     Object.keys(buildData.items).forEach((k: string) => {
       let item = buildData.items[k] as Item
       if(item && item.stats) {
+        // @ts-ignore TODO: useDownlevelIterations
         for(let k2 of item.stats.keys()) {
-          let val = item.stats.get(k2).value
-          switch(k2) {
-            case "Discipline":
-              stats.discipline.value += val;
-              break;
-            case "Intellect":
-              stats.intellect.value += val;
-              break;
-            case "Mobility":
-              stats.mobility.value += val;
-              break;
-            case "Strength":
-              stats.strength.value += val;
-              break;
-            case "Resilience":
-              stats.resilience.value += val;
-              break;
-            case "Recovery":
-              stats.recovery.value += val;
-              break;
+          if(item && item.stats && item.stats.get(k2)) {
+            let val = item.stats.get(k2).value
+            switch(k2) {
+              case "Discipline":
+                stats.discipline.value += val;
+                break;
+              case "Intellect":
+                stats.intellect.value += val;
+                break;
+              case "Mobility":
+                stats.mobility.value += val;
+                break;
+              case "Strength":
+                stats.strength.value += val;
+                break;
+              case "Resilience":
+                stats.resilience.value += val;
+                break;
+              case "Recovery":
+                stats.recovery.value += val;
+                break;
+            }
           }
         }
       }
@@ -755,7 +758,6 @@ function CreateBuild(props: Props) {
           <BuildAd />
         </Container>
       )}
-
 
     <ForgeModal
       show={isClassSelectModalOpen}

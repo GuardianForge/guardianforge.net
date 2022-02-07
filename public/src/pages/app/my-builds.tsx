@@ -24,8 +24,21 @@ function UserBuilds() {
     async function init() {
       const { ForgeClient } = window.services
       if(ForgeClient.isLoggedIn()) {
+        let builds: Array<BuildSummary> = []
         if(ForgeClient.userBuilds) {
-          setBuilds(ForgeClient.userBuilds)
+          builds = ForgeClient.userBuilds
+          // setBuilds(ForgeClient.userBuilds)
+        }
+        if(ForgeClient.privateBuilds) {
+          Object.keys(ForgeClient.privateBuilds).forEach((k: string) => {
+            let b = ForgeClient.privateBuilds[k]
+            b.id = k
+            b.isPrivate = true
+            builds.push(b)
+          })
+        }
+        if(builds && builds.length > 0) {
+          setBuilds(builds)
         }
         setCompState(State.DONE)
       }

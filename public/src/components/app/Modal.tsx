@@ -47,7 +47,7 @@ function ForgeModal(props: Props) {
   }
 
   return (
-    <Wrapper className={className} show={show} onHide={onHideHandler} scrollable={scrollable} centered={centered} fullscreen={fullscreen} size={size}>
+  <Wrapper className={className} show={show} onHide={onHideHandler} scrollable={scrollable ? scrollable : true} centered={centered} fullscreen={fullscreen} size={size}>
       <Modal.Header>
         {header ? (
           <>{ header }</>

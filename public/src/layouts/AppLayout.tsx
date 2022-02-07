@@ -9,10 +9,11 @@ import colors from "../colors"
 import { GlobalContext } from "../contexts/GlobalContext.jsx"
 import { Enums } from '@guardianforge/destiny-data-utils'
 import UserMenu from '../components/app/UserMenu'
-import { Image } from 'react-bootstrap'
+import { Image, Offcanvas } from 'react-bootstrap'
 // @ts-ignore
 import SiteLogo from "../images/site-logo.png"
 import Input from '../components/app/forms/Input'
+import UserMenuMobile from '../components/app/UserMenuMobile'
 
 
 const Layout = styled.div`
@@ -21,17 +22,117 @@ const Layout = styled.div`
   position: relative;
 `
 
+const MobileMenu = styled(Offcanvas)`
+  background-color: ${colors.theme2.bg} !important;
+
+  .logo {
+    margin-right: 10px;
+  }
+
+  .nav-header {
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      color: ${colors.theme2.text};
+    }
+  }
+
+  .nav-main {
+    flex: 1;
+    min-height: 1px;
+    overflow-y: scroll;
+
+    .nav-section {
+      margin-bottom: 10px;
+    }
+
+    .nav-section-header {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    ul {
+      margin: 0px;
+      padding: 0px;
+    }
+
+    li {
+      list-style-type: none;
+      margin-bottom: 2px;
+
+      a {
+        padding: 8px 0px;
+      }
+    }
+  }
+
+  .nav-footer {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+  }
+
+  .nav-link {
+		text-decoration: none;
+		color: #aaa !important;
+		padding: 5px;
+		margin: 0px 0px 25px 5px;
+    font-size: 18px;
+    color: ${colors.theme2.icon} !important;
+    display: flex;
+    align-items: center;
+
+		&:hover {
+			color: #fff !important;
+      cursor: pointer;
+
+      .nav-icon-wrapper {
+        background-color: ${colors.theme2.accent2};
+      }
+		}
+
+    &-active {
+      color: #fff !important;
+      /* font-weight: 800; */
+
+      .nav-icon-wrapper {
+        background-color: ${colors.theme2.accent1};
+      }
+
+      &:hover {
+        .nav-icon-wrapper {
+          background-color: ${colors.theme2.accent1} !important;
+        }
+      }
+    }
+
+    .nav-icon-wrapper {
+      /* background-color: ${colors.theme2.dark2}; */
+      margin-right: 10px;
+      padding: 12px;
+      height: 30px;
+      width: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+    }
+	}
+`
+
 const Sidebar = styled.div`
   width: 250px;
   background-color: ${colors.theme2.bg};
-  /* border-right: 1px solid ${colors.theme2.border}; */
   display: flex;
   flex-direction: column;
   z-index: 200;
 
   .logo {
     margin-right: 10px;
-
   }
 
   @media screen and (max-width: 992px) {
@@ -180,6 +281,10 @@ const AppBar = styled.div`
 
     .app-bar-title {
       font-size: 22px;
+
+      &-small {
+        font-size: 16px !important;
+      }
     }
   }
 
@@ -268,17 +373,8 @@ function AppLayout(props: Props) {
     setIsMenuOpen(true)
   }
 
-  function onNavCloseBtnClicked() {
+  function onMenuHidden() {
     setIsMenuOpen(false)
-  }
-
-  function navigateTo(name: string, to: string) {
-    setPageTitle(name)
-    navigate(to)
-  }
-
-  function showCreateBuildModal() {
-    navigateTo("Create Build", "/app/create-build")
   }
 
   const navItems = [
@@ -316,22 +412,19 @@ function AppLayout(props: Props) {
 
   return (
     <Layout id="appLayout">
-      <SidebarOverlay className={`d-xl-none ${isMenuOpen ? "" : "d-none"}`} onClick={() => setIsMenuOpen(false)}/>
-      <Sidebar className={isMenuOpen ? "" : "d-none d-xl-flex"}>
+      {/* <SidebarOverlay className={`d-xl-none ${isMenuOpen ? "" : "d-none"}`} onClick={() => setIsMenuOpen(false)}/> */}
+      <Sidebar className="d-none d-xl-flex">
         <div className="nav-header">
           <div className="branding">
             <Link to="/app">
               <img className="logo" alt="GuardianForge Logo" height="40" width="40" src={SiteLogo} />GuardianForge
             </Link>
           </div>
-          {isMenuOpen && (
+          {/* {isMenuOpen && (
             <FontAwesomeIcon className="nav-close-btn" icon={faTimes} onClick={onNavCloseBtnClicked}/>
-          )}
+          )} */}
         </div>
         <div className="nav-main">
-          {/* {guardians.map((guardian: Guardian) => (
-            <div>{ guardian.id }</div>
-          ))} */}
           <div className="nav-section">
             <ul>
               {navItems.map((ni: any, idx: any) => (
@@ -345,25 +438,51 @@ function AppLayout(props: Props) {
           </div>
         </div>
         <div className="nav-footer">
-          {/* <FontAwesomeIcon icon={faArrowLeft} /> */}
         </div>
       </Sidebar>
+
+      {/* Mobile Menu */}
+      <MobileMenu className="mobile-menu" show={isMenuOpen} onHide={onMenuHidden}>
+        <Offcanvas.Header className="nav-header" closeButton closeVariant='white'>
+          <Offcanvas.Title>
+            <Link to="/app" onClick={() => setIsMenuOpen(false)}>
+              <img className="logo" alt="GuardianForge Logo" height="40" width="40" src={SiteLogo} />GuardianForge
+            </Link>
+          </Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <div className="nav-main">
+            <div className="nav-section">
+              <UserMenuMobile onMenuItemClicked={() => setIsMenuOpen(false)} />
+              <ul>
+                {navItems.map((ni: any, idx: any) => (
+                  <li key={`nav-item-${idx}`}>
+                    <Link className={`nav-link ${location.pathname === ni.path ? 'nav-link-active' : ''}`} to={ni.path} onClick={() => setIsMenuOpen(false)}>
+                      <div className="nav-icon-wrapper"><FontAwesomeIcon icon={ni.icon} /></div> {ni.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="nav-footer">
+          </div>
+        </Offcanvas.Body>
+      </MobileMenu>
+
       <Main id="appLayoutMain">
         <AppBar>
           <div className="app-bar-left">
             <FontAwesomeIcon onClick={onMenuBtnClicked} icon={faBars} className="menu-btn d-block d-xl-none d-xxl-none" />
-            <div className="app-bar-title">
+            <div className={`app-bar-title d-block d-xl-none d-xxl-none ${pageTitle && pageTitle.length > 28 ? "app-bar-title-small" : ""}`}>
+              {pageTitle}
+            </div>
+
+            <div className="app-bar-title d-none d-xl-block">
               {pageTitle}
             </div>
           </div>
-          <div className="app-bar-right">
-            {/* <FontAwesomeIcon icon={faSearch} /> */}
-            {/* <a className="create-build-icon" href="#" onClick={showCreateBuildModal}>
-              <FontAwesomeIcon icon={faPlus} />
-            </a> */}
-            {/* <div className='search-wrapper'>
-              <Input placeholder='Search...' prefixIcon={faSearch} value={search} onChange={(e: any) => setSearch(e.target.value)} />
-            </div> */}
+          <div className="app-bar-right d-none d-xl-block">
             <UserMenu />
           </div>
         </AppBar>
