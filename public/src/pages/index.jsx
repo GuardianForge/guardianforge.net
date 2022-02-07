@@ -7,6 +7,8 @@ import LogoNoBg from "../images/logo-no-bg.png"
 import Loading from "../components/Loading"
 import { GlobalContext } from "../contexts/GlobalContext"
 import { Helmet } from "react-helmet"
+import { Alert } from "react-bootstrap"
+import { Link } from "gatsby"
 
 // styles
 const GuardianForgeImage = styled.img`
@@ -67,41 +69,48 @@ const IndexPage = () => {
           <p className="lead">The best way to create and share Destiny 2 builds with your friends & audience.</p>
         </div>
       </div>
-        <div className="row py-5 my-5">
-          <h2 className="col-md-12">How it works</h2>
-          <div className="col-md-4">
-            <HomeInfoCard icon="search" title="Search." color="arc">
-              Search for a user within the Destiny userbase, or sign in to see your own Guardians!
-            </HomeInfoCard>
-          </div>
-          <div className="col-md-4">
-            <HomeInfoCard icon="cube" title="Build." color="solar">
-              Highlight your Guardian's best gear, specify your play style, and explain why it works together.
-            </HomeInfoCard>
-          </div>
-          <div className="col-md-4">
-            <HomeInfoCard icon="share" title="Share." color="void">
-              Easily share your build with your friends, fireteam, or anyone in the world!
-            </HomeInfoCard>
-          </div>
+
+      <div>
+        <Alert>
+          A new GuardianForge is coming! Read more about it <Link to="/blog/a-new-guardianforge-is-coming">here</Link>.
+        </Alert>
+      </div>
+
+      <div className="row py-5 my-5">
+        <h2 className="col-md-12">How it works</h2>
+        <div className="col-md-4">
+          <HomeInfoCard icon="search" title="Search." color="arc">
+            Search for a user within the Destiny userbase, or sign in to see your own Guardians!
+          </HomeInfoCard>
         </div>
-
-
-        <div className="row">
-          <h2>Latest Builds</h2>
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <>
-              {latestBuilds.map(bs => (
-                <div key={bs.id} className="col-md-4">
-                  <BuildSummaryCard buildSummary={bs} />
-                </div>
-              ))}
-            </>
-          )}
+        <div className="col-md-4">
+          <HomeInfoCard icon="cube" title="Build." color="solar">
+            Highlight your Guardian's best gear, specify your play style, and explain why it works together.
+          </HomeInfoCard>
+        </div>
+        <div className="col-md-4">
+          <HomeInfoCard icon="share" title="Share." color="void">
+            Easily share your build with your friends, fireteam, or anyone in the world!
+          </HomeInfoCard>
         </div>
       </div>
+
+
+      <div className="row">
+        <h2>Latest Builds</h2>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {latestBuilds.map(bs => (
+              <div key={bs.id} className="col-md-4">
+                <BuildSummaryCard buildSummary={bs} />
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    </div>
   )
 }
 

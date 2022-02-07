@@ -26,8 +26,7 @@ function UserBuilds() {
       if(ForgeClient.isLoggedIn()) {
         let builds: Array<BuildSummary> = []
         if(ForgeClient.userBuilds) {
-          builds = ForgeClient.userBuilds
-          // setBuilds(ForgeClient.userBuilds)
+          builds = [...ForgeClient.userBuilds]
         }
         if(ForgeClient.privateBuilds) {
           Object.keys(ForgeClient.privateBuilds).forEach((k: string) => {

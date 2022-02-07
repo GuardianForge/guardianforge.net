@@ -8,6 +8,8 @@ import { Helmet } from 'react-helmet'
 import BuildAd from '../../components/ads/BuildAd';
 import StatBar from '../../components/build/StatBar';
 import BuildMetaPanel from '../../components/build/BuildMetaPanel'
+import { Alert } from 'react-bootstrap'
+import { Link } from 'gatsby'
 
 const Wrapper = styled.div`
   @media (max-width: 576px) {
@@ -105,6 +107,13 @@ function Build({ buildId }) {
       )}
       {compState === COMP_STATE.DONE && (
         <div id="build">
+
+        <div style={{ marginTop: "15px" }}>
+          <Alert>
+            A new GuardianForge is coming! Read more about it <Link to="/blog/a-new-guardianforge-is-coming">here</Link>.
+          </Alert>
+        </div>
+
           <h1>{ buildName }</h1>
           <BuildMetaPanel
             buildId={buildId}
