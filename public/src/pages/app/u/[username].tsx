@@ -13,6 +13,24 @@ import Guardian from '../../../models/Guardian'
 import User from '../../../models/User'
 import DestinyMembership from '../../../models/DestinyMembership'
 import Card from '../../../components/app/ui/Card'
+import { Col, Row } from 'react-bootstrap'
+import ForgeButton from '../../../components/app/forms/Button'
+
+const Wrapper = styled.div`
+  .error-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    span {
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 200px;
+    }
+  }
+`
 
 const UserMenuWrapper = styled(Card)`
 	.user-info {
@@ -87,7 +105,8 @@ const ForgeUserInfoWrapper = styled.div`
 const COMPSTATE = {
   LOADING: 1,
   DONE: 2,
-  NO_DATA: 3
+  NO_DATA: 3,
+  NO_MEMBERSHIPS: 4,
 }
 
 type Props = {
@@ -105,18 +124,24 @@ function PublicProfile(props: Props) {
   const [guardians, setGuardians] = useState<Array<Guardian>>([])
   const [compState, setCompState] = useState(COMPSTATE.LOADING)
   const [areBuildsShown, setAreBuildsShown] = useState(false)
+  const [userHasNoDestinyMemberships, setUserHasNoDestinyMemberships] = useState(false)
+
 
   useEffect(() => {
     async function init() {
       if(!isConfigLoaded) return
       let code = location.hash.replace("#", "")
-      console.log(username, code)
       const { BungieApiService, ForgeApiService } = window.services
       const searchRes = await BungieApiService.searchBungieNetUsers(username)
       // TODO: Handle this better
       if(searchRes && searchRes.length > 0) {
         let user = searchRes.find((el: User) => el.bungieGlobalDisplayName === username && el.bungieGlobalDisplayNameCode === Number(code))
         setUser(user)
+        if (!user.destinyMemberships || user.destinyMemberships.length === 0) {
+          setUserHasNoDestinyMemberships(true)
+          setCompState(COMPSTATE.NO_MEMBERSHIPS)
+          return
+        }
 
         setPageTitle(`${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`)
 
@@ -149,17 +174,36 @@ function PublicProfile(props: Props) {
     navigate(`/app/g/${membership.type}-${membership.id}-${guardianId}`)
   }
 
+  function goToSearch() {
+    navigate(`/app/find-players`)
+  }
+
   return (
-    <div>
+    <Wrapper>
       <Helmet>
         <title>GuardianForge</title>
       </Helmet>
       <div className="container-fluid pt-3">
         {compState === COMPSTATE.LOADING && (<Loading />)}
         {compState === COMPSTATE.NO_DATA && (
-          <div>
-            Unable to load this user's Guardians. Please check the username or try again later.
-          </div>
+          <Row>
+            <Col>
+              <div className="error-wrapper">
+                <span>Unable to load this user's Guardians. Please check the username or try again later.</span>
+                <ForgeButton onClick={goToSearch}>Back to Find Players</ForgeButton>
+              </div>
+            </Col>
+          </Row>
+        )}
+        {compState === COMPSTATE.NO_MEMBERSHIPS && (
+          <Row>
+            <Col>
+              <div className="error-wrapper">
+                <span>This user has no Destiny memberships.</span>
+                <ForgeButton onClick={goToSearch}>Back to Find Players</ForgeButton>
+              </div>
+            </Col>
+          </Row>
         )}
         {compState === COMPSTATE.DONE && (
           <div className="row">
@@ -236,7 +280,7 @@ function PublicProfile(props: Props) {
           </div>
         )}
       </div>
-    </div>
+    </Wrapper>
   )
 }
 

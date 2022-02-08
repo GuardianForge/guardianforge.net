@@ -9,6 +9,8 @@ type User = {
   userInfo?: UserInfo
   builds?: Array<BuildSummary>
   user?: UserInfo
+  // TODO: Create a model from this
+  destinyMemberships?: Array<any>
 }
 
 export type BungieNetUser = {
