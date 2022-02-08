@@ -92,7 +92,7 @@ function MainLayout({ wide, children }) {
       <Footer />
 
       <AlertLayer />
-      <BetaModal />
+      {/* <BetaModal /> */}
     </Wrapper>
   )
 }
