@@ -1,4 +1,4 @@
-import { BungieApiService, Enums, Item, ManifestService, SocketItem } from "@guardianforge/destiny-data-utils"
+import { BungieApiService, Enums, Item, ManifestService, Socket, SocketItem } from "@guardianforge/destiny-data-utils"
 import { ItemTypeEnum } from "@guardianforge/destiny-data-utils/dist/models/Enums"
 // @ts-ignore
 import buildUtils from "../utils/buildUtils"
@@ -176,18 +176,72 @@ export class BuildItem {
       }
       return buildItem
     }
-    if(item.itemType === ItemTypeEnum.Subclass) {
+
+    if(item.isSubclass()) {
+      let buildItem = new BuildItem()
+      buildItem.slot = "subclass"
+      buildItem.itemInstanceId = item._meta.inventoryItem.itemInstanceId
+      buildItem.itemHash = item._meta.inventoryItem.itemHash
+      buildItem.name = item.name
+      buildItem.iconUrl = item.iconUrl
+
       if(item.getSubclassVersion() === 3) {
-        // TODO: Implement v3 subclass
+        buildItem.abilities = []
+        buildItem.aspects = []
+        buildItem.fragments = []
+
+        if(item.sockets) {
+          let abilitySockets = item.sockets.filter((s: Socket) => s._meta?.categoryDefinition.displayProperties.name === "ABILITIES")
+          abilitySockets.forEach((s: Socket) => {
+            if(s.equippedPlug) {
+              let plugItem: BuildItemPlug = {
+                plugHash: s.equippedPlug._meta?.manifestDefinition.hash,
+                iconUrl: s.equippedPlug.iconUrl,
+                itemInstanceId: buildItem.itemInstanceId,
+                socketIndex: s.position,
+                name: s.equippedPlug.name,
+                isEmpty: false // CANNOT be empty
+              }
+              buildItem.abilities?.push(plugItem)
+            }
+          })
+
+          let aspectSockets = item.sockets.filter((s: Socket) => s._meta?.categoryDefinition.displayProperties.name === "ASPECTS")
+          aspectSockets.forEach((s: Socket) => {
+            if(s.equippedPlug) {
+              let plugItem: BuildItemPlug = {
+                plugHash: s.equippedPlug._meta?.manifestDefinition.hash,
+                iconUrl: s.equippedPlug.iconUrl,
+                itemInstanceId: buildItem.itemInstanceId,
+                socketIndex: s.position,
+                name: s.equippedPlug.name,
+                isEmpty: s.equippedPlug.name === "Empty Aspect Socket"
+              }
+              buildItem.aspects?.push(plugItem)
+            }
+          })
+
+          let fragmentSockets = item.sockets.filter((s: Socket) => s._meta?.categoryDefinition.displayProperties.name === "FRAGMENTS")
+          fragmentSockets.forEach((s: Socket) => {
+            if(s.equippedPlug) {
+              let plugItem: BuildItemPlug = {
+                plugHash: s.equippedPlug._meta?.manifestDefinition.hash,
+                iconUrl: s.equippedPlug.iconUrl,
+                itemInstanceId: buildItem.itemInstanceId,
+                socketIndex: s.position,
+                name: s.equippedPlug.name,
+                isEmpty: s.equippedPlug.name === "Empty Fragment Socket"
+              }
+              buildItem.fragments?.push(plugItem)
+            }
+          })
+        }
       } else {
-        // V2 Subclass
-        let buildItem: BuildItem = {
-          itemInstanceId: item._meta.inventoryItem.itemInstanceId,
-          itemHash: item._meta.inventoryItem.itemHash,
-          name: item.name,
-          iconUrl: item.iconUrl,
-          superConfig: {},
-          isLightSubclass: true
+        buildItem.superConfig = {}
+        buildItem.isLightSubclass = true
+
+        if(item.damageType && buildItem.superConfig) {
+          buildItem.superConfig.damageType = item.damageType
         }
 
         let grenade: any = item.getEquippedGrenade()
@@ -225,8 +279,9 @@ export class BuildItem {
           }
           buildItem.superConfig?.treeNodes?.push(node)
         })
-        return buildItem
       }
+
+      return buildItem
     }
     return undefined
   }

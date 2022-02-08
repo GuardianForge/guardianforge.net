@@ -210,7 +210,8 @@ function Build(props: Props) {
               <BuildAd />
             </Col>
             <Col xxl="4" className="d-none d-xxl-block">
-              {(buildData.inputStyle || buildData.notes || buildData.primaryActivity) && (
+              {/* TODO: Fix this, still displays if its all empty */}
+              {(buildData.inputStyle !== "" || buildData.notes !== "" || buildData.primaryActivity !== "1") && (
                 <BuildNotesCard notes={buildData.notes} inputStyle={buildData.inputStyle} primaryActivityKey={buildData.primaryActivity} />
               )}
               {(createdBy || guardianOf) && <PlayerInfoCard createdBy={createdBy} guardianOf={guardianOf} />}

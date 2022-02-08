@@ -27,6 +27,7 @@ const Wrapper = styled.div`
     font-style: italic;
     border-radius: 5px;
     text-align: center;
+    padding: 10px;
   }
 `
 

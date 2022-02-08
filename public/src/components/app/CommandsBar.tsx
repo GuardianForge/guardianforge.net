@@ -23,6 +23,7 @@ import activityOptions from "../../utils/activityOptions"
 import { GlobalContext } from "../../contexts/GlobalContext.jsx"
 import { navigate } from 'gatsby';
 import BuildSummary from '../../models/BuildSummary';
+import BookmarkButton from './BookmarkButton';
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,6 +32,10 @@ const Wrapper = styled.div`
   padding: 5px;
   color: ${colors.theme2.text};
   margin: 5px 0px 10px 0px;
+
+  @media screen and (max-width: 576px) {
+    justify-content: space-between;
+  }
 
   button, a {
     color: #eee;
@@ -64,11 +69,11 @@ type Props = {
   buildData: Build
   isOwner?: boolean
   onBuildUpdated?: Function
-  onBuildArchived?: Function
+  onBookmarkBuild?: Function
 }
 
 function CommandsBar(props: Props) {
-  const { buildId, buildData, isOwner, onBuildUpdated, onBuildArchived } = props
+  const { buildId, buildData, isOwner, onBuildUpdated } = props
   const { dispatchAlert } = useContext(GlobalContext)
   const [isBuildArchived, setIsBuildArchived] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
@@ -204,22 +209,23 @@ function CommandsBar(props: Props) {
         ) : (
           <FontAwesomeIcon icon="link" />
         )}
-        Copy Link
+        <span className="d-none d-sm-inline">Copy Link</span>
       </Button>
       <Button as="a" className="btn-twitter" href={twitterLink} target="_blank">
-        <FontAwesomeIcon icon={['fab', 'twitter']} /> Share
+        <FontAwesomeIcon icon={['fab', 'twitter']} /> <span className="d-none d-sm-inline">Share</span>
       </Button>
+      <BookmarkButton buildId={buildId} buildData={buildData} />
       {isOwner && !isBuildArchived && (
         <>
           <Seperator />
           {!isEditing && (
             <Button onClick={() => setIsArchiveBuildModalOpen(true)}>
-              <FontAwesomeIcon icon={faBox} /> Archive
+              <FontAwesomeIcon icon={faBox} /> <span className="d-none d-sm-inline">Archive</span>
             </Button>
           )}
           {!isEditing && (
             <Button onClick={() => editBuild()}>
-              <FontAwesomeIcon icon={faEdit} /> Edit
+              <FontAwesomeIcon icon={faEdit} /> <span className="d-none d-sm-inline">Edit</span>
             </Button>
           )}
         </>
