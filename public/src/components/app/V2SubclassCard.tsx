@@ -107,16 +107,16 @@ const SubclassConfigModalBody = styled(Container)`
       border: 2px solid rgba(0,0,0,0);
 
       &:hover {
-        border: 2px solid ${colors.theme2.accent1};
+        border: 2px solid ${colors.theme2.accent2};
         cursor: pointer;
       }
     }
 
     .selected {
-      border: 2px solid yellow;
+      border: 2px solid ${colors.theme2.accent1};
 
       &:hover {
-        border: 2px solid yellow;
+        border: 2px solid ${colors.theme2.accent1};
         cursor: pointer;
       }
     }

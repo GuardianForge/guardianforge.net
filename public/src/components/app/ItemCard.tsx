@@ -47,7 +47,7 @@ const Wrapper = styled(Card)`
   }
 
   .highlighted {
-    border: 2px solid ${colors.theme2.accent1};
+    border: 2px solid yellow;
   }
 
   .affinity-icon {

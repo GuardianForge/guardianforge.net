@@ -13,6 +13,10 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
+  &:hover {
+    color: inherit !important;
+  }
+
   svg {
     color: ${props => props.isBookmarked ? "red" : "inherit"};
   }

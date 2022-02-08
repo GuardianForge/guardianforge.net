@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     border: 4px solid rgba(150,150,150,0.7);
 
     &-selected {
-      border: 4px solid yellow;
+      border: 4px solid ${colors.theme2.accent1};
     }
 
     &-clickable:hover {

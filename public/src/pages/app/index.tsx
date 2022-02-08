@@ -20,7 +20,7 @@ function AppIndex() {
   const [latestBuilds, setLatestBuilds] = useState([])
 
   useEffect(() => {
-    setPageTitle("")
+    setPageTitle("Home")
     if(!isInitDone) return
     async function init() {
       const { ForgeClient, ForgeApiService } = window.services

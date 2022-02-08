@@ -43,7 +43,7 @@ function StatBar({ stats, highlights, onStatClicked }) {
     <Wrapper>
       {stats.mobility && (
         <Stat
-          iconUrl={stats.mobility.icon}
+          iconUrl="/img/stats/mob.png"
           value={stats.mobility.value}
           name="mobility"
           onClick={onStatClicked ? onStatClicked : null}
@@ -52,7 +52,7 @@ function StatBar({ stats, highlights, onStatClicked }) {
 
       {stats.resilience && (
         <Stat
-          iconUrl={stats.resilience.icon}
+          iconUrl="/img/stats/res.png"
           value={stats.resilience.value}
           name="resilience"
           onClick={onStatClicked ? onStatClicked : null}
@@ -61,7 +61,7 @@ function StatBar({ stats, highlights, onStatClicked }) {
 
       {stats.recovery && (
         <Stat
-          iconUrl={stats.recovery.icon}
+          iconUrl="/img/stats/rec.png"
           value={stats.recovery.value}
           name="recovery"
           onClick={onStatClicked ? onStatClicked : null}
@@ -70,7 +70,7 @@ function StatBar({ stats, highlights, onStatClicked }) {
 
       {stats.discipline && (
         <Stat
-          iconUrl={stats.discipline.icon}
+          iconUrl="/img/stats/dis.png"
           value={stats.discipline.value}
           name="discipline"
           onClick={onStatClicked ? onStatClicked : null}
@@ -79,7 +79,7 @@ function StatBar({ stats, highlights, onStatClicked }) {
 
       {stats.intellect && (
         <Stat
-          iconUrl={stats.intellect.icon}
+          iconUrl="/img/stats/int.png"
           value={stats.intellect.value}
           name="intellect"
           onClick={onStatClicked ? onStatClicked : null}
@@ -88,7 +88,7 @@ function StatBar({ stats, highlights, onStatClicked }) {
 
       {stats.strength && (
         <Stat
-          iconUrl={stats.strength.icon}
+          iconUrl="/img/stats/str.png"
           value={stats.strength.value}
           name="strength"
           onClick={onStatClicked ? onStatClicked : null}

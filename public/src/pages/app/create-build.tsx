@@ -401,6 +401,9 @@ function CreateBuild(props: Props) {
       // TODO: Move this into the new Client
       let token = await ForgeClient.getToken()
       const buildId = await ForgeApiService.createBuild(build, token)
+      let buildSummary = build.toBuildSummary(buildId)
+      ForgeClient.userBuilds.push(buildSummary)
+
       navigate(`/app/build/${buildId}`)
     } catch(err) {
       // TODO: HANDLE

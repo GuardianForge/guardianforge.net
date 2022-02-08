@@ -37,10 +37,24 @@ const Wrapper = styled.div`
     justify-content: space-between;
   }
 
+  .dim-btn {
+    display: flex;
+    align-items: center;
+  }
+
+  .dim-logo {
+    height: 16px;
+    width: 16px;
+  }
+
   button, a {
     color: #eee;
     background-color: rgba(0,0,0,0);
     border: none;
+
+    span {
+      margin-left: 3px;
+    }
 
     &:hover {
       background-color: ${colors.theme2.dark3};
@@ -77,6 +91,7 @@ function CommandsBar(props: Props) {
   const { dispatchAlert } = useContext(GlobalContext)
   const [isBuildArchived, setIsBuildArchived] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const [isDIMCopied, setIsDIMCopied] = useState(false)
   const [shareLink, setShareLink] = useState("")
   const [twitterLink, setTwitterLink] = useState("")
   const [isEditing, setIsEditing] = useState(false)
@@ -94,6 +109,14 @@ function CommandsBar(props: Props) {
     copy(shareLink)
     setIsCopied(true)
     setTimeout(() => setIsCopied(false), 3000)
+  }
+
+  function copyDIMLink() {
+    let b = Object.assign(new Build(), buildData)
+    let url = b.toDIMLink()
+    copy(url)
+    setIsDIMCopied(true)
+    setTimeout(() => setIsDIMCopied(false), 3000)
   }
 
   function editBuild() {
@@ -213,6 +236,14 @@ function CommandsBar(props: Props) {
       </Button>
       <Button as="a" className="btn-twitter" href={twitterLink} target="_blank">
         <FontAwesomeIcon icon={['fab', 'twitter']} /> <span className="d-none d-sm-inline">Share</span>
+      </Button>
+      <Button onClick={copyDIMLink} className="dim-btn">
+      {isDIMCopied ? (
+          <span>👍</span>
+        ) : (
+          <img src="/img/dim-logo.svg" className="dim-logo" />
+        )}
+        <span className="d-none d-sm-inline">DIM Link</span>
       </Button>
       <BookmarkButton buildId={buildId} buildData={buildData} />
       {isOwner && !isBuildArchived && (

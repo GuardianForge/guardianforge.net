@@ -6,6 +6,7 @@ type BuildSummary = {
   upvotes: number
   username: string
   isPrivate?: boolean
+  userId?: string
 }
 
 export default BuildSummary

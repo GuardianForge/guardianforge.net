@@ -2,6 +2,7 @@ import { BungieApiService, Enums, Item, ManifestService, Socket, SocketItem } fr
 import { ItemTypeEnum } from "@guardianforge/destiny-data-utils/dist/models/Enums"
 // @ts-ignore
 import buildUtils from "../utils/buildUtils"
+import BuildSummary from "./BuildSummary"
 
 type DIMModsByBucket = {
   [bucket: string]: Array<number>
@@ -29,7 +30,214 @@ class Build {
 
   toDIMLink(): string {
     let url = `https://app.destinyitemmanager.com/optimizer?class=${this.class}&p=`
+    let loadout: DIMLoadoutModel = {
+      mods: []
+    }
+    if(this.items && this.items.kinetic && this.items.kinetic.mods) {
+      this.items.kinetic.mods.forEach(m => {
+        if(m.plugHash && m.name !== "Empty Mod Socket") {
+          loadout.mods?.push(Number(m.plugHash))
+        }
+      })
+    }
+    if(this.items && this.items.energy && this.items.energy.mods) {
+      this.items.energy.mods.forEach(m => {
+        if(m.plugHash && m.name !== "Empty Mod Socket") {
+          loadout.mods?.push(Number(m.plugHash))
+        }
+      })
+    }
+    if(this.items && this.items.power && this.items.power.mods) {
+      this.items.power.mods.forEach(m => {
+        if(m.plugHash && m.name !== "Empty Mod Socket") {
+          loadout.mods?.push(Number(m.plugHash))
+        }
+      })
+    }
+    if(this.items && this.items.helmet && this.items.helmet.mods) {
+      this.items.helmet.mods.forEach(m => {
+        if(m.plugHash && m.name !== "Empty Mod Socket") {
+          loadout.mods?.push(Number(m.plugHash))
+        }
+      })
+    }
+    if(this.items && this.items.arms && this.items.arms.mods) {
+      this.items.arms.mods.forEach(m => {
+        if(m.plugHash && m.name !== "Empty Mod Socket") {
+          loadout.mods?.push(Number(m.plugHash))
+        }
+      })
+    }
+    if(this.items && this.items.chest && this.items.chest.mods) {
+      this.items.chest.mods.forEach(m => {
+        if(m.plugHash && m.name !== "Empty Mod Socket") {
+          loadout.mods?.push(Number(m.plugHash))
+        }
+      })
+    }
+    if(this.items && this.items.legs && this.items.legs.mods) {
+      this.items.legs.mods.forEach(m => {
+        if(m.plugHash && m.name !== "Empty Mod Socket") {
+          loadout.mods?.push(Number(m.plugHash))
+        }
+      })
+    }
+    if(this.items && this.items.classItem && this.items.classItem.mods) {
+      this.items.classItem.mods.forEach(m => {
+        if(m.plugHash && m.name !== "Empty Mod Socket") {
+          loadout.mods?.push(Number(m.plugHash))
+        }
+      })
+    }
+    url += encodeURIComponent(JSON.stringify(loadout))
+    return url
+  }
 
+  toBuildSummary(buildId: string): BuildSummary {
+    let summary: BuildSummary = {
+      id: buildId,
+      name: this.name ? this.name : `Build ${buildId}`,
+      highlights: [],
+      primaryIconSet: "",
+      upvotes: 0,
+      username: ""
+    }
+
+    if(this.selectedUser && summary.userId) {
+      summary.userId = this.selectedUser.bungieNetUserId
+    }
+
+    if(this.selectedUser && this.selectedUser.displayName) {
+      summary.username = this.selectedUser.displayName
+    }
+
+    if(this.highlights && this.highlights.length > 0) {
+      // parse highlights
+      this.highlights.forEach(h => {
+        if(summary.highlights.length < 3) {
+          let icon = this.parseHighlightIcon(h)
+          summary.highlights.push(icon)
+        }
+      })
+    } else {
+      if(this.items && this.items.kinetic && this.items.kinetic.iconUrl) {
+        summary.highlights.push(this.items.kinetic.iconUrl)
+      }
+      if(this.items && this.items.energy && this.items.energy.iconUrl) {
+        summary.highlights.push(this.items.energy.iconUrl)
+      }
+      if(this.items && this.items.power && this.items.power.iconUrl) {
+        summary.highlights.push(this.items.power.iconUrl)
+      }
+    }
+
+    if(this.items && this.items.subclass) {
+      if(this.items.subclass.isLightSubclass && this.items.subclass.superConfig) {
+        let { damageType, tree } = this.items.subclass.superConfig
+        summary.primaryIconSet = `${this.class}-${damageType}-${tree}`
+      } else {
+        // TODO: Fix this for void 3.0, it wont only be stasis after this
+        summary.primaryIconSet = `${this.class}-6`
+      }
+    }
+    return summary
+  }
+
+  private parseHighlightIcon(highlight: string): string {
+    let split = highlight.split("-")
+    let out
+    if(split[0] === "stat") {
+      // @ts-ignore
+      out = this.stats[split[1]].icon
+    }
+
+    if(split[0] === "ability") {
+      let socketIndex = split[2]
+
+      // @ts-ignore
+      this.items.subclass.abilities.forEach((el: any) => {
+        if(el.socketIndex === socketIndex) {
+          out = el.iconUrl
+        }
+      })
+    }
+
+    if(split[0] === "aspect") {
+      let socketIndex = split[2]
+
+      // @ts-ignore
+      this.items.subclass.aspects.forEach((el: any) => {
+        if(el.socketIndex === socketIndex) {
+          out = el.iconUrl
+        }
+      })
+    }
+
+    if(split[0] === "fragment") {
+      let socketIndex = split[2]
+
+      // @ts-ignore
+      this.items.subclass.fragments.forEach((el: any)=> {
+        if(el.socketIndex === socketIndex) {
+          out = el.iconUrl
+        }
+      })
+    }
+
+    if(split[0] === "perk") {
+      let socketIndex = split[2]
+      let item = this.getItemForInstanceId(split[1])
+
+      if(item && item.perks) {
+        item.perks.forEach((el: any) => {
+          if(el.socketIndex === socketIndex) {
+            out = el.iconUrl
+          }
+        })
+      }
+    }
+
+    if(split[0] === "mod") {
+      let socketIndex = split[2]
+      let item = this.getItemForInstanceId(split[1])
+
+      if(item && item.mods) {
+        item.mods.forEach((el: any) => {
+          if(el.socketIndex === socketIndex) {
+            out = el.iconUrl
+          }
+        })
+      }
+    }
+
+    if(split[0] === "subclass") {
+      // TODO: Fix this when summary images are made
+      if(split[1] !== "supertree") {
+        // @ts-ignore
+        out = build.items.subclass.superConfig[split[1]].iconUrl
+      }
+    }
+
+    if(split[0] === "item") {
+      let item = this.getItemForInstanceId(split[1])
+      if(item) {
+        out = item.iconUrl
+      }
+    }
+    return out
+  }
+
+  private getItemForInstanceId(instanceId: string): BuildItem {
+    let retVal = new BuildItem()
+    // @ts-ignore
+    Object.keys(this.items).forEach(k => {
+      // @ts-ignore
+      if(this.items[k].itemInstanceId === instanceId) {
+        // @ts-ignore
+        retVal = this.items[k]
+      }
+    })
+    return retVal
   }
 
   static async FromGuardianKey(bungieApiService: BungieApiService, manifestService: ManifestService, guardianKey: string): Promise<Build> {
