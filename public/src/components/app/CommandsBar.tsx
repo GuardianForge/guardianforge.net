@@ -98,11 +98,12 @@ function CommandsBar(props: Props) {
   const [isArchiveBuildModalOpen, setIsArchiveBuildModalOpen] = useState(false)
 
   useEffect(() => {
-    setShareLink(`${location.origin}/build/${buildId}`)
+    let link = `${location.origin}/build/${buildId}`
+    setShareLink(link)
 
     // TODO: Update this with the same thing I use for Notion
     let tweetText = "Checkout this build I found on @guardianforge!"
-    setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareLink}&hashtags=destiny2`)
+    setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${link}&hashtags=destiny2`)
   }, [])
 
   function copyToClipboard() {
