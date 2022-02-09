@@ -116,7 +116,7 @@ func createImage(bucketName string, key string) error {
 
 	for i := 0; count < 12 && i < 20; i++ {
 		url, isStat := getUrlForItemIndex(build, count)
-		if imgUrls[url] {
+		if url == "" || imgUrls[url] {
 			continue
 		}
 
