@@ -72,6 +72,10 @@ func createImage(bucketName string, key string) error {
 			log.Panic(err)
 		}
 
+		if url == "" {
+			continue
+		}
+
 		imgUrls[url] = true
 
 		res, err := http.Get(url)
