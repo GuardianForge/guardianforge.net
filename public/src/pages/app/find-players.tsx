@@ -5,8 +5,7 @@ import PlayerSearchResultCard from '../../components/app/PlayerSearchResultCard'
 import Loading from '../../components/app/Loading'
 import { Helmet } from 'react-helmet';
 import User from '../../models/User';
-// @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../../contexts/GlobalContext"
 
 const Wrapper = styled.div`
 	display: flex;

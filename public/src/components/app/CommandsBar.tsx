@@ -20,10 +20,11 @@ import { faYoutube } from '@fortawesome/free-brands-svg-icons';
 // @ts-ignore
 import activityOptions from "../../utils/activityOptions"
 // @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../../contexts/GlobalContext"
 import { navigate } from 'gatsby';
 import BuildSummary from '../../models/BuildSummary';
 import BookmarkButton from './BookmarkButton';
+import AlertDetail from '../../models/AlertDetail';
 
 const Wrapper = styled.div`
   display: flex;
@@ -192,12 +193,8 @@ function CommandsBar(props: Props) {
       ForgeClient.userBuilds = ForgeClient.userBuilds.filter((b: BuildSummary) => b.id !== buildId)
       setIsBuildArchived(true)
     } catch (err) {
-      dispatchAlert({
-        title: "Archiving Build",
-        body: "An error occurred while archiving this build. Please try again later...",
-        isError: true,
-        autohide: false,
-      })
+      let alert = new AlertDetail("An error occurred while archiving this build. Please try again later...", "Archiving Build", true, false)
+      dispatchAlert(alert)
     } finally {
       setIsArchiveBuildModalOpen(false)
       setIsSaving(false)
@@ -205,13 +202,11 @@ function CommandsBar(props: Props) {
   }
 
   async function createOgImage() {
-    let { ForgeClient, ForgeApiService } = window.services
+    let { ForgeClient } = window.services
     try {
       let res = await ForgeClient.createBuildOpengraphImage(buildId)
-      dispatchAlert({
-        title: "Image Created",
-        body: "Ok"
-      })
+      let alert = new AlertDetail(res, "Image Created")
+      dispatchAlert(alert)
     } catch (err) {
       console.error(err)
     }

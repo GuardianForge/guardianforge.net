@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../../contexts/GlobalContext"
 // @ts-ignore
 import buildUtils from '../../utils/buildUtils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

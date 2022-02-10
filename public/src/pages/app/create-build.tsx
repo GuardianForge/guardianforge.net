@@ -3,8 +3,7 @@ import { Row, Col, Container, Button, Form, Alert, ButtonGroup, OverlayTrigger, 
 import styled from 'styled-components'
 import colors from '../../colors'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-// @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../../contexts/GlobalContext"
 import { InventoryManager, Item, Enums, SocketItem  } from '@guardianforge/destiny-data-utils'
 import EquipmentItem from '../../components/app/EquipmentItem'
 import Subclass from '../../components/app/Subclass'

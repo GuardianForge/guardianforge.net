@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
+// @ts-ignore
 import { GlobalContext } from '../../contexts/GlobalContext'
+import AlertDetail from '../../models/AlertDetail'
 import AlertToast from './AlertToast'
 import ReportErrorModal from './ReportErrorModal'
 
@@ -31,10 +33,11 @@ const Wrapper = styled.div`
 `
 
 function AlertLayer() {
+  // @ts-ignore
   const { isErrorBeingReported } = useContext(GlobalContext)
   const [isModalShowing, setIsModalShowing] = useState(false)
   const [isHandlerRegistered, setIsHandlerRegistered] = useState(false)
-  const [alerts, setAlerts] = useState([])
+  const [alerts, setAlerts] = useState<Array<AlertDetail>>([])
 
   // useState(() => {
   //   console.log("errorBeingReported", errorBeingReported)
@@ -46,22 +49,22 @@ function AlertLayer() {
   useEffect(() => {
     if(!isHandlerRegistered) {
       // TODO: Uncomment this when its tested & working
-      window.addEventListener("gf_alert", (e) => raiseAlert(e.detail))
+      window.addEventListener("gf_alert", (e: any) => raiseAlert(e.detail))
       setIsHandlerRegistered(true)
     }
   }, [])
 
-  function raiseAlert(alert) {
+  function raiseAlert(alert: AlertDetail) {
     setAlerts([...alerts, alert])
   }
 
-  function onToastClose(alert) {
+  function onToastClose(alert: AlertDetail) {
     let _alerts = [...alerts]
     _alerts = _alerts.filter(a => a.id !== alert.id)
     setAlerts(_alerts)
   }
 
-  function reportError(alert) {
+  function reportError(alert: AlertDetail) {
     console.log("reportError", alert)
   }
 

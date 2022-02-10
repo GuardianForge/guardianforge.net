@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
-// @ts-ignore
-import { GlobalContext } from '../../contexts/GlobalContext.jsx'
+import { GlobalContext } from '../../contexts/GlobalContext'
 import userUtils from "../../utils/userUtils"
 import State from "../../utils/compStates"
 import Loading from '../../components/app/Loading'

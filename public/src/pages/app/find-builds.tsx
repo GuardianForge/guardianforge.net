@@ -6,8 +6,7 @@ import { Container, Dropdown, Pagination } from 'react-bootstrap';
 import BuildSummaryCard from '../../components/app/BuildSummaryCard'
 // @ts-ignore
 import searchUtils from "../../utils/searchUtils"
-// @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../../contexts/GlobalContext"
 import Loading from "../../components/app/Loading"
 import colors from "../../colors"
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';

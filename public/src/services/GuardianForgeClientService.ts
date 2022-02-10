@@ -1,5 +1,5 @@
+import { BungieApiService } from "@guardianforge/destiny-data-utils"
 import userUtils from "../utils/userUtils"
-import BungieApiService from "./BungieApiService"
 import GuardianForgeApiService from "./GuardianForgeApiService"
 
 type SetAuthDataOptions = {

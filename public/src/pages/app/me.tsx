@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components'
 // @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../../contexts/GlobalContext"
 import { Link } from 'gatsby'
 import { Container, Row } from 'react-bootstrap';
 import colors from '../../colors'

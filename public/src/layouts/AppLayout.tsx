@@ -5,8 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faTimes, faSearch, faCube, faArrowLeft, faUser, faBookmark, faUsers, faCubes, faPlus, faBook, faHome } from '@fortawesome/free-solid-svg-icons'
 import './AppLayout.css'
 import colors from "../colors"
-// @ts-ignore
-import { GlobalContext } from "../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../contexts/GlobalContext"
 import { Enums } from '@guardianforge/destiny-data-utils'
 import UserMenu from '../components/app/UserMenu'
 import { Image, Offcanvas } from 'react-bootstrap'
@@ -14,6 +13,7 @@ import { Image, Offcanvas } from 'react-bootstrap'
 import SiteLogo from "../images/site-logo.png"
 import Input from '../components/app/forms/Input'
 import UserMenuMobile from '../components/app/UserMenuMobile'
+import AlertLayer from '../components/alerting/AlertLayer'
 
 
 const Layout = styled.div`
@@ -489,6 +489,7 @@ function AppLayout(props: Props) {
         <Content>
           { children }
         </Content>
+        <AlertLayer />
       </Main>
 
       {/* <div style={{

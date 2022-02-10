@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"
 import styled from 'styled-components'
 // @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../../contexts/GlobalContext"
 import State from '../../utils/compStates'
 import Loading from '../../components/app/Loading'
 import BuildSummaryCard from "../../components/app/BuildSummaryCard"

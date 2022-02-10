@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
-// @ts-ignore
-import { GlobalContext } from "../../contexts/GlobalContext.jsx"
+import { GlobalContext } from "../../contexts/GlobalContext"
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 // @ts-ignore
 import { imageFixerMap } from '../../utils/shims'

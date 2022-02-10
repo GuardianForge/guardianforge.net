@@ -1,13 +1,46 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactChild } from 'react'
 import { BungieApiService, ManifestService, IndexedDbService, InventoryManager } from "@guardianforge/destiny-data-utils"
 import GuardianForgeClientService from '../services/GuardianForgeClientService'
 import GuardianForgeApiService from '../services/GuardianForgeApiService'
+// @ts-ignore
 import gaUtils from "../utils/gaUtils"
 import AlgoliaService from '../services/AlgoliaService'
+import AlertDetail from '../models/AlertDetail'
 
-export const GlobalContext = React.createContext()
+interface IGlobalContext {
+  isInitDone?: boolean
+  isConfigLoaded?: boolean
+  isClientLoaded?: boolean
+  isUserDataLoaded?: boolean
+  isManifestLoaded?: boolean
+  dispatchAlert: Function
+  isErrorBeingReported?: boolean
+  // TODO: Make this a model
+  errorBeingReported?: any
+  didOAuthComplete?: boolean
+  setDidOAuthComplete: Function
+  pageTitle?: string
+  setPageTitle: Function
+  initApp: Function
+}
 
-export const Provider = ({children}) => {
+function noop() {
+  console.warn("not initialized")
+}
+
+export const GlobalContext = React.createContext<IGlobalContext>({
+  dispatchAlert: noop,
+  setDidOAuthComplete: noop,
+  setPageTitle: noop,
+  initApp: noop
+})
+
+type Props = {
+  children: ReactChild
+}
+
+export const Provider = (props: Props) => {
+  const { children } = props
   const [isInitStarted, setIsInitStarted] = useState(false)
   const [isInitDone, setIsInitDone] = useState(false)
   const [isConfigLoaded, setIsConfigLoaded] = useState(false)
@@ -116,23 +149,13 @@ export const Provider = ({children}) => {
     }
   }
 
-  function dispatchAlert(detail) {
-    detail.id = Date.now()
-    // TODO: Get this working properly
-    // if(detail.isError) {
-    //   detail.buttons = [
-    //     {
-    //       title: "Report",
-    //       fn: () => reportError(detail)
-    //     }
-    //   ]
-    // }
+  function dispatchAlert(detail: AlertDetail) {
     window.dispatchEvent(new CustomEvent("gf_alert", {
       detail
     }))
   }
 
-  function reportError(detail) {
+  function reportError(detail: AlertDetail) {
     setErrorBeingReported(detail)
     setIsErrorBeingReported(true)
   }
@@ -142,7 +165,7 @@ export const Provider = ({children}) => {
     setIsErrorBeingReported(false)
   }
 
-  const value = {
+  const value: IGlobalContext = {
     isInitDone,
     isConfigLoaded,
     isClientLoaded,
