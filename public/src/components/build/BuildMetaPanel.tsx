@@ -9,12 +9,25 @@ import styled from 'styled-components';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import ForgeModal from '../Modal'
 import { Link } from 'gatsby'
+import { Button } from "react-bootstrap"
+import Build from '../../models/Build';
+import AlertDetail from '../../models/AlertDetail';
 
 const Wrapper = styled.div`
   background-color: #1e1f24;
   border-radius: 5px;
   margin: 5px;
   padding-bottom: 10px;
+
+  .dim-btn {
+    background-color: inherit !important;
+    border-radius: 0 !important;
+    border: none !important;
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
 
   .build-info-header {
     padding-top: 2px;
@@ -127,7 +140,16 @@ const ForgeUserInfoWrapper = styled.div`
   }
 `
 
-function BuildMetaPanel({ buildId, buildData, onBuildUpdated, onBuildUpdateFailed }) {
+type Props = {
+  buildId: string
+  buildData: Build
+  onBuildUpdated?: Function
+  onBuildUpdateFailed?: Function
+}
+
+function BuildMetaPanel(props: Props) {
+  const { buildId, buildData, onBuildUpdated, onBuildUpdateFailed } = props
+
   const { isConfigLoaded, isUserDataLoaded, dispatchAlert } = useContext(GlobalContext)
   const [twitterLink, setTwitterLink] = useState("")
   const [primaryActivity, setPrimaryActivity] = useState("")
@@ -289,6 +311,14 @@ function BuildMetaPanel({ buildId, buildData, onBuildUpdated, onBuildUpdateFaile
     }
   }
 
+  function copyDIMLink() {
+    let b = Object.assign(new Build(), buildData)
+    let url = b.toDIMLink()
+    copy(url)
+    let a = new AlertDetail("DIM Link copied to clipboard.", "Link Copied")
+    dispatchAlert(a)
+  }
+
   return (
     <Wrapper className="row">
       <div className="share-bar col-md-12">
@@ -303,6 +333,10 @@ function BuildMetaPanel({ buildId, buildData, onBuildUpdated, onBuildUpdateFaile
               Copy Link
             </button>
             <a className="btn btn-twitter" href={twitterLink} target="_blank"><FontAwesomeIcon icon={['fab', 'twitter']} /> Share</a>
+
+            <Button onClick={copyDIMLink} className="dim-btn">
+              <img src="/img/dim-logo.svg" className="dim-logo" /> <span>DIM Link</span>
+            </Button>
             <BookmarkButton buildId={buildId} buildData={buildData} />
             {isOwner && !isEditing && (
               <button type="button" className="btn" onClick={() => editBuild()}>
