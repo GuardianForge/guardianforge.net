@@ -91,8 +91,6 @@ function CommandsBar(props: Props) {
   const { buildId, buildData, isOwner, onBuildUpdated, isAdmin } = props
   const { dispatchAlert } = useContext(GlobalContext)
   const [isBuildArchived, setIsBuildArchived] = useState(false)
-  const [isCopied, setIsCopied] = useState(false)
-  const [isDIMCopied, setIsDIMCopied] = useState(false)
   const [shareLink, setShareLink] = useState("")
   const [twitterLink, setTwitterLink] = useState("")
   const [isEditing, setIsEditing] = useState(false)
@@ -109,16 +107,16 @@ function CommandsBar(props: Props) {
 
   function copyToClipboard() {
     copy(shareLink)
-    setIsCopied(true)
-    setTimeout(() => setIsCopied(false), 3000)
+    let a = new AlertDetail("Link copied to clipboard.", "Link Copied")
+    dispatchAlert(a)
   }
 
   function copyDIMLink() {
     let b = Object.assign(new Build(), buildData)
     let url = b.toDIMLink()
     copy(url)
-    setIsDIMCopied(true)
-    setTimeout(() => setIsDIMCopied(false), 3000)
+    let a = new AlertDetail("DIM Link copied to clipboard.", "Link Copied")
+    dispatchAlert(a)
   }
 
   function editBuild() {
@@ -236,23 +234,13 @@ function CommandsBar(props: Props) {
       <UpvoteButton buildId={buildId} buildData={buildData} isBuildArchived={isBuildArchived} />
 
       <Button onClick={copyToClipboard}>
-        {isCopied ? (
-          <span>👍</span>
-        ) : (
-          <FontAwesomeIcon icon="link" />
-        )}
-        <span className="d-none d-sm-inline">Copy Link</span>
+        <FontAwesomeIcon icon="link" /> <span className="d-none d-sm-inline">Copy Link</span>
       </Button>
       <Button as="a" className="btn-twitter" href={twitterLink} target="_blank">
         <FontAwesomeIcon icon={['fab', 'twitter']} /> <span className="d-none d-sm-inline">Share</span>
       </Button>
       <Button onClick={copyDIMLink} className="dim-btn">
-      {isDIMCopied ? (
-          <span>👍</span>
-        ) : (
-          <img src="/img/dim-logo.svg" className="dim-logo" />
-        )}
-        <span className="d-none d-sm-inline">DIM Link</span>
+        <img src="/img/dim-logo.svg" className="dim-logo" /> <span className="d-none d-sm-inline">DIM Link</span>
       </Button>
       <BookmarkButton buildId={buildId} buildData={buildData} />
       {isOwner && !isBuildArchived && (

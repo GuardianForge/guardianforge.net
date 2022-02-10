@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Toast } from 'react-bootstrap'
 import styled from 'styled-components'
+import AlertDetail from '../../models/AlertDetail'
 
 const Wrapper = styled.div`
   .toast {
@@ -27,7 +28,13 @@ const Wrapper = styled.div`
   }
 `
 
-function AlertToast({ alert, onClose }) {
+type Props = {
+  alert: AlertDetail
+  onClose?: Function
+}
+
+function AlertToast(props: Props) {
+  const { alert, onClose } = props
   const [isShowing, setIsShowing] = useState(false)
 
   useEffect(() => {
@@ -60,7 +67,7 @@ function AlertToast({ alert, onClose }) {
         </Toast.Header>
         <Toast.Body>
           { alert.body }
-          {alert.buttons != undefined && alert.buttons.length > 0 && (
+          { alert && alert.buttons != undefined && alert.buttons.length > 0 && (
             <div className="button-row">
               {alert.buttons.map((b, idx) => (
                 <button className="btn btn-primary btn-sm"

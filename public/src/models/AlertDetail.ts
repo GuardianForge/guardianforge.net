@@ -1,9 +1,17 @@
+import { MouseEventHandler } from "react"
+
+export type AlertDetailButton = {
+  title: string
+  fn: MouseEventHandler
+}
+
 class AlertDetail{
   id: number
   body: string
   title?: string
   isError?: boolean
   autohide?: boolean
+  buttons?: Array<AlertDetailButton>
 
   constructor(body: string, title?: string, isError?: boolean, autohide?: boolean) {
     this.id = Date.now()
