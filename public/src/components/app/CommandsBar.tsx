@@ -83,11 +83,11 @@ type Props = {
   buildData: Build
   isOwner?: boolean
   onBuildUpdated?: Function
-  onBookmarkBuild?: Function
+  isAdmin?: boolean
 }
 
 function CommandsBar(props: Props) {
-  const { buildId, buildData, isOwner, onBuildUpdated } = props
+  const { buildId, buildData, isOwner, onBuildUpdated, isAdmin } = props
   const { dispatchAlert } = useContext(GlobalContext)
   const [isBuildArchived, setIsBuildArchived] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
@@ -204,6 +204,19 @@ function CommandsBar(props: Props) {
     }
   }
 
+  async function createOgImage() {
+    let { ForgeClient, ForgeApiService } = window.services
+    try {
+      let res = await ForgeClient.createBuildOpengraphImage(buildId)
+      dispatchAlert({
+        title: "Image Created",
+        body: "Ok"
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const [name, setName] = useState("")
   const [notes, setNotes] = useState("")
   const [videoLink, setVideoLink] = useState("")
@@ -260,6 +273,14 @@ function CommandsBar(props: Props) {
               <FontAwesomeIcon icon={faEdit} /> <span className="d-none d-sm-inline">Edit</span>
             </Button>
           )}
+        </>
+      )}
+      {isAdmin && (
+        <>
+          <Seperator />
+          <Button onClick={() => createOgImage()}>
+            <span className="d-none d-sm-inline">Create OG Img</span>
+          </Button>
         </>
       )}
 

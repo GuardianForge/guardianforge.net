@@ -10,8 +10,11 @@ export default class GuardianForgeClientService {
   config: AppConfig
   bungieApiService: BungieApiService
   forgeApiService: GuardianForgeApiService
-  latestBuilds: any
+
+
+
   // TODO: Make models of all these
+  latestBuilds: any
   userData: any
   authData: any
   userInfo: any
@@ -176,9 +179,22 @@ export default class GuardianForgeClientService {
     return false
   }
 
+  isAdmin() {
+    console.log("isAdmin", this.userData)
+    if(this.userData && this.userData.bungieNetUser && this.userData.bungieNetUser.membershipId === "14214042") {
+      return true
+    }
+    return false
+  }
+
   logout() {
     localStorage.removeItem("auth")
     // @ts-ignore
     window.location = "/"
+  }
+
+  async createBuildOpengraphImage(buildId: string) {
+    let token = await this.getToken()
+    return await this.forgeApiService.createBuildOpengraphImage(token, buildId)
   }
 }

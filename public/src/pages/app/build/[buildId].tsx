@@ -51,11 +51,16 @@ function Build(props: Props) {
   const [isOwner, setIsOwner] = useState(false)
   const [guardianOf, setGuardianOf] = useState<User>()
   const [createdBy, setCreatedBy] = useState<User>()
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     if(!isInitDone) return
     async function checkOwner() {
       const { ForgeClient } = window.services
+
+      if(ForgeClient.isAdmin()) {
+        setIsAdmin(true)
+      }
 
       if(ForgeClient.userBuilds && ForgeClient.userBuilds.find(b => b.id === buildId)) {
         setIsOwner(true)
@@ -163,7 +168,7 @@ function Build(props: Props) {
         <Container fluid id="build">
           <Row>
             <Col md="12">
-              <CommandsBar buildId={buildId} buildData={buildData} isOwner={isOwner} onBuildUpdated={onBuildUpdated} />
+              <CommandsBar buildId={buildId} buildData={buildData} isOwner={isOwner} onBuildUpdated={onBuildUpdated} isAdmin={isAdmin} />
             </Col>
           </Row>
           <Row>

@@ -279,7 +279,6 @@ Resources:
           ALGOLIA_INDEX: !Ref AlgoliaIndexParam
           PUBLIC_PATH: !Sub "https://${SiteDomainNameParam}"
 
-
   UpvoteBuildQueueHandlerFn:
     Type: AWS::Serverless::Function
     Properties:
@@ -471,6 +470,26 @@ Resources:
         Variables:
           TABLE_NAME: !Ref DbTable
           BUNGIE_API_KEY: !Ref BungieApiKeyParam
+
+  RecreateCreateOgImageFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/admin/create-og-image/_post
+      Handler: _post
+      Runtime: go1.x
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref DataBucket
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /admin/create-og-image
+            Method: POST
+      Environment:
+        Variables:
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+          BUCKET_NAME: !Ref DataBucket
 
   CreateBuildFn:
     Type: AWS::Serverless::Function

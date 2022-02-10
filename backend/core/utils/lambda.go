@@ -38,6 +38,13 @@ func ValidateRequestAuth(request events.APIGatewayProxyRequest) (*string, error)
 	return &authRes.BungieNetUser.MembershipId, nil
 }
 
+func IsAdmin(membershipId *string) bool {
+	if membershipId == nil {
+		return false
+	}
+	return *membershipId == "14214042"
+}
+
 func HandleError(err error, message string) (events.APIGatewayProxyResponse, error) {
 	err = errors.Wrap(err, message)
 	log.Println(err)

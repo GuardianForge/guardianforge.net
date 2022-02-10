@@ -210,4 +210,22 @@ export default class GuardianForgeApiService {
       body: JSON.stringify(errorMessage)
     })
   }
+
+  //#region Admin Functions ============
+
+  async createBuildOpengraphImage(token: string, buildId: string) {
+    let res = await fetch(`${this._apiBase}/admin/create-og-image`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        buildId
+      })
+    })
+    return await res.json()
+  }
+
+  // #endregion Admin Functions ========
 }
