@@ -1,8 +1,30 @@
 import React, { useState } from 'react'
-import userUtils from "../../utils/userUtils"
+import { Col, Row } from 'react-bootstrap'
+import userUtils from "../../../utils/userUtils"
+import { Toggles } from '../../../toggles'
+import { Button } from "react-bootstrap"
+import styled from 'styled-components'
+import colors from '../../../colors'
+import FeatureToggle from '../../../models/FeatureToggle'
+
+const Wrapper = styled.div`
+  .toggle {
+    background-color: ${colors.theme2.dark1};
+    padding: 10px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+
+    .toggle-name {
+      margin-right: 15px;
+      font-size: 18px;
+    }
+  }
+`
 
 function AdminTools() {
   const [userIdToImpersonate, setUserIdToImpersonate] = useState("")
+  const [iterator, setIterator] = useState(1)
 
   async function impersonateUser() {
     const { ForgeClient, BungieApiService } = window.services
@@ -15,14 +37,19 @@ function AdminTools() {
     let charRes = await BungieApiService.fetchCharactersList(membershipType, membershipId)
 
     let guardians = Object.keys(charRes.characters.data).map(key => charRes.characters.data[key])
+    // @ts-ignore
     guardians.sort((a, b) => new Date(b.dateLastPlayed) - new Date(a.dateLastPlayed))
 
     ForgeClient.userGuardians = guardians
   }
 
+  function toggleFeature(toggle: FeatureToggle) {
+    toggle.toggle()
+    setIterator(iterator + 1)
+  }
+
   return (
-    <div>
-      <h1>Admin Tools</h1>
+    <Wrapper>
       <h2>Impersonate User</h2>
       <div className="row g-3">
         <div className="col-auto">
@@ -36,7 +63,22 @@ function AdminTools() {
           <button onClick={impersonateUser} className="btn btn-primary mb-3">Impersonate</button>
         </div>
       </div>
-    </div>
+      <Row>
+        <Col>
+          <h2>Feature Toggles</h2>
+          <div className="toggles">
+            {iterator && Object.keys(Toggles).map((k: string) => (
+              <div className="toggle">
+                <div className="toggle-name">{ Toggles[k].name }</div>
+                <Button className="toggle-btn" onClick={() => toggleFeature(Toggles[k])}>
+                  { Toggles[k].isEnabled() ? "Enabled" : "Disabled"}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </Col>
+      </Row>
+    </Wrapper>
   )
 }
 
