@@ -67,7 +67,7 @@ function OAuthHandler({ location }) {
         state = decodeURIComponent(state)
         navigate(state)
       } else {
-        navigate("/")
+        navigate("/app")
       }
     }
     completeLogin()

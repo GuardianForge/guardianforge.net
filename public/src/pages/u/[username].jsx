@@ -102,8 +102,10 @@ function PublicProfile({ username, location }) {
     async function init() {
       if(!isConfigLoaded) return
       let code = location.hash.replace("#", "")
-      console.log(username, code)
-      const { BungieApiService, ForgeApiService } = window.services
+      const { BungieApiService, ForgeApiService, ForgeClient } = window.services
+      if(ForgeClient.isLoggedIn()) {
+        navigate(`/app/u/${username}#${code}`)
+      }
       const searchRes = await BungieApiService.searchBungieNetUsers(username)
       // TODO: Handle this better
       if(searchRes && searchRes.length > 0) {

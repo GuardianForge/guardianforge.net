@@ -96,7 +96,12 @@ function Guardian({guardianKey}) {
     }
 
     async function init() {
-      const { BungieApiService, ManifestService } = window.services
+      const { BungieApiService, ManifestService, ForgeClient } = window.services
+
+      if(ForgeClient.isLoggedIn()) {
+        navigate(`/app/g/${guardianKey}`)
+      }
+
       let split = guardianKey.split("-")
       let meta = {
         membershipType: split[0],

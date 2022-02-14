@@ -9,7 +9,7 @@ import BuildAd from '../../components/ads/BuildAd';
 import StatBar from '../../components/build/StatBar';
 import BuildMetaPanel from '../../components/build/BuildMetaPanel'
 import { Alert } from 'react-bootstrap'
-import { Link } from 'gatsby'
+import { Link, navigate } from 'gatsby'
 
 const Wrapper = styled.div`
   @media (max-width: 576px) {
@@ -37,7 +37,11 @@ function Build({ buildId }) {
       return
     }
     async function init() {
-      const { ForgeApiService } = window.services
+      const { ForgeApiService, ForgeClient } = window.services
+
+      if(ForgeClient.isLoggedIn()) {
+        navigate(`/app/build/${buildId}`)
+      }
 
       let buildData = await ForgeApiService.fetchBuild(buildId)
 
