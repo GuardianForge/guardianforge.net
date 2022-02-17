@@ -7,6 +7,8 @@ import styled from 'styled-components'
 import User from '../../models/User'
 import colors from "../../colors"
 import { faUserGraduate } from '@fortawesome/free-solid-svg-icons'
+import FeatureToggle from './general/FeatureToggle'
+import { Toggles } from '../../toggles'
 
 const Wrapper = styled.div`
   display: flex;
@@ -129,15 +131,20 @@ function UserMenu() {
                 <Link className="dropdown-item" to="/app/edit-profile">Edit Profile</Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/">👈  Back to the Old Forge</Link>
+                <Link className="dropdown-item" to="/">👈  &nbsp; Back to the Old Forge</Link>
               </li>
               <li>
                 <a className="dropdown-item" href="#" onClick={logout}>Log Out</a>
               </li>
+              <FeatureToggle toggle={Toggles.SubscribeOptions}>
+                <li>
+                  <a className="dropdown-item" href="#">💎 &nbsp; Support GuardianForge</a>
+                </li>
+              </FeatureToggle>
               {isAdmin && <hr />}
               {isAdmin && (
                 <li>
-                  <Link className="dropdown-item" to="/admin/admin-tools">Admin</Link>
+                  <Link className="dropdown-item" to="/app/admin/admin-tools">Admin</Link>
                 </li>
               )}
             </ul>

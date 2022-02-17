@@ -54,6 +54,14 @@ Parameters:
     Type: String
   NotionDbIdParam:
     Type: String
+  StripeSecretKeyParam:
+    Type: String
+  StripeWebhookSecretParam:
+    Type: String
+  StripeSuccessCallbackParam:
+    Type: String
+  StripeErrorCallbackParam:
+    Type: String
 
 Resources:
   DataBucket:
@@ -616,6 +624,49 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref DbTable
+
+# region Subscriptions =================
+  CreatePaymentIntentFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/subscriptions/create-intent/_post
+      Handler: _post
+      Runtime: go1.x
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /subscriptions/create-intent
+            Method: POST
+      Environment:
+        Variables:
+          STRIPE_SECRET_KEY: !Ref StripeSecretKeyParam
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+          STRIPE_SUCCESS_CALLBACK: !Ref StripeSuccessCallbackParam
+          STRIPE_ERROR_CALLBACK: !Ref StripeErrorCallbackParam
+
+  StripeWebhookFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/webhooks/stripe
+      Handler: stripe
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DbTable
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /webhooks/stripe
+            Method: POST
+      Environment:
+        Variables:
+          STRIPE_SECRET_KEY: !Ref StripeSecretKeyParam
+          STRIPE_WEBHOOK_SECRET: !Ref StripeWebhookSecretParam
+          TABLE_NAME: !Ref DbTable
+
+# endregion
 
   BuildsOgProxy:
     Type: AWS::Serverless::Function

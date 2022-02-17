@@ -2,6 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Form, Button, InputGroup, Col, Container, Row } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GlobalContext } from "../../contexts/GlobalContext"
+import ForgeButton from '../../components/app/forms/Button'
+import SubscribeButton from '../../components/app/stripe/SubscribeButton'
+import FeatureToggleWrapper from '../../components/app/general/FeatureToggle'
+import { Toggles } from '../../toggles'
 
 function Profile() {
   const { isUserDataLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
@@ -11,6 +15,7 @@ function Profile() {
   const [youtube, setYoutube] = useState("")
   const [facebook, setFacebook] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [subscriptionDetails, setSubscriptionDetails] = useState()
 
   useEffect(() => {
     setPageTitle("Edit Profile")
@@ -28,6 +33,9 @@ function Profile() {
           if(twitter) setTwitter(twitter)
           if(youtube) setYoutube(youtube)
           if(twitch) setTwitch(twitch)
+        }
+        if(userInfo.subscriptionDetails) {
+          setSubscriptionDetails(userInfo.subscriptionDetails)
         }
       }
     }
@@ -78,12 +86,30 @@ function Profile() {
   return (
     <Container>
       <Row>
-        <Form.Group className="mb-3" >
+        <Form.Group className="mb-3">
           <Form.Label>About Me</Form.Label>
           <Form.Control onChange={e => setAbout(e.target.value)} value={about} type="text" placeholder="Add a bit about yourself" />
         </Form.Group>
-        {/* TODO: Add primary platform input */}
         <hr />
+
+        <FeatureToggleWrapper toggle={Toggles.SubscribeOptions}>
+          <Row>
+            <Col>
+              {subscriptionDetails ? (
+                <div className="subscription-manager">
+                  Thanks for being a Premium user!
+                  <ForgeButton>Cancel Subscription</ForgeButton>
+                </div>
+              ) : (
+                <div>
+                  Consider subscribing!
+                  <SubscribeButton />
+                </div>
+              )}
+            </Col>
+          </Row>
+        </FeatureToggleWrapper>
+
         <Form.Label>Social Media Links</Form.Label>
         <div className="row">
           <div className="col-md-6">

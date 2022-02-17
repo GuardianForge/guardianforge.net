@@ -11,4 +11,6 @@ type AppConfig = {
   algoliaKey?: string
   algoliaApp?: string
   algoliaIndex?: string
+  monthlyPriceId?: string
+  yearlyPriceId?: string
 }

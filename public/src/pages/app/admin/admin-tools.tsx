@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import userUtils from "../../../utils/userUtils"
 import { Toggles } from '../../../toggles'
@@ -8,6 +8,11 @@ import colors from '../../../colors'
 import FeatureToggle from '../../../models/FeatureToggle'
 
 const Wrapper = styled.div`
+  textarea {
+    width: 100%;
+    height: 200px;
+  }
+
   .toggle {
     background-color: ${colors.theme2.dark1};
     padding: 10px;
@@ -25,6 +30,16 @@ const Wrapper = styled.div`
 function AdminTools() {
   const [userIdToImpersonate, setUserIdToImpersonate] = useState("")
   const [iterator, setIterator] = useState(1)
+  const [token, setToken] = useState("")
+
+  useEffect(() => {
+    async function init() {
+      const { ForgeClient } = window.services
+      let t = await ForgeClient.getToken()
+      setToken(t)
+    }
+    init()
+  }, [])
 
   async function impersonateUser() {
     const { ForgeClient, BungieApiService } = window.services
@@ -63,6 +78,12 @@ function AdminTools() {
           <button onClick={impersonateUser} className="btn btn-primary mb-3">Impersonate</button>
         </div>
       </div>
+      <Row>
+        <Col>
+          <h2>Token</h2>
+          <textarea disabled>{ token }</textarea>
+        </Col>
+      </Row>
       <Row>
         <Col>
           <h2>Feature Toggles</h2>

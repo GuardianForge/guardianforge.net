@@ -10,5 +10,7 @@
   "areAdsEnabled": false,
   "algoliaKey": "ee38c54b6675f362735bd4921b4953fc",
   "algoliaApp": "7NFBV9BV9F",
-  "algoliaIndex": "GuardianForge-Qa-Builds"
+  "algoliaIndex": "GuardianForge-Qa-Builds",
+  "monthlyPriceId": "price_1KTXcLIVxbxup9XbUJ6rIhHe",
+  "yearlyPriceId": "price_1KTXcLIVxbxup9XbiEw4sqfh"
 }

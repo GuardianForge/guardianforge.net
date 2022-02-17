@@ -21,6 +21,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@guardianforge/destiny-data-utils": "^0.1.6",
+    "@stripe/react-stripe-js": "^1.7.0",
+    "@stripe/stripe-js": "^1.22.0",
     "algoliasearch": "^4.10.5",
     "babel-plugin-styled-components": "^1.13.2",
     "bootstrap": "^5.1.3",

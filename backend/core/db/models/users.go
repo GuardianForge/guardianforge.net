@@ -9,8 +9,15 @@ type UserRecord struct {
 }
 
 type UserRecordData struct {
-	About  *string         `dynamodbav:"about" json:"about"`
-	Social *UserSocialInfo `dynamodbav:"social" json:"social"`
+	About               *string              `dynamodbav:"about" json:"about"`
+	Social              *UserSocialInfo      `dynamodbav:"social" json:"social"`
+	SubscriptionDetails *SubscriptionDetails `dynamodbav:"subscriptionDetails" json:"subscriptionDetails"`
+}
+
+type SubscriptionDetails struct {
+	SubscriptionId *string  `dynamodbav:"subscriptionId" json:"subscriptionId"`
+	StartDate      *float64 `dynamodbav:"startDate" json:"startDate"`
+	EndDate        *float64 `dynamodbav:"endDate" json:"endDate"`
 }
 
 func MakeUserRecord(membershipId string) (*UserRecord, error) {

@@ -35,20 +35,23 @@ type Props = {
   centered?: boolean
   fullscreen?: boolean | string
   size?: string
+  closeButton?: boolean
 }
 
 function ForgeModal(props: Props) {
-  const { className, title, children, show, onHide, scrollable, footer, centered, header, fullscreen, size } = props
-
-  function onHideHandler() {
-    if(onHide) {
-      onHide()
-    }
-  }
+  const { className, title, children, show, onHide, scrollable, footer, centered, header, fullscreen, size, closeButton } = props
 
   return (
-  <Wrapper className={className} show={show} onHide={onHideHandler} scrollable={scrollable ? scrollable : true} centered={centered} fullscreen={fullscreen} size={size}>
-      <Modal.Header>
+  <Wrapper
+    className={className}
+    show={show}
+    onHide={onHide}
+    scrollable={scrollable ? scrollable : true}
+    centered={centered}
+    fullscreen={fullscreen}
+    size={size}
+    closeButton={closeButton}>
+      <Modal.Header closeButton={closeButton} closeVariant="white">
         {header ? (
           <>{ header }</>
         ) : (

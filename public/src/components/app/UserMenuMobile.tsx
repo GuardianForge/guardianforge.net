@@ -197,7 +197,7 @@ function UserMenuMobile(props: Props) {
         </SelectItemButton>
         {isAdmin && <hr />}
         {isAdmin && (
-          <SelectItemButton className="class-option" onClick={() => navigateTo("/admin/admin-tools")}>
+          <SelectItemButton className="class-option" onClick={() => navigateTo("/app/admin/admin-tools")}>
             Admin
           </SelectItemButton>
         )}

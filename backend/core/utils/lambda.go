@@ -13,25 +13,30 @@ import (
 func ValidateRequestAuth(request events.APIGatewayProxyRequest) (*string, error) {
 	authHeader, ok := request.Headers["Authorization"]
 	if !ok {
+		log.Println("(ValidateRequestAuth) Invalid auth header (1)")
 		return nil, nil
 	}
 
 	split := strings.Split(authHeader, " ")
 	if len(split) != 2 {
+		log.Println("(ValidateRequestAuth) Invalid auth header (2)")
 		return nil, nil
 	}
 
 	if strings.ToLower(split[0]) != "bearer" {
+		log.Println("(ValidateRequestAuth) Invalid auth header (3)")
 		return nil, nil
 	}
 
 	bunGOnet.SetApiKey(os.Getenv("BUNGIE_API_KEY"))
 	authRes, err := bunGOnet.GetMembershipsForCurrentUser(split[1])
 	if err != nil {
+		log.Println("(ValidateRequestAuth) GetMembershipsForCurrentUser")
 		return nil, err
 	}
 
 	if authRes.BungieNetUser.MembershipId == "" {
+		log.Println("(ValidateRequestAuth) No MembershipId")
 		return nil, nil
 	}
 

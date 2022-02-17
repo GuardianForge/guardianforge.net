@@ -13,6 +13,7 @@ interface IGlobalContext {
   isClientLoaded?: boolean
   isUserDataLoaded?: boolean
   isManifestLoaded?: boolean
+  areAdsDisabled?: boolean
   dispatchAlert: Function
   isErrorBeingReported?: boolean
   // TODO: Make this a model
@@ -51,6 +52,7 @@ export const Provider = (props: Props) => {
   const [didOAuthComplete, setDidOAuthComplete] = useState(false)
   const [errorBeingReported, setErrorBeingReported] = useState({})
   const [pageTitle, setPageTitle] = useState("")
+  const [areAdsDisabled, setAreAdsDisabled] = useState(false)
 
   useEffect(() => {
     let el1 = document.getElementById('___gatsby')
@@ -83,6 +85,10 @@ export const Provider = (props: Props) => {
 
     if(ForgeClient.isLoggedIn()) {
       await ForgeClient.fetchUserData()
+      if(ForgeClient.isPremiumUser()) {
+        console.log("Go premium user!")
+        setAreAdsDisabled(true)
+      }
       setIsUserDataLoaded(true)
     }
   }
@@ -170,6 +176,7 @@ export const Provider = (props: Props) => {
     isConfigLoaded,
     isClientLoaded,
     isUserDataLoaded,
+    areAdsDisabled,
     isManifestLoaded,
     dispatchAlert,
     isErrorBeingReported,

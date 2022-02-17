@@ -11,8 +11,6 @@ export default class GuardianForgeClientService {
   bungieApiService: BungieApiService
   forgeApiService: GuardianForgeApiService
 
-
-
   // TODO: Make models of all these
   latestBuilds: any
   userData: any
@@ -179,8 +177,14 @@ export default class GuardianForgeClientService {
     return false
   }
 
+  isPremiumUser(): boolean {
+    if(this.userInfo && this.userInfo.subscriptionDetails && (this.userInfo.subscriptionDetails.endDate * 1000) > new Date().getTime()) {
+      return true
+    }
+    return false
+  }
+
   isAdmin() {
-    console.log("isAdmin", this.userData)
     if(this.userData && this.userData.bungieNetUser && this.userData.bungieNetUser.membershipId === "14214042") {
       return true
     }
@@ -196,5 +200,20 @@ export default class GuardianForgeClientService {
   async createBuildOpengraphImage(buildId: string) {
     let token = await this.getToken()
     return await this.forgeApiService.createBuildOpengraphImage(token, buildId)
+  }
+
+  async createSubscriptionIntent(priceId: string) {
+    let token = await this.getToken()
+    let res = await fetch(`${this.config.apiBase}/subscriptions/create-intent`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        priceId
+      })
+    })
+    return await res.json()
   }
 }

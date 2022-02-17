@@ -1,6 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext} from 'react'
+import { GlobalContext } from '../../../contexts/GlobalContext'
 
 function BuildAd() {
+  const { areAdsDisabled } = useContext(GlobalContext)
+
   useEffect(() => {
     try {
       const adsbygoogle = window.adsbygoogle || []
@@ -9,6 +12,8 @@ function BuildAd() {
       console.error(err)
     }
   }, [])
+
+  if(areAdsDisabled) return (<></>)
 
   return (
     <ins className="adsbygoogle"

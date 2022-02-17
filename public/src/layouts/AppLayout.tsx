@@ -14,6 +14,12 @@ import SiteLogo from "../images/site-logo.png"
 import Input from '../components/app/forms/Input'
 import UserMenuMobile from '../components/app/UserMenuMobile'
 import AlertLayer from '../components/alerting/AlertLayer'
+import SubscribeButton from '../components/app/stripe/SubscribeButton'
+import FeatureToggle from '../models/FeatureToggle'
+import { Toggles } from '../toggles'
+import FeatureToggleWrapper from '../components/app/general/FeatureToggle'
+import ForgeModal from '../components/app/Modal'
+import ForgeButton from '../components/app/forms/Button'
 
 
 const Layout = styled.div`
@@ -335,13 +341,32 @@ function AppLayout(props: Props) {
   const { isInitDone, initApp, pageTitle, setPageTitle } = useContext(GlobalContext)
   // const [pageTitle, setPageTitle] = useState("")
   const [search, setSearch] = useState("")
+  const [isSubscribeSuccessModalDisplayed, setIsSubscribeSuccessModalDisplayed] = useState(false)
+  const [isSubscribeErrorModalDisplayed, setIsSubscribeErrorModalDisplayed] = useState(false)
 
   useEffect(() => {
     initApp()
   }, [isInitDone])
 
-
   useEffect(() => {
+    // Display subscription messages
+    let query = location.search
+    query = query.replace("?", "")
+    let querysplit = query.split("&")
+    let queryKeys = new Map<string, string>()
+    querysplit.forEach(el => {
+      let split2 = el.split("=")
+      queryKeys.set(split2[0], split2[1])
+    })
+    console.log(queryKeys)
+    if(queryKeys.get("subscribe") && queryKeys.get("subscribe") === "success") {
+      setIsSubscribeSuccessModalDisplayed(true)
+    }
+    if(queryKeys.get("subscribe") && queryKeys.get("subscribe") === "error") {
+      setIsSubscribeErrorModalDisplayed(true)
+    }
+
+    // Setup fix for Adsense style hijacking
     let el3 = document.getElementById("appLayout")
     let el4 = document.getElementById("appLayoutMain")
 
@@ -438,6 +463,9 @@ function AppLayout(props: Props) {
           </div>
         </div>
         <div className="nav-footer">
+          <FeatureToggleWrapper toggle={Toggles.SubscribeOptions}>
+            <SubscribeButton />
+          </FeatureToggleWrapper>
         </div>
       </Sidebar>
 
@@ -466,6 +494,9 @@ function AppLayout(props: Props) {
             </div>
           </div>
           <div className="nav-footer">
+            <FeatureToggleWrapper toggle={Toggles.SubscribeOptions}>
+              <SubscribeButton />
+            </FeatureToggleWrapper>
           </div>
         </Offcanvas.Body>
       </MobileMenu>
@@ -492,23 +523,38 @@ function AppLayout(props: Props) {
         <AlertLayer />
       </Main>
 
-      {/* <div style={{
-        position: "fixed",
-        top: "90%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        background: "rgba(247, 201, 241, 0.4)",
-        padding: ".5rem 1rem",
-        zIndex: 10000,
-        borderRadius: "30px"
-      }}>
-        <div className="d-block d-sm-none">Extra Small (xs)</div>
-        <div className="d-none d-sm-block d-md-none">Small (sm)</div>
-        <div className="d-none d-md-block d-lg-none">Medium (md)</div>
-        <div className="d-none d-lg-block d-xl-none">Large (lg)</div>
-        <div className="d-none d-xl-block d-xxl-none" >X-Large (xl)</div>
-        <div className="d-none d-xxl-block" >XX-Large (xxl)</div>
-      </div> */}
+      <ForgeModal
+        title="Thank you!"
+        show={isSubscribeSuccessModalDisplayed}
+        footer={<ForgeButton onClick={() => setIsSubscribeSuccessModalDisplayed(false)}>Ok</ForgeButton>}>
+        <p>Thank you so much for subscribing to GuardianForge! Your support means the world to me. Enjoy your ad-free experience.</p>
+        <p>- Brian (@brianmmdev)</p>
+      </ForgeModal>
+
+      <ForgeModal title="Subscribe Error" show={isSubscribeErrorModalDisplayed} footer={<ForgeButton onClick={() => setIsSubscribeErrorModalDisplayed(false)}>Ok</ForgeButton>}>
+        <p>Something went wrong while subscribing to GuardianForge. Please try again later, or contact me to resolve the issue.</p>
+        <p>- Brian (@brianmmdev)</p>
+      </ForgeModal>
+
+      <FeatureToggleWrapper toggle={Toggles.ShowBreakpoints}>
+        <div style={{
+          position: "fixed",
+          top: "90%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          background: "rgba(247, 201, 241, 0.4)",
+          padding: ".5rem 1rem",
+          zIndex: 10000,
+          borderRadius: "30px"
+        }}>
+          <div className="d-block d-sm-none">Extra Small (xs)</div>
+          <div className="d-none d-sm-block d-md-none">Small (sm)</div>
+          <div className="d-none d-md-block d-lg-none">Medium (md)</div>
+          <div className="d-none d-lg-block d-xl-none">Large (lg)</div>
+          <div className="d-none d-xl-block d-xxl-none" >X-Large (xl)</div>
+          <div className="d-none d-xxl-block" >XX-Large (xxl)</div>
+        </div>
+      </FeatureToggleWrapper>
     </Layout>
   )
 }
