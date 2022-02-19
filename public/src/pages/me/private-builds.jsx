@@ -6,13 +6,14 @@ import COMP_STATE from '../../utils/compStates'
 import Loading from '../../components/Loading'
 import BuildSummaryCard from "../../components/BuildSummaryCard"
 import { Helmet } from 'react-helmet'
+import { navigate } from "gatsby"
 
 const Wrapper = styled.div`
   margin-top: 10px;
 `
 
 function UserPrivateBuilds() {
-  const { isInitDone } = useContext(GlobalContext)
+  const { isInitDone, redirectToLogin } = useContext(GlobalContext)
   const [builds, setBuilds] = useState([])
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
 
@@ -20,6 +21,13 @@ function UserPrivateBuilds() {
     if(!isInitDone) return
     async function init() {
       const { ForgeClient } = window.services
+
+      if(ForgeClient.isLoggedIn()) {
+        navigate("/app/my-builds")
+      } else {
+        redirectToLogin()
+      }
+
       if(ForgeClient.isLoggedIn()) {
         const { privateBuilds } = ForgeClient
         if(privateBuilds) {

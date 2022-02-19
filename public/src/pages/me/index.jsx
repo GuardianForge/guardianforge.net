@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Form, Button, InputGroup, Col } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GlobalContext } from '../../contexts/GlobalContext'
+import { navigate } from 'gatsby'
 
 function Profile() {
-  const { isUserDataLoaded, dispatchAlert } = useContext(GlobalContext)
+  const { isUserDataLoaded, dispatchAlert, redirectToLogin } = useContext(GlobalContext)
   const [about, setAbout] = useState("")
   const [twitter, setTwitter] = useState("")
   const [twitch, setTwitch] = useState("")
@@ -16,6 +17,13 @@ function Profile() {
     if(!isUserDataLoaded) return
     function init() {
       const { ForgeClient } = window.services
+
+      if(ForgeClient.isLoggedIn()) {
+        navigate("/app/edit-profile")
+      } else {
+        redirectToLogin()
+      }
+
       if(ForgeClient.userInfo) {
         const { userInfo } = ForgeClient
         if(userInfo.about) {

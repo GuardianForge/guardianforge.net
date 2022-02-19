@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 `
 
 function UserGuardians() {
-  const { isInitDone } = useContext(GlobalContext)
+  const { isInitDone, redirectToLogin } = useContext(GlobalContext)
   const [guardians, setGuardians] = useState([])
   const [membership, setMembership] = useState({})
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
@@ -23,6 +23,13 @@ function UserGuardians() {
     if(!isInitDone) return
     async function init() {
       const { ForgeClient } = window.services
+
+      if(ForgeClient.isLoggedIn()) {
+        navigate("/app")
+      } else {
+        redirectToLogin()
+      }
+
       if(ForgeClient.isLoggedIn()) {
         if(ForgeClient.userGuardians) {
           setGuardians(ForgeClient.userGuardians)

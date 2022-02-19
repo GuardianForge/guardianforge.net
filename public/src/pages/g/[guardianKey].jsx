@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { GlobalContext } from '../../contexts/GlobalContext'
 import Loading from '../../components/Loading'
-import Stat from '../../components/build/Stat'
 import SubclassCard from '../../components/build/SubclassCard'
 import ItemCard from '../../components/build/ItemCard'
 import styled from 'styled-components'
