@@ -87,6 +87,11 @@ const SubclassConfigModalBody = styled(Container)`
     margin-bottom: 20px;
     flex-wrap: wrap;
 
+    img {
+      max-height: 96px;
+      max-width: 96px;
+    }
+
     .available-perk {
       height: 50px;
       width: 50px;
@@ -329,7 +334,19 @@ function V3SubclassCard(props: Props) {
           <span className="name">{ subclass.name }</span>
           <div className="sockets">
             <Row className="socket-row">
-              <Col xs="12" md="6" className="socket-category">
+              <Col xs="12" md="2" className="socket-category">
+                <span>Super</span>
+                <div className="socket-set">
+                  {subclass.sockets?.map(s =>(
+                    <>
+                      {s._meta?.categoryDefinition.displayProperties.name === "SUPER" && (
+                        <img key={`socket-${s.position}`} src={s.equippedPlug?.iconUrl} />
+                      )}
+                    </>
+                  ))}
+                </div>
+              </Col>
+              <Col xs="12" md="4" className="socket-category">
                 <span>Abilities</span>
                 <div className="socket-set">
                 {subclass.sockets?.map(s =>(
@@ -377,6 +394,20 @@ function V3SubclassCard(props: Props) {
           title={subclass.name}
           footer={<Button onClick={() => setIsConfigureSubclassModalShown(false)}>Close</Button>}>
           <SubclassConfigModalBody>
+            <Row>
+              <Col>
+                <span className="perk-title">Super</span>
+                <div className="perk-row">
+                  {subclass.sockets?.map(s =>(
+                    <>
+                      {s._meta?.categoryDefinition.displayProperties.name === "SUPER" && (
+                        <img onClick={() => onConfigureSocketClicked(s)} key={`socket-${s.position}`} src={s.equippedPlug?.iconUrl} />
+                      )}
+                    </>
+                  ))}
+                </div>
+              </Col>
+            </Row>
             <Row>
               <Col>
                 <span className="perk-title">Abilities</span>
@@ -440,6 +471,7 @@ function V3SubclassCard(props: Props) {
                 </div>
               </SelectItemButton>
             ))}
+            {availablePlugs.length === 0 && <span>No options available.</span>}
           </div>
         </ForgeModal>
       </Wrapper>
