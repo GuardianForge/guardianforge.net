@@ -407,6 +407,58 @@ func FetchUserUpvotes(membershipId string) (*map[string]dbModels.BuildSummary, e
 	return &record.Data, nil
 }
 
+func FetchBuildRecords() ([]dbModels.Build, error) {
+	tableName := os.Getenv("TABLE_NAME")
+	context, err := db.MakeContext(nil, &tableName)
+	if err != nil {
+		return nil, errors.Wrap(err, "(FetchBuildRecords) make context")
+	}
+
+	// Build the query input parameters
+	params := &dynamodb.QueryInput{
+		KeyConditions: map[string]*dynamodb.Condition{
+			"entityType": {
+				ComparisonOperator: aws.String("EQ"),
+				AttributeValueList: []*dynamodb.AttributeValue{
+					{
+						S: aws.String("build"),
+					},
+				},
+			},
+			"publishedOn": {
+				ComparisonOperator: aws.String("LT"),
+				AttributeValueList: []*dynamodb.AttributeValue{
+					{
+						N: aws.String(fmt.Sprint(time.Now().Unix())),
+					},
+				},
+			},
+		},
+		IndexName: aws.String("idx_publishedOn"),
+		TableName: context.TableName,
+	}
+
+	// Make the DynamoDB Query API call
+	result, err := context.DynamoSvc.Query(params)
+	if err != nil {
+		return nil, err
+	}
+
+	builds := []dbModels.Build{}
+
+	for _, i := range result.Items {
+		b := dbModels.Build{}
+
+		err = dynamodbattribute.UnmarshalMap(i, &b)
+		if err != nil {
+			return nil, errors.Wrap(err, "(FetchBuildRecords) Unmarshalling dynmamo results")
+		}
+		builds = append(builds, b)
+	}
+
+	return builds, nil
+}
+
 func FetchLatestBuilds() ([]dbModels.BuildSummary, error) {
 	tableName := os.Getenv("TABLE_NAME")
 	context, err := db.MakeContext(nil, &tableName)

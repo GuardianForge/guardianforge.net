@@ -13,6 +13,8 @@ prod_artifacts_bucket = guardianforge-prod-samartifacts
 prod_profile = prod_devops_svc
 
 build:
+	./go_mod_tidy.sh
+	echo "All modfiles cleaned"
 	sam build
 
 run: build

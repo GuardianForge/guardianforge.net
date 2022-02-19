@@ -91,9 +91,17 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			return utils.ErrorResponse(err, "(handler) put build to dynamo")
 		}
 
+		// FAUNA
+		fauna := services.NewFaunaProvider("FAUNA_SECRET", "https://db.us.fauna.com")
+		err := fauna.PutBuild(dbBuild)
+		if err != nil {
+			log.Println("ERROR SAVING TO FAUNA", err)
+		}
+
 		// TODO: Move this into the post-build handler
 		// Post embed to Discord
-		sendToPostBuildHandler2(buildId, subclassCode, time.Now().Unix(), membershipId)
+		log.Println(subclassCode)
+		// sendToPostBuildHandler2(buildId, subclassCode, time.Now().Unix(), membershipId)
 
 		// workspace := os.Getenv("ALGOLIA_WORKSPACE")
 		// key := os.Getenv("ALGOLIA_KEY")

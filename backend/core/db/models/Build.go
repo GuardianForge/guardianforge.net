@@ -9,18 +9,19 @@ import (
 )
 
 type Build struct {
-	EntityType  string       `json:"entityType" dynamodbav:"entityType"`
-	Id          string       `json:"entityId" dynamodbav:"entityId"`
-	PublishedOn int64        `json:"publishedOn" dynamodbav:"publishedOn"`
-	CreatedById string       `json:"createdById" dynamodbav:"createdById"`
-	IsPrivate   bool         `json:"isPrivate" dynamodbav:"isPrivate"`
-	SearchKey   string       `json:"searchKey" dynamodbav:"searchKey"`
-	Summary     BuildSummary `json:"summary" dynamodbav:"summary"`
-	Upvotes     int          `json:"upvotes" dynamodbav:"upvotes"`
+	EntityType  string       `json:"entityType" dynamodbav:"entityType" fauna:"entityType,omitempty"`
+	Id          string       `json:"entityId" dynamodbav:"entityId" fauna:"entityId,omitempty"`
+	PublishedOn int64        `json:"publishedOn" dynamodbav:"publishedOn" fauna:"publishedOn,omitempty"`
+	CreatedById string       `json:"createdById" dynamodbav:"createdById" fauna:"createdById,omitempty"`
+	IsPrivate   bool         `json:"isPrivate" dynamodbav:"isPrivate" fauna:"isPrivate,omitempty"`
+	SearchKey   string       `json:"searchKey" dynamodbav:"searchKey" fauna:"searchKey,omitempty"`
+	Summary     BuildSummary `json:"summary" dynamodbav:"summary" fauna:"summary,omitempty"`
+	Upvotes     int          `json:"upvotes" dynamodbav:"upvotes" fauna:"upvotes,omitempty"`
 }
 
 func (b *Build) GetBuildSummary() (*BuildSummary, error) {
-	b.Summary.BuildId = &b.Id
+	idString := b.Id
+	b.Summary.BuildId = &idString
 	b.Summary.Upvotes = &b.Upvotes
 
 	splitKey := strings.Split(b.SearchKey, "_")

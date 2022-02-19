@@ -58,6 +58,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	var userPrivateBuildsC chan map[string]dbModels.BuildSummary
 
 	rawParams, found := request.MultiValueQueryStringParameters["fetch"]
+	fauna := services.NewFaunaProvider("FAUNA_SECRET", "https://db.us.fauna.com")
 	if found {
 		for _, el := range rawParams {
 			split := strings.Split(el, ",")
@@ -65,7 +66,8 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				if sw == "builds" {
 					userBuildsC = make(chan []dbModels.BuildSummary)
 					go func() {
-						rec, err := services.FetchUserBuilds(*membershipId)
+						// rec, err := services.FetchUserBuilds(*membershipId)
+						rec, err := fauna.FetchUserBuilds(*membershipId)
 						if err != nil {
 							log.Println("error occurred when getting user builds", err)
 						}

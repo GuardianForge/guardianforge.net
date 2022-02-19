@@ -24,7 +24,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	buildId := request.PathParameters["buildId"]
 
 	// Build the query input parameters
-	build, err := services.FetchBuildById(buildId)
+	// build, err := services.FetchBuildById(buildId)
+	fauna := services.NewFaunaProvider("FAUNA_SECRET", "https://db.us.fauna.com")
+	build, err := fauna.FetchBuildById(buildId)
 	if err != nil {
 		return utils.ErrorResponse(err, "(handler) Fetch build by id")
 	}
@@ -38,7 +40,6 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	body := fmt.Sprint(count)
 
-	fmt.Println("Upvotes: ", body)
 	return utils.OkResponse(&body)
 
 	// ================

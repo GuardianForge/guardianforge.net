@@ -14,11 +14,27 @@ func main() {
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	fauna := services.NewFaunaProvider("FAUNA_SECRET", "https://db.us.fauna.com")
+	// records, err := services.FetchBuildRecords()
+	// if err != nil {
+	// 	log.Println("fetch build records", err)
+	// }
+	// for _, r := range records {
+	// 	err := fauna.PutBuild(nil, r)
+	// 	if err != nil {
+	// 		log.Println("couldnt put build", err)
+	// 	}
+	// }
 
-	builds, err := services.FetchLatestBuilds()
+	builds, err := fauna.FetchLatestBuilds()
 	if err != nil {
 		return utils.ErrorResponse(err, "(handler) fetch latest builds")
 	}
+
+	// builds, err := services.FetchLatestBuilds()
+	// if err != nil {
+	// 	return utils.ErrorResponse(err, "(handler) fetch latest builds")
+	// }
 
 	jbytes, err := json.Marshal(builds)
 	if err != nil {

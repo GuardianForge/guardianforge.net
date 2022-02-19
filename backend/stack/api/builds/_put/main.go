@@ -53,13 +53,15 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 
 	if requestModel.Name != nil {
-		sess, err := session.NewSession()
-		if err != nil {
-			return utils.ErrorResponse(err, "(updateBuild) Creating AWS session to update Dynamo record")
-		}
+		// sess, err := session.NewSession()
+		// if err != nil {
+		// 	return utils.ErrorResponse(err, "(updateBuild) Creating AWS session to update Dynamo record")
+		// }
 
 		record.Summary.Name = *requestModel.Name
-		err = services.PutBuildToDynamo(sess, *record)
+		// err = services.PutBuildToDynamo(sess, *record)
+		fauna := services.NewFaunaProvider("FAUNA_SECRET", "https://db.us.fauna.com")
+		err = fauna.PutBuild(*record)
 		if err != nil {
 			return utils.ErrorResponse(err, "(updateBuild) Put build to Dynamo")
 		}
