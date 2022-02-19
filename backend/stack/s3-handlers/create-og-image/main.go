@@ -22,7 +22,7 @@ import (
 	"guardianforge.net/core/models"
 )
 
-//go:embed img/bg.png
+//go:embed img/bg-wq.png
 var bgbytes []byte
 
 func handler(ctx context.Context, s3Event events.S3Event) {
@@ -35,7 +35,6 @@ func handler(ctx context.Context, s3Event events.S3Event) {
 }
 
 func main() {
-	// Make the handler available for Remote Procedure Call by AWS Lambda
 	lambda.Start(handler)
 }
 
