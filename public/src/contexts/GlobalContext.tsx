@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactChild } from 'react'
-import { BungieApiService, ManifestService, IndexedDbService, InventoryManager } from "@guardianforge/destiny-data-utils"
+import { BungieApiService, ManifestService, BungieAuthService, IndexedDbService, InventoryManager } from "@guardianforge/destiny-data-utils"
 import GuardianForgeClientService from '../services/GuardianForgeClientService'
 import GuardianForgeApiService from '../services/GuardianForgeApiService'
 // @ts-ignore
@@ -23,6 +23,7 @@ interface IGlobalContext {
   pageTitle?: string
   setPageTitle: Function
   initApp: Function
+  redirectToLogin: Function
 }
 
 function noop() {
@@ -33,7 +34,8 @@ export const GlobalContext = React.createContext<IGlobalContext>({
   dispatchAlert: noop,
   setDidOAuthComplete: noop,
   setPageTitle: noop,
-  initApp: noop
+  initApp: noop,
+  redirectToLogin: noop
 })
 
 type Props = {
@@ -99,6 +101,12 @@ export const Provider = (props: Props) => {
     setIsManifestLoaded(true)
   }
 
+  function redirectToLogin() {
+    let { BungieAuthService } = window.services
+    localStorage.setItem("nextState", window.location.pathname)
+    BungieAuthService.redirectToLogin()
+  }
+
   const init = async () => {
     if(!isInitDone && !isInitStarted) {
       setIsInitStarted(true)
@@ -130,6 +138,7 @@ export const Provider = (props: Props) => {
       const DB_VERSION = 6
       let dbService = new IndexedDbService(DB_NAME, DB_VERSION)
       let bungieApiService = new BungieApiService(config.bungieApiKey)
+      let bungieAuthService = new BungieAuthService(config.oauthClientId, config.bungieApiKey)
       let manifestService = new ManifestService(bungieApiService, dbService, components)
       let inventoryManager = new InventoryManager(bungieApiService, manifestService)
       let forgeApiService = new GuardianForgeApiService(config.apiBase, config.buildS3Bucket, config.region)
@@ -138,6 +147,7 @@ export const Provider = (props: Props) => {
 
       window.services = {
         BungieApiService: bungieApiService,
+        BungieAuthService: bungieAuthService,
         ManifestService: manifestService,
         ForgeClient: forgeClient,
         ForgeApiService: forgeApiService,
@@ -185,6 +195,7 @@ export const Provider = (props: Props) => {
     setDidOAuthComplete,
     pageTitle,
     setPageTitle,
+    redirectToLogin,
     initApp: init
   }
 

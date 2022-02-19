@@ -338,15 +338,23 @@ type Props = {
 function AppLayout(props: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { children, location } = props
-  const { isInitDone, initApp, pageTitle, setPageTitle } = useContext(GlobalContext)
-  // const [pageTitle, setPageTitle] = useState("")
-  const [search, setSearch] = useState("")
+  const { isInitDone, isClientLoaded, initApp, pageTitle, redirectToLogin } = useContext(GlobalContext)
   const [isSubscribeSuccessModalDisplayed, setIsSubscribeSuccessModalDisplayed] = useState(false)
   const [isSubscribeErrorModalDisplayed, setIsSubscribeErrorModalDisplayed] = useState(false)
 
   useEffect(() => {
-    initApp()
+    if(!isInitDone) {
+      initApp()
+    }
   }, [isInitDone])
+
+  useEffect(() => {
+    if(!isClientLoaded) return
+    const { ForgeClient } = window.services
+    if(!ForgeClient.isLoggedIn()) {
+      redirectToLogin()
+    }
+  }, [isClientLoaded])
 
   useEffect(() => {
     // Display subscription messages
@@ -389,10 +397,6 @@ function AppLayout(props: Props) {
       })
     }
   }, [])
-
-  useEffect(() => {
-    // TODO: Fetch guardians
-  }, [isInitDone])
 
   function onMenuBtnClicked() {
     setIsMenuOpen(true)

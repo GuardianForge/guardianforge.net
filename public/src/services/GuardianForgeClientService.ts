@@ -172,7 +172,12 @@ export default class GuardianForgeClientService {
 
   isLoggedIn () {
     if(this.userData && this.userData.bungieNetUser) {
-      return true
+      let authTokenData = localStorage.getItem("auth") as string
+      authTokenData = JSON.parse(authTokenData)
+      // @ts-ignore
+      if(new Date().getTime() < (authTokenData.issuedAt + (authTokenData.expires_in * 1000))) {
+        return true
+      }
     }
     return false
   }
