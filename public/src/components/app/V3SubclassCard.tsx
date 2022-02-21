@@ -471,7 +471,7 @@ function V3SubclassCard(props: Props) {
                 </div>
               </SelectItemButton>
             ))}
-            {availablePlugs.length === 0 && <span>No options available.</span>}
+            {availablePlugs && availablePlugs.length === 0 && <span>No options available.</span>}
           </div>
         </ForgeModal>
       </Wrapper>

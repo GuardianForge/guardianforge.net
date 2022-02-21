@@ -9,19 +9,21 @@ import (
 )
 
 type Build struct {
-	EntityType  string       `json:"entityType" dynamodbav:"entityType"`
-	Id          string       `json:"entityId" dynamodbav:"entityId"`
-	PublishedOn int64        `json:"publishedOn" dynamodbav:"publishedOn"`
-	CreatedById string       `json:"createdById" dynamodbav:"createdById"`
-	IsPrivate   bool         `json:"isPrivate" dynamodbav:"isPrivate"`
-	SearchKey   string       `json:"searchKey" dynamodbav:"searchKey"`
-	Summary     BuildSummary `json:"summary" dynamodbav:"summary"`
-	Upvotes     int          `json:"upvotes" dynamodbav:"upvotes"`
+	EntityType      string         `json:"entityType" dynamodbav:"entityType"`
+	Id              string         `json:"entityId" dynamodbav:"entityId"`
+	PublishedOn     int64          `json:"publishedOn" dynamodbav:"publishedOn"`
+	CreatedById     string         `json:"createdById" dynamodbav:"createdById"`
+	IsPrivate       bool           `json:"isPrivate" dynamodbav:"isPrivate"`
+	SearchKey       string         `json:"searchKey" dynamodbav:"searchKey"`
+	Summary         BuildSummary   `json:"summary" dynamodbav:"summary"`
+	Upvotes         int            `json:"upvotes" dynamodbav:"upvotes"`
+	SeasonalUpvotes map[string]int `json:"seasonalUpvotes" dynamodbav:"seasonalUpvotes"`
 }
 
 func (b *Build) GetBuildSummary() (*BuildSummary, error) {
 	b.Summary.BuildId = &b.Id
 	b.Summary.Upvotes = &b.Upvotes
+	b.Summary.SeasonalUpvotes = &b.SeasonalUpvotes
 
 	splitKey := strings.Split(b.SearchKey, "_")
 	if len(splitKey) == 3 && splitKey[2] != "" {

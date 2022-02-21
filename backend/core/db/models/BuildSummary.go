@@ -8,7 +8,8 @@ type BuildSummary struct {
 	PrimaryIconSet string   `json:"primaryIconSet" dynamodbav:"primaryIconSet"`
 
 	// Non DynamoDB Fields
-	BuildId  *string `json:"id"`
-	Activity *int    `json:"activity"`
-	Upvotes  *int    `json:"upvotes"`
+	BuildId         *string         `json:"id"`
+	Activity        *int            `json:"activity"`
+	Upvotes         *int            `json:"upvotes"`
+	SeasonalUpvotes *map[string]int `json:"seasonalUpvotes"`
 }
