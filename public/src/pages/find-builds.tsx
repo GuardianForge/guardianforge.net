@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Helmet } from 'react-helmet';
 import { Dropdown } from 'react-bootstrap';
-import BuildSummaryCard from '../components/BuildSummaryCard'
+import BuildSummaryCard from '../components/app/BuildSummaryCard'
 import searchUtils from "../utils/searchUtils"
 import { GlobalContext } from "../contexts/GlobalContext"
-import Loading from "../components/Loading"
+import Loading from "../components/app/Loading"
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 
 const Wrapper = styled.div`
@@ -26,7 +26,6 @@ const Wrapper = styled.div`
       background-color: #0792FB !important;
     }
   }
-
 
   .searchbox-wrapper {
     color: #eee;
@@ -326,7 +325,7 @@ function Search() {
         <div className="row">
           {displayedBuilds.map((el, idx) => (
             <div key={`search-${idx}`} className="col-md-4">
-              <BuildSummaryCard buildSummary={el.summary} />
+              <BuildSummaryCard buildSummary={el.summary} isPublicUi />
             </div>
           ))}
         </div>

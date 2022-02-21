@@ -9,6 +9,10 @@ import { ItemTierData } from '@guardianforge/destiny-data-utils/dist/models/Item
 
 const Wrapper = styled(Card)`
 
+  .card-content {
+    padding: 9px !important;
+  }
+
   @media screen and (max-width: 796px) {
     /* display: flex;
     justify-content: center; */

@@ -24,14 +24,16 @@ function UserMenu() {
   const { isClientLoaded, didOAuthComplete } = useContext(GlobalContext)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loginUrl, setLoginUrl] = useState("")
-  const [userData, setUserData] = useState({})
+  const [userData, setUserData] = useState<any>({})
   const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     if(!isClientLoaded) return
     function init() {
       let { ForgeClient } = window.services
-      setLoginUrl(ForgeClient.config.loginUrl)
+      if(ForgeClient.config && ForgeClient.config.loginUrl) {
+        setLoginUrl(ForgeClient.config.loginUrl)
+      }
 
       if(ForgeClient.isLoggedIn()) {
         setUserData(ForgeClient.userData)
@@ -49,7 +51,10 @@ function UserMenu() {
     if(!didOAuthComplete || !isClientLoaded) return
     function init() {
       let { ForgeClient } = window.services
-      setLoginUrl(ForgeClient.config.loginUrl)
+      if(ForgeClient.config && ForgeClient.config.loginUrl) {
+        setLoginUrl(ForgeClient.config.loginUrl)
+      }
+
 
       if(ForgeClient.isLoggedIn()) {
         setUserData(ForgeClient.userData)
@@ -70,8 +75,12 @@ function UserMenu() {
         {isLoggedIn ? (
           <li className="nav-item dropdown">
             <a className="nav-link dropdown-toggle user-badge" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} />
-              <span>{ userData.bungieNetUser.displayName }</span>
+              {userData && userData.bungieNetUser && (
+                <>
+                  <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} />
+                  <span>{ userData.bungieNetUser.displayName }</span>
+                </>
+              )}
             </a>
             <ul className="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
               <li>

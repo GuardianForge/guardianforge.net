@@ -49,8 +49,7 @@ function ForgeModal(props: Props) {
     scrollable={scrollable ? scrollable : true}
     centered={centered}
     fullscreen={fullscreen}
-    size={size}
-    closeButton={closeButton}>
+    size={size}>
       <Modal.Header closeButton={closeButton} closeVariant="white">
         {header ? (
           <>{ header }</>

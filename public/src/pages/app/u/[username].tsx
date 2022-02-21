@@ -117,7 +117,7 @@ type Props = {
 function PublicProfile(props: Props) {
   const { username, location } = props
 
-  const { isConfigLoaded, setPageTitle } = useContext(GlobalContext)
+  const { isInitDone, isConfigLoaded, setPageTitle } = useContext(GlobalContext)
   const [user, setUser] = useState<User>({})
   const [forgeUser, setForgeUser] = useState<User>({})
   const [membership, setMembership] = useState<DestinyMembership>({})
@@ -129,37 +129,41 @@ function PublicProfile(props: Props) {
 
   useEffect(() => {
     async function init() {
-      if(!isConfigLoaded) return
+      if(!isInitDone) return
       let code = location.hash.replace("#", "")
       const { BungieApiService, ForgeApiService } = window.services
       const searchRes = await BungieApiService.searchBungieNetUsers(username)
       // TODO: Handle this better
       if(searchRes && searchRes.length > 0) {
         let user = searchRes.find((el: User) => el.bungieGlobalDisplayName === username && el.bungieGlobalDisplayNameCode === Number(code))
-        setUser(user)
-        if (!user.destinyMemberships || user.destinyMemberships.length === 0) {
-          setUserHasNoDestinyMemberships(true)
-          setCompState(COMPSTATE.NO_MEMBERSHIPS)
-          return
-        }
-
-        setPageTitle(`${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`)
-
-        if(user.bungieNetMembershipId) {
-          let forgeUser = await ForgeApiService.fetchForgeUser(user.bungieNetMembershipId)
-          if(forgeUser) {
-            setForgeUser(forgeUser)
+        if(user) {
+          setUser(user)
+          if (!user.destinyMemberships || user.destinyMemberships.length === 0) {
+            setUserHasNoDestinyMemberships(true)
+            setCompState(COMPSTATE.NO_MEMBERSHIPS)
+            return
           }
-        }
 
-        // Load guardians
-        let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(user)
-        setMembership({ type: membershipType, id: membershipId })
-        let res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
-        let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
-        if(guardians.length > 0) {
-          setGuardians(guardians)
-          setCompState(COMPSTATE.DONE)
+          setPageTitle(`${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`)
+
+          if(user.bungieNetMembershipId) {
+            let forgeUser = await ForgeApiService.fetchForgeUser(user.bungieNetMembershipId)
+            if(forgeUser) {
+              setForgeUser(forgeUser)
+            }
+          }
+
+          // Load guardians
+          let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(user)
+          setMembership({ type: membershipType, id: membershipId })
+          let res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
+          let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
+          if(guardians.length > 0) {
+            setGuardians(guardians)
+            setCompState(COMPSTATE.DONE)
+          } else {
+            setCompState(COMPSTATE.NO_DATA)
+          }
         } else {
           setCompState(COMPSTATE.NO_DATA)
         }
@@ -168,7 +172,7 @@ function PublicProfile(props: Props) {
       }
     }
     init()
-  }, [isConfigLoaded])
+  }, [isInitDone])
 
   function goToGuardian(guardianId: string) {
     navigate(`/app/g/${membership.type}-${membership.id}-${guardianId}`)

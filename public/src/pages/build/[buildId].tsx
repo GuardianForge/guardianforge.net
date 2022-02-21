@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import { GlobalContext } from '../../contexts/GlobalContext'
-import Loading from "../../components/Loading"
-import SubclassCard from '../../components/build/SubclassCard'
-import ItemCard from '../../components/build/ItemCard'
+import Loading from "../../components/app/Loading"
+import SubclassCard from '../../components/app/SubclassCard'
+import ItemCard from '../../components/app/ItemCard'
 import { Helmet } from 'react-helmet'
-import BuildAd from '../../components/ads/BuildAd';
-import StatBar from '../../components/build/StatBar';
+import BuildAd from '../../components/app/ads/BuildAd';
+import StatBar from '../../components/app/StatBar';
 import BuildMetaPanel from '../../components/build/BuildMetaPanel'
 import { Alert } from 'react-bootstrap'
 import { Link, navigate } from 'gatsby'
@@ -25,8 +25,14 @@ const COMP_STATE = {
   ERROR: 2
 }
 
-function Build({ buildId }) {
+type Props = {
+  buildId: string
+}
+
+function Build(props: Props) {
+  const { buildId } = props
   const { isConfigLoaded, dispatchAlert } = useContext(GlobalContext)
+
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
   const [buildData, setBuildData] = useState({})
   const [buildName, setBuildName] = useState("")
@@ -127,22 +133,21 @@ function Build({ buildId }) {
 
           <BuildAd />
 
-          <h3>Stats</h3>
           <StatBar stats={buildData.stats} highlights={highlights} />
 
-          <h3>Subclass</h3>
+          <h4>Subclass</h4>
           <div className="subclass row">
             {buildData.items.subclass && (<SubclassCard className="col-md-12" item={buildData.items.subclass} highlights={highlights}/>)}
           </div>
 
-          <h3>Weapons</h3>
+          <h4>Weapons</h4>
           <div className="weapons row">
             {buildData.items.kinetic && (<ItemCard className="col-md-4" item={buildData.items.kinetic} highlights={highlights} />)}
             {buildData.items.energy && (<ItemCard className="col-md-4" item={buildData.items.energy} highlights={highlights}  />)}
             {buildData.items.power && (<ItemCard className="col-md-4" item={buildData.items.power} highlights={highlights}  />)}
           </div>
 
-          <h3>Armor</h3>
+          <h4>Armor</h4>
           <div className="armor row">
             {buildData.items.helmet && (<ItemCard className="col-md-4" item={buildData.items.helmet} highlights={highlights}  />)}
             {buildData.items.arms && (<ItemCard className="col-md-4" item={buildData.items.arms} highlights={highlights}  />)}

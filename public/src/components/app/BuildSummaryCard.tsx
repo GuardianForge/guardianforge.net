@@ -73,10 +73,11 @@ const Wrapper = styled.div`
 
 type Props = {
   buildSummary: BuildSummary
+  isPublicUi?: boolean
 }
 
 function BuildSummaryCard(props: Props) {
-  const { buildSummary } = props
+  const { buildSummary,isPublicUi } = props
   const [highlight1IconUrl, setHighlight1IconUrl] = useState("")
   const [highlight2IconUrl, setHighlight2IconUrl] = useState("")
   const [highlight3IconUrl, setHighlight3IconUrl] = useState("")
@@ -108,7 +109,11 @@ function BuildSummaryCard(props: Props) {
   }, [])
 
   function goToBuild() {
-    navigate(`/app/build/${buildSummary.id}`)
+    if(isPublicUi) {
+      navigate(`/build/${buildSummary.id}`)
+    } else {
+      navigate(`/app/build/${buildSummary.id}`)
+    }
   }
 
   return (

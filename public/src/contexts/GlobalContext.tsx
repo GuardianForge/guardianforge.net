@@ -24,6 +24,8 @@ interface IGlobalContext {
   setPageTitle: Function
   initApp: Function
   redirectToLogin: Function
+  bannerMessage?: string
+  setBannerMessage: Function
 }
 
 function noop() {
@@ -35,7 +37,8 @@ export const GlobalContext = React.createContext<IGlobalContext>({
   setDidOAuthComplete: noop,
   setPageTitle: noop,
   initApp: noop,
-  redirectToLogin: noop
+  redirectToLogin: noop,
+  setBannerMessage: noop
 })
 
 type Props = {
@@ -55,6 +58,7 @@ export const Provider = (props: Props) => {
   const [errorBeingReported, setErrorBeingReported] = useState({})
   const [pageTitle, setPageTitle] = useState("")
   const [areAdsDisabled, setAreAdsDisabled] = useState(false)
+  const [bannerMessage, setBannerMessage] = useState<string>("")
 
   useEffect(() => {
     let el1 = document.getElementById('___gatsby')
@@ -111,7 +115,6 @@ export const Provider = (props: Props) => {
     if(!isInitDone && !isInitStarted) {
       setIsInitStarted(true)
 
-      console.log("firing main init")
       let res = await fetch("/config.json")
       const config = await res.json()
 
@@ -196,6 +199,8 @@ export const Provider = (props: Props) => {
     pageTitle,
     setPageTitle,
     redirectToLogin,
+    bannerMessage,
+    setBannerMessage,
     initApp: init
   }
 

@@ -5,10 +5,10 @@ import MainNav from '../components/nav/MainNav'
 import Footer from '../components/Footer'
 import { GlobalContext } from '../contexts/GlobalContext'
 import AlertLayer from '../components/alerting/AlertLayer'
-import BetaModal from '../components/BetaModal'
 import { useStaticQuery, graphql } from 'gatsby'
 import { Helmet } from 'react-helmet'
 import "./MainLayout.css"
+import { Alert } from 'react-bootstrap'
 
 const Main = styled.div`
   max-width: 960px !important;
@@ -50,8 +50,14 @@ const Wrapper = styled.div`
     color: #111; }
 `
 
-function MainLayout({ wide, children }) {
-  const { isInitDone, initApp } = useContext(GlobalContext)
+type Props = {
+  wide?: boolean
+  children: React.ReactFragment
+}
+
+function MainLayout(props: Props) {
+  const { wide, children } = props
+  const { isInitDone, initApp, bannerMessage } = useContext(GlobalContext)
 
   const data = useStaticQuery(graphql`
     query MainLayoutQuery {
@@ -86,13 +92,30 @@ function MainLayout({ wide, children }) {
         <meta property="twitter:description" content={data.site.siteMetadata.siteDescription} />
       </Helmet>
       <MainNav />
-        <Main className={wide ? "container-fluid" : "container"}>
-          {children}
-        </Main>
-      <Footer />
+      <Main className={wide ? "container-fluid" : "container"}>
+        {children}
+      </Main>
+      <Footer extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} />
+
+      {bannerMessage && (
+        <div style={{
+          width: "100vw",
+          position: "fixed",
+          bottom: "1",
+          // top: "90%",
+          // left: "50%",
+          // transform: "translate(-50%, -50%)",
+          // padding: ".5rem 1rem",
+          padding: "0px 20px",
+          zIndex: 10000
+        }}>
+          <Alert variant="warning">
+            {bannerMessage}
+          </Alert>
+        </div>
+      )}
 
       <AlertLayer />
-      {/* <BetaModal /> */}
     </Wrapper>
   )
 }

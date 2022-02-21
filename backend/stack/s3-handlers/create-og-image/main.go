@@ -25,6 +25,24 @@ import (
 //go:embed img/bg-wq.png
 var bgbytes []byte
 
+//go:embed img/stats/dis.png
+var disbytes []byte
+
+//go:embed img/stats/int.png
+var intbytes []byte
+
+//go:embed img/stats/mob.png
+var mobbytes []byte
+
+//go:embed img/stats/rec.png
+var recbytes []byte
+
+//go:embed img/stats/res.png
+var resbytes []byte
+
+//go:embed img/stats/str.png
+var strbytes []byte
+
 func handler(ctx context.Context, s3Event events.S3Event) {
 	for _, record := range s3Event.Records {
 		s3 := record.S3
@@ -120,16 +138,48 @@ func createImage(bucketName string, key string) error {
 		}
 
 		imgUrls[url] = true
+		var img image.Image
 
-		res, err := http.Get(url)
-		if err != nil {
-			log.Panic(err)
-		}
-		defer res.Body.Close()
+		if isStat {
+			var imgReader *bytes.Reader
+			switch url {
+			case "Resiliance":
+				imgReader = bytes.NewReader(resbytes)
+				break
+			case "Mobility":
+				imgReader = bytes.NewReader(mobbytes)
+				break
+			case "Recovery":
+				imgReader = bytes.NewReader(recbytes)
+				break
+			case "Discipline":
+				imgReader = bytes.NewReader(disbytes)
+				break
+			case "Intellect":
+				imgReader = bytes.NewReader(intbytes)
+				break
+			case "Strength":
+				imgReader = bytes.NewReader(strbytes)
+				break
+			}
+			if imgReader != nil {
+				img, err = png.Decode(imgReader)
+				if err != nil {
+					log.Panic(err)
+				}
+			}
+		} else {
+			res, err := http.Get(url)
+			if err != nil {
+				log.Panic(err)
+			}
+			defer res.Body.Close()
 
-		img, _, err := image.Decode(res.Body)
-		if err != nil {
-			log.Panic(err)
+			decodedImg, _, err := image.Decode(res.Body)
+			if err != nil {
+				log.Panic(err)
+			}
+			img = decodedImg
 		}
 
 		x := xBase
@@ -249,32 +299,32 @@ func getUrlForItemIndex(build models.Build, index int) (string, bool) {
 
 	if index == 8 {
 		// Energy
-		return build.Stats.Mobility.IconUrl, true
+		return "Mobility", true
 	}
 
 	if index == 9 {
 		// Energy
-		return build.Stats.Resilience.IconUrl, true
+		return "Resilience", true
 	}
 
 	if index == 10 {
 		// Energy
-		return build.Stats.Recovery.IconUrl, true
+		return "Recovery", true
 	}
 
 	if index == 11 {
 		// Energy
-		return build.Stats.Discipline.IconUrl, true
+		return "Discipline", true
 	}
 
 	if index == 12 {
 		// Energy
-		return build.Stats.Intellect.IconUrl, true
+		return "Intellect", true
 	}
 
 	if index == 13 {
 		// Energy
-		return build.Stats.Strength.IconUrl, true
+		return "Strength", true
 	}
 
 	return "", false

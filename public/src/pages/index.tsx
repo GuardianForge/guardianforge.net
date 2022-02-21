@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useContext } from "react"
 import styled from "styled-components"
-import MainLayout from "../layouts/MainLayout"
 import HomeInfoCard from "../components/HomeInfoCard"
-import BuildSummaryCard from "../components/BuildSummaryCard"
+import BuildSummaryCard from "../components/app/BuildSummaryCard"
+// import BuildSummaryCard from "../components/BuildSummaryCard"
+// @ts-ignore
 import LogoNoBg from "../images/logo-no-bg.png"
-import Loading from "../components/Loading"
+import Loading from "../components/app/Loading"
 import { GlobalContext } from "../contexts/GlobalContext"
 import { Helmet } from "react-helmet"
 import { Alert } from "react-bootstrap"
 import { Link } from "gatsby"
+import BuildSummary from "../models/BuildSummary"
 
 // styles
 const GuardianForgeImage = styled.img`
@@ -79,17 +81,17 @@ const IndexPage = () => {
       <div className="row py-5 my-5">
         <h2 className="col-md-12">How it works</h2>
         <div className="col-md-4">
-          <HomeInfoCard icon="search" title="Search." color="arc">
+          <HomeInfoCard icon="search" title="Search.">
             Search for a user within the Destiny userbase, or sign in to see your own Guardians!
           </HomeInfoCard>
         </div>
         <div className="col-md-4">
-          <HomeInfoCard icon="cube" title="Build." color="solar">
+          <HomeInfoCard icon="cube" title="Build.">
             Highlight your Guardian's best gear, specify your play style, and explain why it works together.
           </HomeInfoCard>
         </div>
         <div className="col-md-4">
-          <HomeInfoCard icon="share" title="Share." color="void">
+          <HomeInfoCard icon="share" title="Share.">
             Easily share your build with your friends, fireteam, or anyone in the world!
           </HomeInfoCard>
         </div>
@@ -102,9 +104,9 @@ const IndexPage = () => {
           <Loading />
         ) : (
           <>
-            {latestBuilds.map(bs => (
+            {latestBuilds.map((bs: BuildSummary) => (
               <div key={bs.id} className="col-md-4">
-                <BuildSummaryCard buildSummary={bs} />
+                <BuildSummaryCard buildSummary={bs} isPublicUi/>
               </div>
             ))}
           </>

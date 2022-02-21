@@ -46,9 +46,13 @@ export const pageQuery = graphql`
   }
 `
 
-function Blog({ data }) {
-  const posts = data.allWpPost.edges
-  posts.forEach(p => {
+type Props = {
+  data: any
+}
+
+function Blog(props: Props) {
+  const posts = props.data.allWpPost.edges
+  posts.forEach((p: any) => {
     console.log(p)
     if(p.node &&
       p.node.featuredImage &&
@@ -67,7 +71,8 @@ function Blog({ data }) {
         <title>Blog - GuardianForge</title>
       </Helmet>
       <h1>Blog</h1>
-      {posts.map(p => (
+      {/* TODO: Define a model for post */}
+      {posts.map((p: any) => (
         <PostCard key={p.node.id} to={p.node.slug} title={p.node.title} post={p.node}>
           {p.featuredImage?.node?.localFile?.childImageSharp?.gatsbyImageData && (
             <div>testint testing { JSON.stringify(p.node._featuredImage) }</div>

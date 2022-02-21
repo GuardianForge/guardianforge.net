@@ -25,11 +25,12 @@ const Wrapper = styled.div`
 `
 
 type Props = {
+  isPublicUi?: boolean
   user: User
 }
 
 function PlayerSearchResultCard(props: Props) {
-  const { user } = props
+  const { user, isPublicUi } = props
   const [userHasNoDestinyMemberships, setUserHasNoDestinyMemberships] = useState(false)
   const [showNoDestinyMembershipsModal, setShowNoDestinyMembershipsModal] = useState(false)
 
@@ -41,11 +42,19 @@ function PlayerSearchResultCard(props: Props) {
   }, [])
 
   function goToCharacterSelect() {
-    navigate(`/app/u/${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`, {
-      state: {
-        searchUser: user
-      }
-    })
+    if(isPublicUi) {
+      navigate(`/u/${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`, {
+        state: {
+          searchUser: user
+        }
+      })
+    } else {
+      navigate(`/app/u/${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`, {
+        state: {
+          searchUser: user
+        }
+      })
+    }
   }
 
   return (

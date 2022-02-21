@@ -33,9 +33,15 @@ const Wrapper = styled.div`
   }
 `
 
-function Footer() {
+type Props = {
+  extraPadding?: boolean
+}
+
+function Footer(props: Props) {
+  const { extraPadding } = props
+
   return (
-    <Wrapper className="container">
+    <Wrapper className="container" style={{ paddingBottom: extraPadding ? "120px" : "0px"}}>
       <div className="row">
         <div className="col-md-4 footer-col">
           <div className="footer-header">Info</div>

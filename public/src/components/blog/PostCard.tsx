@@ -34,12 +34,21 @@ const FeaturedImage = styled(GatsbyImage)`
   }
 `
 
-function PostCard({ to, title, children, post }) {
+type Props = {
+  to: string
+  title?: string
+  children?: React.ReactFragment
+  post?: any // TODO: Define this model
+}
+
+function PostCard(props: Props) {
+  const { to, title, children, post } = props
+
   return (
     <Link to={to} style={{ textDecoration: 'none', color: 'inherit'}}>
       <Wrapper>
         {post._featuredImage && (
-          <FeaturedImage image={post._featuredImage} />
+          <FeaturedImage image={post._featuredImage} alt="" />
         )}
         <h2>{ title }</h2>
         <div>{ children }</div>

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import {DebounceInput} from 'react-debounce-input';
-import MainLayout from '../layouts/MainLayout'
-import PlayerSearchResultCard from '../components/PlayerSearchResultCard'
-import Loading from '../components/Loading'
+import PlayerSearchResultCard from '../components/app/PlayerSearchResultCard'
+import Loading from '../components/app/Loading'
 import { Helmet } from 'react-helmet';
+import User from '../models/User';
 
 const Wrapper = styled.div`
 	display: flex;
@@ -63,7 +63,7 @@ function FindPlayers() {
 
         if(queryText.includes("#")) {
           let split = queryText.split("#")
-          results = results.filter(r => {
+          results = results.filter((r: User) => {
             let userCode = String(r.bungieGlobalDisplayNameCode)
             return userCode.startsWith(split[1])
           })
@@ -115,7 +115,7 @@ function FindPlayers() {
 
         {compState === COMP_STATE.HAS_RESULTS && (
         <div className="search-results">
-          {searchResults.map((user, idx) => <PlayerSearchResultCard key={`search-${idx}`} user={user} />)}
+          {searchResults.map((user, idx) => <PlayerSearchResultCard key={`search-${idx}`} user={user} isPublicUi />)}
         </div>
         )}
       </div>

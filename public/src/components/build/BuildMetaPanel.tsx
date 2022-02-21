@@ -7,14 +7,16 @@ import YouTubeEmbed from '../../components/build/YouTubeEmbed';
 import activityOptions from '../../utils/activityOptions'
 import styled from 'styled-components';
 import { GlobalContext } from '../../contexts/GlobalContext';
-import ForgeModal from '../Modal'
+import ForgeModal from '../app/Modal'
 import { Link } from 'gatsby'
 import { Button } from "react-bootstrap"
 import Build from '../../models/Build';
 import AlertDetail from '../../models/AlertDetail';
+import colors from '../../colors';
+import ForgeButton from '../app/forms/Button';
 
 const Wrapper = styled.div`
-  background-color: #1e1f24;
+  background-color: ${colors.theme2.dark2};
   border-radius: 5px;
   margin: 5px;
   padding-bottom: 10px;
@@ -42,7 +44,7 @@ const Wrapper = styled.div`
   }
 
   .share-bar {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid ${colors.theme2.dark1};
     margin-bottom: 5px;
 
     button {
@@ -163,7 +165,10 @@ function BuildMetaPanel(props: Props) {
   const [createdBy, setCreatedBy] = useState(null)
   const [guardianOf, setGuardianOf] = useState(null)
   const [columns, setColumns] = useState(2)
-  const [isPrivate, setIsPrivate] = useState(false)
+  const [displayNotes, setDisplayNotes] = useState<string>()
+  const [areNotesLong, setAreNotesLong] = useState(false)
+  const [isNotesDialogDisplayed, setIsNotesDialogDisplayed] = useState(false)
+  const [reformattedNotes, setReformattedNotes] = useState("")
 
   useEffect(() => {
     let _cols = 1
@@ -227,6 +232,19 @@ function BuildMetaPanel(props: Props) {
   }, [isConfigLoaded])
 
   useEffect(() => {
+    const { notes } = buildData
+
+    if(notes) {
+      let reformatted = notes.replace(/\n/g, "<br/>")
+      setReformattedNotes(reformatted)
+      if(notes.length > 500) {
+        setDisplayNotes(reformatted.slice(0, 499) + "...")
+        setAreNotesLong(true)
+      } else {
+        setDisplayNotes(reformatted)
+      }
+    }
+
     if(buildData.primaryActivity) {
       let activity = activityOptions.find(el => el.value === buildData.primaryActivity)
       if(activity && activity.value !== '1') {
@@ -365,10 +383,13 @@ function BuildMetaPanel(props: Props) {
         </div>
       </div>
       <div className={`mt-1 col-md-${12 / columns}`}>
-        {buildData.notes && !isEditing && (
+        {displayNotes && !isEditing && (
           <div>
             <span className="build-info-header">Notes</span>
-            <div className="build-notes" dangerouslySetInnerHTML={{ __html: buildData.notes }} />
+            {displayNotes && <div dangerouslySetInnerHTML={{__html: displayNotes}} />}
+            {areNotesLong && <a href="#" className="read-more-link" onClick={() => setIsNotesDialogDisplayed(true)}>Read more</a>}
+
+            {/* <div className="build-notes" dangerouslySetInnerHTML={{ __html: buildData.notes }} /> */}
           </div>
         )}
         {isEditing && (
@@ -402,8 +423,6 @@ function BuildMetaPanel(props: Props) {
           {buildData.inputStyle === '2' && (<img src="/img/input-icons/controller.png" />)}
         </div>
       </div>
-
-
 
       {(createdBy || guardianOf) && (
         <div className={`mt-1 col-md-${12 / columns}`}>
@@ -478,8 +497,6 @@ function BuildMetaPanel(props: Props) {
         </div>
       )}
 
-
-
       {buildData.videoLink && (
         <div className={`mt-1 col-md-${12 / columns}`}>
           <div className="build-info-header">Video Review</div>
@@ -530,6 +547,12 @@ function BuildMetaPanel(props: Props) {
           <Button variant="primary">Submit</Button>
         </Modal.Footer>
       </Modal> */}
+
+      <ForgeModal show={isNotesDialogDisplayed} title="Build Notes" size="lg" scrollable footer={<ForgeButton onClick={() => setIsNotesDialogDisplayed(false)}>Close</ForgeButton>}>
+        <>
+          {reformattedNotes && <div dangerouslySetInnerHTML={{__html: reformattedNotes}} />}
+        </>
+      </ForgeModal>
     </Wrapper>
   )
 }

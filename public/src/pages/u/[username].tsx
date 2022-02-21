@@ -1,13 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { navigate } from 'gatsby'
-import GuardianCard from '../../components/GuardianCard'
-import Loading from '../../components/Loading'
+import GuardianCard from '../../components/app/GuardianCard'
+import Loading from '../../components/app/Loading'
 import { GlobalContext } from '../../contexts/GlobalContext'
 import userUtils from "../../utils/userUtils"
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import BuildSummaryCard from '../../components/BuildSummaryCard'
+import BuildSummaryCard from '../../components/app/BuildSummaryCard'
+import User from '../../models/User'
+import DestinyMembership from '../../models/DestinyMembership'
+import Guardian from '../../models/Guardian'
 
 const UserMenuWrapper = styled.div`
   padding: 10px;
@@ -89,12 +92,18 @@ const COMPSTATE = {
   NO_DATA: 3
 }
 
-function PublicProfile({ username, location }) {
+type Props = {
+  username: string
+  location: any
+}
+
+function PublicProfile(props: Props) {
+  const { username, location } = props
   const { isConfigLoaded } = useContext(GlobalContext)
-  const [user, setUser] = useState({})
-  const [forgeUser, setForgeUser] = useState({})
-  const [membership, setMembership] = useState({})
-  const [guardians, setGuardians] = useState([])
+  const [user, setUser] = useState<User>({})
+  const [forgeUser, setForgeUser] = useState<User>({})
+  const [membership, setMembership] = useState<DestinyMembership>({})
+  const [guardians, setGuardians] = useState<Array<Guardian>>([])
   const [compState, setCompState] = useState(COMPSTATE.LOADING)
   const [areBuildsShown, setAreBuildsShown] = useState(false)
 
@@ -103,12 +112,15 @@ function PublicProfile({ username, location }) {
       if(!isConfigLoaded) return
       let code = location.hash.replace("#", "")
       const { BungieApiService, ForgeApiService, ForgeClient } = window.services
+
       if(ForgeClient.isLoggedIn()) {
         navigate(`/app/u/${username}#${code}`)
       }
+
       const searchRes = await BungieApiService.searchBungieNetUsers(username)
       // TODO: Handle this better
       if(searchRes && searchRes.length > 0) {
+        // @ts-ignore
         let user = searchRes.find(el => el.bungieGlobalDisplayName === username && el.bungieGlobalDisplayNameCode === Number(code))
         setUser(user)
 
@@ -125,7 +137,8 @@ function PublicProfile({ username, location }) {
         let res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
         let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
         if(guardians.length > 0) {
-          guardians.sort((a, b) => new Date(b.dateLastPlayed) - new Date(a.dateLastPlayed))
+          // @ts-ignore
+          guardians.sort((a: any, b: any) => new Date(b.dateLastPlayed) - new Date(a.dateLastPlayed))
           setGuardians(guardians)
           setCompState(COMPSTATE.DONE)
         } else {
@@ -138,7 +151,7 @@ function PublicProfile({ username, location }) {
     init()
   }, [isConfigLoaded])
 
-  function goToGuardian(guardianId) {
+  function goToGuardian(guardianId: string) {
     navigate(`/g/${membership.type}-${membership.id}-${guardianId}`)
   }
 
@@ -164,7 +177,7 @@ function PublicProfile({ username, location }) {
                       {user.bungieGlobalDisplayName}#{user.bungieGlobalDisplayNameCode}
                     </span>
                   )}
-                  {forgeUser && (
+                  {forgeUser && forgeUser.user && (
                     <ForgeUserInfoWrapper>
                       {forgeUser.user.about && <span>"{ forgeUser.user.about }"</span>}
                       {forgeUser.user.social && (
@@ -208,21 +221,21 @@ function PublicProfile({ username, location }) {
             </div>
             {areBuildsShown ? (
               <div className="col-md-8 row">
-                {forgeUser.builds.map(bs => (
+                {forgeUser.builds && forgeUser.builds.map(bs => (
                   <div key={bs.id} className="col-md-6">
-                    <BuildSummaryCard buildSummary={bs} showArchiveButton />
+                    <BuildSummaryCard buildSummary={bs} isPublicUi />
                   </div>
                 ))}
               </div>
             ) : (
               <div className="col-md-8">
-                {guardians.map(g => (
+                {guardians.map((g: Guardian) => (
                   <GuardianCard key={g.characterId}
-                    classType={g.classType}
-                    raceType={g.raceType}
-                    light={g.light}
-                    emblemUrl={g.emblemBackgroundPath}
-                    onClick={() => goToGuardian(g.characterId)} />
+                    classType={g.classType as string}
+                    raceType={g.raceType as string}
+                    light={g.light as string}
+                    emblemUrl={g.emblemBackgroundPath as string}
+                    onClick={() => goToGuardian(g.characterId as string)} />
                 ))}
               </div>
             )}

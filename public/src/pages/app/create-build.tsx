@@ -27,6 +27,8 @@ import ForgeButton from '../../components/app/forms/Button'
 import ClassCard from '../../components/app/ClassCard'
 import userUtils from '../../utils/userUtils'
 import BuildAd from '../../components/app/ads/BuildAd'
+import { ClassEnum } from '@guardianforge/destiny-data-utils/dist/models/Enums'
+import AlertDetail from '../../models/AlertDetail'
 
 const Wrapper = styled.div`
   padding-bottom: 20px;
@@ -80,7 +82,7 @@ type Props = {
 function CreateBuild(props: Props) {
   const { location } = props
 
-  const { isInitDone, setPageTitle } = useContext(GlobalContext)
+  const { isInitDone, setPageTitle, dispatchAlert } = useContext(GlobalContext)
 
   const [_state, setState] = useState(State.LOADING)
   const [isClassSelectModalOpen, setIsClassSelectModalOpen] = useState(false)
@@ -371,12 +373,19 @@ function CreateBuild(props: Props) {
     }
 
     if(ForgeClient.userData && ForgeClient.userData.bungieNetUser) {
-      const { membershipId, bungieGlobalDisplayName, bungieGlobalDisplayNameCode } = ForgeClient.userData.bungieNetUser
+      const { membershipId, bungieGlobalDisplayName, bungieGlobalDisplayNameCode, cachedBungieGlobalDisplayName, cachedBungieGlobalDisplayNameCode } = ForgeClient.userData.bungieNetUser
       build.createdBy = membershipId
 
-      if(build.selectedUser === undefined && bungieGlobalDisplayName && bungieGlobalDisplayNameCode) {
+      if(!build.selectedUser && bungieGlobalDisplayName && bungieGlobalDisplayNameCode) {
         build.selectedUser = {
           displayName: `${bungieGlobalDisplayName}#${bungieGlobalDisplayNameCode}`,
+          bungieNetUserId: ForgeClient.userData.bungieNetUser.membershipId
+        }
+      }
+
+      if(!build.selectedUser && cachedBungieGlobalDisplayName && cachedBungieGlobalDisplayNameCode) {
+        build.selectedUser = {
+          displayName: `${cachedBungieGlobalDisplayName}#${cachedBungieGlobalDisplayNameCode}`,
           bungieNetUserId: ForgeClient.userData.bungieNetUser.membershipId
         }
       }
@@ -405,14 +414,15 @@ function CreateBuild(props: Props) {
 
       navigate(`/app/build/${buildId}`)
     } catch(err) {
-      // TODO: HANDLE
-      console.error(err)
+      let alert = new AlertDetail("An error occurred while saving this build. Please try again later...", "Saving Build", true, false)
+      dispatchAlert(alert)
       setState(State.DONE)
     }
   }
 
   function onClassSelected(classType: Enums.ClassEnum) {
     const { ForgeClient } = window.services
+    resetBuild();
     setSelectedClass(classType)
     let className = ""
     if(classType === Enums.ClassEnum.Titan) {
@@ -428,7 +438,6 @@ function CreateBuild(props: Props) {
       setName(`${ForgeClient.userData.bungieNetUser.uniqueName}'s ${className}`)
     }
     setIsClassSelectModalOpen(false)
-    resetBuild();
     setState(State.DONE)
   }
 

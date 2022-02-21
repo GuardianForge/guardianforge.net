@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { GlobalContext } from '../../contexts/GlobalContext'
-import Loading from '../../components/Loading'
-import SubclassCard from '../../components/build/SubclassCard'
-import ItemCard from '../../components/build/ItemCard'
+import Loading from '../../components/app/Loading'
+import SubclassCard from '../../components/app/SubclassCard'
+import ItemCard from '../../components/app/ItemCard'
 import styled from 'styled-components'
 import { classes } from '../../../../public/src/constants'
 import buildUtils from "../../utils/buildUtils"
 import { navigate } from 'gatsby'
-import ActivitySelector from '../../components/build/ActivitySelector'
-import YouTubeEmbed from '../../components/build/YouTubeEmbed'
+import ActivitySelector from '../../components/app/ActivitySelector'
+import YouTubeEmbed from '../../components/app/YouTubeEmbed'
 import { Helmet } from 'react-helmet'
-import StatBar from '../../components/build/StatBar'
-import BuildAd from '../../components/ads/BuildAd'
+import StatBar from '../../components/app/StatBar'
+import BuildAd from '../../components/app/ads/BuildAd'
 import { Button, ButtonGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -98,6 +98,7 @@ function Guardian({guardianKey}) {
       const { BungieApiService, ManifestService, ForgeClient } = window.services
 
       if(ForgeClient.isLoggedIn()) {
+        console.log("redirecting")
         navigate(`/app/g/${guardianKey}`)
       }
 
@@ -364,22 +365,21 @@ function Guardian({guardianKey}) {
 
           <BuildAd />
 
-          <h3>Stats</h3>
-          <StatBar stats={stats} highlights={highlights} onStatClicked={onStatClicked} />
+          <StatBar stats={stats} highlights={highlights} onStatClicked={onStatClicked} centered />
 
-          <h3>Subclass</h3>
+          <h4>Subclass</h4>
           <div className="items subclass row">
             {items.subclass && (<SubclassCard item={items.subclass} onPlugClicked={onPlugClicked} highlights={highlights}/>)}
           </div>
 
-          <h3>Weapons</h3>
+          <h4>Weapons</h4>
           <div className="items weapons row">
             {items.kinetic && (<ItemCard className="col-md-4" item={items.kinetic} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights} />)}
             {items.energy && (<ItemCard className="col-md-4" item={items.energy} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
             {items.power && (<ItemCard className="col-md-4" item={items.power} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
           </div>
 
-          <h3>Armor</h3>
+          <h4>Armor</h4>
           <div className="items armor row">
             {items.helmet && (<ItemCard className="col-md-4" item={items.helmet} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
             {items.arms && (<ItemCard className="col-md-4" item={items.arms} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}

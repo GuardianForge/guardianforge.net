@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import colors from '../colors'
 
 const Wrapper = styled.div`
-  background-color: #1E1F24;
+  background-color: ${colors.theme2.dark2};
   border-radius: 5px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.05);
   padding: 15px;
@@ -48,19 +50,20 @@ const Wrapper = styled.div`
   }
 `
 
-function HomeInfoCard(props) {
+type Props = {
+  icon?: IconProp
+  title?: string
+  children?: React.ReactFragment
+}
+
+function HomeInfoCard(props: Props) {
   const { icon, title, children } = props
   return (
     <Wrapper className="hiw-card">
       <div className="hiw-header">
         <div className="hiw-icon-wrapper">
           <div className="hiw-icon">
-          {/* <div className="hiw-icon" :className="{
-              'hiw-icon-arc': color == 'arc',
-              'hiw-icon-solar': color == 'solar',
-              'hiw-icon-void': color == 'void',
-            }"> */}
-            <FontAwesomeIcon icon={icon} />
+            {icon && <FontAwesomeIcon icon={icon} /> }
           </div>
         </div>
         <div className="hiw-card-title">
