@@ -137,6 +137,8 @@ func createImage(bucketName string, key string) error {
 			continue
 		}
 
+		log.Println(url, isStat)
+
 		imgUrls[url] = true
 		var img image.Image
 
@@ -145,23 +147,18 @@ func createImage(bucketName string, key string) error {
 			switch url {
 			case "Resiliance":
 				imgReader = bytes.NewReader(resbytes)
-				break
 			case "Mobility":
 				imgReader = bytes.NewReader(mobbytes)
-				break
 			case "Recovery":
 				imgReader = bytes.NewReader(recbytes)
-				break
 			case "Discipline":
 				imgReader = bytes.NewReader(disbytes)
-				break
 			case "Intellect":
 				imgReader = bytes.NewReader(intbytes)
-				break
 			case "Strength":
 				imgReader = bytes.NewReader(strbytes)
-				break
 			}
+
 			if imgReader != nil {
 				img, err = png.Decode(imgReader)
 				if err != nil {
