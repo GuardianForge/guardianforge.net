@@ -11,6 +11,7 @@ import BuildSummaryCard from '../../components/app/BuildSummaryCard'
 import User from '../../models/User'
 import DestinyMembership from '../../models/DestinyMembership'
 import Guardian from '../../models/Guardian'
+import { BungieOfflineAlert } from '../../models/AlertDetail'
 
 const UserMenuWrapper = styled.div`
   padding: 10px;
@@ -99,7 +100,7 @@ type Props = {
 
 function PublicProfile(props: Props) {
   const { username, location } = props
-  const { isConfigLoaded } = useContext(GlobalContext)
+  const { isConfigLoaded, dispatchAlert } = useContext(GlobalContext)
   const [user, setUser] = useState<User>({})
   const [forgeUser, setForgeUser] = useState<User>({})
   const [membership, setMembership] = useState<DestinyMembership>({})
@@ -117,7 +118,13 @@ function PublicProfile(props: Props) {
         navigate(`/app/u/${username}#${code}`)
       }
 
-      const searchRes = await BungieApiService.searchBungieNetUsers(username)
+      let searchRes: any;
+      try {
+        searchRes = await BungieApiService.searchBungieNetUsers(username)
+      } catch (err) {
+        dispatchAlert(BungieOfflineAlert)
+        return
+      }
       // TODO: Handle this better
       if(searchRes && searchRes.length > 0) {
         // @ts-ignore
@@ -134,7 +141,13 @@ function PublicProfile(props: Props) {
         // Load guardians
         let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(user)
         setMembership({ type: membershipType, id: membershipId })
-        let res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
+        let res: any;
+        try {
+          res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
+        } catch (err) {
+          dispatchAlert(BungieOfflineAlert)
+          return
+        }
         let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
         if(guardians.length > 0) {
           // @ts-ignore

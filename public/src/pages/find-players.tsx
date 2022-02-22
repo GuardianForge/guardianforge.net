@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import {DebounceInput} from 'react-debounce-input';
 import PlayerSearchResultCard from '../components/app/PlayerSearchResultCard'
 import Loading from '../components/app/Loading'
 import { Helmet } from 'react-helmet';
 import User from '../models/User';
+import { BungieOfflineAlert } from '../models/AlertDetail';
+import { GlobalContext } from '../contexts/GlobalContext';
 
 const Wrapper = styled.div`
 	display: flex;
@@ -51,15 +53,22 @@ const COMP_STATE = {
 }
 
 function FindPlayers() {
+  const { dispatchAlert } = useContext(GlobalContext)
   const [queryText, setQueryText] = useState("")
   const [searchResults, setSearchResults] = useState([])
   const [compState, setCompState] = useState(COMP_STATE.NONE)
 
   useEffect(() => {
-    async function fn() {
+    async function go() {
       if(queryText && queryText !== "") {
         setCompState(COMP_STATE.LOADING)
-        let results = await window.services.BungieApiService.searchBungieNetUsers(queryText)
+        let results;
+        try {
+          results = await window.services.BungieApiService.searchBungieNetUsers(queryText)
+        } catch (err) {
+          dispatchAlert(BungieOfflineAlert)
+          return
+        }
 
         if(queryText.includes("#")) {
           let split = queryText.split("#")
@@ -81,7 +90,7 @@ function FindPlayers() {
         setSearchResults([])
       }
     }
-    fn()
+    go()
   }, [queryText])
 
   return (
@@ -114,9 +123,9 @@ function FindPlayers() {
         )}
 
         {compState === COMP_STATE.HAS_RESULTS && (
-        <div className="search-results">
-          {searchResults.map((user, idx) => <PlayerSearchResultCard key={`search-${idx}`} user={user} isPublicUi />)}
-        </div>
+          <div className="search-results">
+            {searchResults.map((user, idx) => <PlayerSearchResultCard key={`search-${idx}`} user={user} isPublicUi />)}
+          </div>
         )}
       </div>
     </Wrapper>

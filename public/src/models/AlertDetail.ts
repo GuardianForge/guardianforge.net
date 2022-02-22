@@ -1,11 +1,12 @@
 import { MouseEventHandler } from "react"
+import { Alert } from "react-bootstrap"
 
 export type AlertDetailButton = {
   title: string
   fn: MouseEventHandler
 }
 
-class AlertDetail{
+class AlertDetail {
   id: number
   body: string
   title?: string
@@ -33,5 +34,11 @@ class AlertDetail{
     // }
   }
 }
-
 export default AlertDetail
+
+export const BungieOfflineAlert = new AlertDetail(
+  "An error occurred while accessing Bungie's API. The system may be offline. Please try again later...",
+  "Bungie API",
+  true,
+  false
+)

@@ -6,6 +6,16 @@ type SetAuthDataOptions = {
   fetchUserData?: boolean
 }
 
+type AuthData = {
+  access_token: string
+  expires_in: number
+  issuedAt: number
+  membership_id: string
+  refresh_expires_in: number
+  refresh_token: string
+  token_type: string
+}
+
 export default class GuardianForgeClientService {
   config: AppConfig
   bungieApiService: BungieApiService
@@ -14,7 +24,7 @@ export default class GuardianForgeClientService {
   // TODO: Make models of all these
   latestBuilds: any
   userData: any
-  authData: any
+  authData?: AuthData
   userInfo: any
   isUserDataLoaded: boolean = false
   userUpvotes: any
@@ -30,7 +40,6 @@ export default class GuardianForgeClientService {
     this.forgeApiService = forgeApiService
 
     this.userData = null
-    this.authData = null
     this.userInfo = null
 
     // User-specific stuff
@@ -57,6 +66,20 @@ export default class GuardianForgeClientService {
       localStorage.setItem("auth", JSON.stringify(authData))
     }
     this.authData = authData
+
+    // Watch token & refresh as needed
+    let self = this
+    setInterval(async () => {
+      try {
+        let now = Date.now()
+        let refreshExpiry = authData.issuedAt + (authData.refresh_expires_in * 1000)
+        if (self.authData && (now < refreshExpiry)) {
+          await self.forgeApiService.refreshToken(self.authData.refresh_token)
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }, 3500 * 1000)
 
     let userData = await this.bungieApiService.fetchUserMemberships(authData.membership_id)
     this.userData = userData
@@ -126,7 +149,7 @@ export default class GuardianForgeClientService {
         requiresRelogin = true
       }
 
-      if(!requiresRelogin) {
+      if(authData && !requiresRelogin) {
         let expiry = authData.issuedAt + (authData.expires_in * 1000)
         if (now > expiry) {
           let refreshExpiry = authData.issuedAt + (authData.refresh_expires_in * 1000)

@@ -14,6 +14,7 @@ import StatBar from '../../components/app/StatBar'
 import BuildAd from '../../components/app/ads/BuildAd'
 import { Button, ButtonGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { BungieOfflineAlert } from '../../models/AlertDetail'
 
 const Wrapper = styled.div`
   .items {
@@ -68,7 +69,7 @@ const COMP_STATE = {
 }
 
 function Guardian({guardianKey}) {
-  const { isInitDone, isClientLoaded } = useContext(GlobalContext)
+  const { isInitDone, isClientLoaded, dispatchAlert } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
   const [highlights, setHighlights] = useState([])
   const [buildName, setBuildName] = useState("")
@@ -108,11 +109,16 @@ function Guardian({guardianKey}) {
         membershipId: split[1],
         guardianId: split[2]
       }
-      let res = await Promise.all([
-        BungieApiService.fetchCharacter(meta.membershipType, meta.membershipId, meta.guardianId),
-        BungieApiService.fetchUserByMembershipAndPlatform(meta.membershipId, meta.membershipType)
-      ])
-      console.log(res)
+      let res
+      try {
+        res = await Promise.all([
+          BungieApiService.fetchCharacter(meta.membershipType, meta.membershipId, meta.guardianId),
+          BungieApiService.fetchUserByMembershipAndPlatform(meta.membershipId, meta.membershipType)
+        ])
+      } catch (err) {
+        dispatchAlert(BungieOfflineAlert)
+        return
+      }
 
       // User stuff
       const user = res[1]

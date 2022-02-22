@@ -28,7 +28,7 @@ import ClassCard from '../../components/app/ClassCard'
 import userUtils from '../../utils/userUtils'
 import BuildAd from '../../components/app/ads/BuildAd'
 import { ClassEnum } from '@guardianforge/destiny-data-utils/dist/models/Enums'
-import AlertDetail from '../../models/AlertDetail'
+import AlertDetail, { BungieOfflineAlert } from '../../models/AlertDetail'
 
 const Wrapper = styled.div`
   padding-bottom: 20px;
@@ -142,9 +142,14 @@ function CreateBuild(props: Props) {
       let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(ForgeClient.userData)
       let token = await ForgeClient.getToken()
 
-      window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)
-      await window.services.InventoryManager.loadInventory(membershipType, membershipId, token)
-      setIsInventoryLoaded(true)
+      try {
+        window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)
+        await window.services.InventoryManager.loadInventory(membershipType, membershipId, token)
+        setIsInventoryLoaded(true)
+      } catch (err) {
+        dispatchAlert(BungieOfflineAlert)
+        return
+      }
 
       if(location && location.state && location.state.guardianKey) {
         let b = await Build.FromGuardianKey(BungieApiService, ManifestService, location.state.guardianKey)
