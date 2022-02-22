@@ -125,6 +125,12 @@ function PublicProfile(props: Props) {
         dispatchAlert(BungieOfflineAlert)
         return
       }
+
+      if(searchRes === undefined) {
+        dispatchAlert(BungieOfflineAlert)
+        return
+      }
+
       // TODO: Handle this better
       if(searchRes && searchRes.length > 0) {
         // @ts-ignore
@@ -144,18 +150,25 @@ function PublicProfile(props: Props) {
         let res: any;
         try {
           res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
+          console.log('res', res)
         } catch (err) {
           dispatchAlert(BungieOfflineAlert)
           return
         }
-        let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
-        if(guardians.length > 0) {
-          // @ts-ignore
-          guardians.sort((a: any, b: any) => new Date(b.dateLastPlayed) - new Date(a.dateLastPlayed))
-          setGuardians(guardians)
-          setCompState(COMPSTATE.DONE)
-        } else {
-          setCompState(COMPSTATE.NO_DATA)
+        if(res === undefined) {
+          dispatchAlert(BungieOfflineAlert)
+          return
+        }
+        if(res && res.characters && res.characters.data) {
+          let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
+          if(guardians.length > 0) {
+            // @ts-ignore
+            guardians.sort((a: any, b: any) => new Date(b.dateLastPlayed) - new Date(a.dateLastPlayed))
+            setGuardians(guardians)
+            setCompState(COMPSTATE.DONE)
+          } else {
+            setCompState(COMPSTATE.NO_DATA)
+          }
         }
       } else {
         console.warn("cant find that user")
