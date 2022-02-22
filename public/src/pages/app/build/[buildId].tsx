@@ -44,7 +44,7 @@ type Props = {
 function Build(props: Props) {
   const { buildId } = props
 
-  const { isConfigLoaded, dispatchAlert, setPageTitle, isInitDone } = useContext(GlobalContext)
+  const { isConfigLoaded, setPageTitle, isInitDone } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
   const [buildData, setBuildData] = useState<BuildData>({})
   const [highlights, setHighlights] = useState([])
@@ -172,7 +172,7 @@ function Build(props: Props) {
             </Col>
           </Row>
           <Row>
-            {(buildData.inputStyle || buildData.notes || buildData.primaryActivity) && (
+            {(buildData.inputStyle || buildData.notes !== "" || buildData.primaryActivity != "1") && (
               <Col md="8" className="d-block d-xxl-none">
                 <BuildNotesCard notes={buildData.notes} inputStyle={buildData.inputStyle} primaryActivityKey={buildData.primaryActivity} />
               </Col>
