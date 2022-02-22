@@ -3,22 +3,15 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
-	"fmt"
 	"image"
 	"image/png"
-	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	_ "embed"
 
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/fogleman/gg"
 	"github.com/pkg/errors"
 	"guardianforge.net/core/models"
@@ -46,21 +39,12 @@ var resbytes []byte
 var strbytes []byte
 
 func main() {
-	lambda.Start(handler)
+	CreateImage()
 }
 
-func handler(ctx context.Context, s3Event events.S3Event) {
-	for _, record := range s3Event.Records {
-		s3 := record.S3
-		log.Println(fmt.Sprintf("(handler) Handling build %v", s3.Object.Key))
-		CreateImage(s3.Bucket.Name, s3.Object.Key)
-		fmt.Printf("[%s - %s] Bucket = %s, Key = %s \n", record.EventSource, record.EventTime, s3.Bucket.Name, s3.Object.Key)
-	}
-}
-
-func CreateImage(bucketName string, key string) error {
+func CreateImage() error {
 	// https://guardianforge-qa-builds.s3.amazonaws.com/builds/02bf1dd9-da92-4f66-a2f7-06ae3bf0fd2f.json
-	res, err := http.Get(fmt.Sprintf("https://%v.s3.amazonaws.com/%v", bucketName, key))
+	res, err := http.Get("https://guardianforge-qa-data.s3-us-west-1.amazonaws.com/builds/ce04973b-1cac-40e5-af23-e7f776909b03.json")
 	if err != nil {
 		return errors.Wrap(err, "(CreateImage) http.Get")
 	}
@@ -180,34 +164,11 @@ func CreateImage(bucketName string, key string) error {
 		return errors.Wrap(err, "(CreateImage) png.Encode")
 	}
 
-	splitKey := strings.Split(key, "/")
-	buildId := strings.ReplaceAll(splitKey[1], ".json", "")
-	err = WriteImageToS3(bucketName, buildId, b)
+	os.WriteFile("image.png", b.Bytes(), 0777)
 
 	return nil
 }
 
-func WriteImageToS3(bucketName string, buildId string, imageBytesBuffer bytes.Buffer) error {
-	ogImageKey := fmt.Sprintf("og/%v.png", buildId)
-	sess, err := session.NewSession()
-	if err != nil {
-		return errors.Wrap(err, "(WriteImageToS3) create session")
-	}
-
-	reader := bytes.NewReader(imageBytesBuffer.Bytes())
-	uploader := s3manager.NewUploader(sess)
-	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket:      &bucketName,
-		Key:         &ogImageKey,
-		Body:        reader,
-		ACL:         aws.String("public-read"),
-		ContentType: aws.String("image/png"),
-	})
-	if err != nil {
-		return errors.Wrap(err, "(WriteImageToS3) create session")
-	}
-	return nil
-}
 func FetchImage(url string) (image.Image, error) {
 	res, err := http.Get(url)
 	if err != nil {
