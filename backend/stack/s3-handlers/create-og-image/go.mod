@@ -7,6 +7,7 @@ require (
 	github.com/aws/aws-sdk-go v1.39.5
 	github.com/fogleman/gg v1.3.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/pkg/errors v0.9.1
 	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d // indirect
 	guardianforge.net/core v0.0.0-00010101000000-000000000000
 )
