@@ -20,6 +20,7 @@ import { Toggles } from '../toggles'
 import FeatureToggleWrapper from '../components/app/general/FeatureToggle'
 import ForgeModal from '../components/app/Modal'
 import ForgeButton from '../components/app/forms/Button'
+import { Helmet } from 'react-helmet'
 
 
 const Layout = styled.div`
@@ -441,6 +442,9 @@ function AppLayout(props: Props) {
 
   return (
     <Layout id="appLayout">
+      <Helmet>
+        <title>{`${pageTitle ? `${pageTitle} - ` : ""}GuardianForge`}</title>
+      </Helmet>
       {/* <SidebarOverlay className={`d-xl-none ${isMenuOpen ? "" : "d-none"}`} onClick={() => setIsMenuOpen(false)}/> */}
       <Sidebar className="d-none d-xl-flex">
         <div className="nav-header">

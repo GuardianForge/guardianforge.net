@@ -112,7 +112,6 @@ function Guardian(props: Props) {
         BungieApiService.fetchCharacter(meta.membershipType, meta.membershipId, meta.guardianId),
         BungieApiService.fetchUserByMembershipAndPlatform(meta.membershipId, meta.membershipType)
       ])
-      console.log(res)
 
       // User stuff
       const user = res[1]

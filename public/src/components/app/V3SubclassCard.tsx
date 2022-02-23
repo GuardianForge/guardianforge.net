@@ -54,7 +54,7 @@ const Wrapper = styled.div`
         max-height: 60px;
         max-width: 60px;
         border-radius: 5px;
-        background-color: #111;
+        background-color: ${colors.theme2.socketIconBg};
         margin-right: 5px;
         margin-bottom: 5px;
 

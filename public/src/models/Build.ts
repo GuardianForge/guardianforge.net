@@ -1,5 +1,5 @@
 import { BungieApiService, Enums, Item, ManifestService, Socket, SocketItem } from "@guardianforge/destiny-data-utils"
-import { ItemTypeEnum } from "@guardianforge/destiny-data-utils/dist/models/Enums"
+import { DamageTypeEnum, ItemTypeEnum } from "@guardianforge/destiny-data-utils/dist/models/Enums"
 // @ts-ignore
 import buildUtils from "../utils/buildUtils"
 import BuildSummary from "./BuildSummary"
@@ -100,7 +100,8 @@ class Build {
       highlights: [],
       primaryIconSet: "",
       upvotes: 0,
-      username: ""
+      username: "",
+      publishedOn: Date.now() / 1000
     }
 
     if(this.selectedUser && summary.userId) {
@@ -136,8 +137,11 @@ class Build {
         let { damageType, tree } = this.items.subclass.superConfig
         summary.primaryIconSet = `${this.class}-${damageType}-${tree}`
       } else {
-        // TODO: Fix this for void 3.0, it wont only be stasis after this
-        summary.primaryIconSet = `${this.class}-6`
+        if(this.items.subclass.damageType) {
+          summary.primaryIconSet = `${this.class}-${this.items.subclass.damageType}`
+        } else {
+          summary.primaryIconSet = `${this.class}-6`
+        }
       }
     }
     return summary
@@ -316,9 +320,11 @@ export class BuildItem {
   abilities?: Array<BuildItemPlug>
   fragments?: Array<BuildItemPlug>
   aspects?: Array<BuildItemPlug>
+  super?: Array<BuildItemPlug>
   name?: string
   superConfig?: BuildSuperConfig
   isLightSubclass?: boolean
+  damageType?: DamageTypeEnum
 
   getSubclassVersion(): number {
     if(this.aspects || this.fragments) {
@@ -397,8 +403,25 @@ export class BuildItem {
         buildItem.abilities = []
         buildItem.aspects = []
         buildItem.fragments = []
+        buildItem.super = []
+        buildItem.damageType = item.damageType
 
         if(item.sockets) {
+          let superSockets = item.sockets.filter((s: Socket) => s._meta?.categoryDefinition.displayProperties.name === "SUPER")
+          superSockets.forEach((s: Socket) => {
+            if(s.equippedPlug) {
+              let plugItem: BuildItemPlug = {
+                plugHash: s.equippedPlug._meta?.manifestDefinition.hash,
+                iconUrl: s.equippedPlug.iconUrl,
+                itemInstanceId: buildItem.itemInstanceId,
+                socketIndex: s.position,
+                name: s.equippedPlug.name,
+                isEmpty: false // CANNOT be empty
+              }
+              buildItem.super?.push(plugItem)
+            }
+          })
+
           let abilitySockets = item.sockets.filter((s: Socket) => s._meta?.categoryDefinition.displayProperties.name === "ABILITIES")
           abilitySockets.forEach((s: Socket) => {
             if(s.equippedPlug) {

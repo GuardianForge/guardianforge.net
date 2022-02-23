@@ -37,6 +37,16 @@ function UserBuilds() {
           })
         }
         if(builds && builds.length > 0) {
+          builds.sort((a:BuildSummary, b:BuildSummary) => {
+            if(a.publishedOn && b.publishedOn) {
+              if(b.publishedOn > a.publishedOn) {
+                return 1
+              } else {
+                return -1
+              }
+            }
+            return 0
+          })
           setBuilds(builds)
         }
         setCompState(State.DONE)

@@ -131,9 +131,6 @@ function UserMenu() {
                 <Link className="dropdown-item" to="/app/edit-profile">Edit Profile</Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/">👈  &nbsp; Back to the Old Forge</Link>
-              </li>
-              <li>
                 <a className="dropdown-item" href="#" onClick={logout}>Log Out</a>
               </li>
               <FeatureToggle toggle={Toggles.SubscribeOptions}>

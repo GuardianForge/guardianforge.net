@@ -13,7 +13,8 @@ export default {
     icon: "#626277",
     border: "#242534",
     text: "#eeeeee",
-    text2: "#aaaaaa"
+    text2: "#aaaaaa",
+    socketIconBg: "#111111"
   },
   elements: {
     Arc: "#6B9DB9",

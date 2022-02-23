@@ -416,6 +416,7 @@ export default {
             // NOTE: could also use talentGrid.buildName ("void_warlock")
             // 1 - Kinetic, 2 - Arc, 3 - Solar, 4 - Void, 5 - Raid (reserved), 6 - Stasis
             superConfig.damageType = itemData.item.talentGrid.hudDamageType
+            item.damageType = itemData.item.talentGrid.hudDamageType
           }
 
           let equipped = []

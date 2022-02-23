@@ -7,6 +7,7 @@ type BuildSummary = {
   username: string
   isPrivate?: boolean
   userId?: string
+  publishedOn?: number
 }
 
 export default BuildSummary

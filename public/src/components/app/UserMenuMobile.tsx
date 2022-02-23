@@ -189,9 +189,6 @@ function UserMenuMobile(props: Props) {
         <SelectItemButton className="class-option" onClick={() => navigateTo("/app/edit-profile")}>
           Edit Profile
         </SelectItemButton>
-        <SelectItemButton className="class-option" onClick={() => navigateTo("/")}>
-          👈  Back to the Old Forge
-        </SelectItemButton>
         <SelectItemButton className="class-option" onClick={logout}>
           Log Out
         </SelectItemButton>

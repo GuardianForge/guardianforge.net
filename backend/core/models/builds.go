@@ -44,12 +44,18 @@ func (b *Build) ToDbRecord(buildId string, publishedOn int64, membershipId *stri
 		},
 	}
 
+	// TODO: Make this more desciptive, no longer true after Void 3
 	if b.Items.Subclass.IsLightSubclass {
 		build.Summary.PrimaryIconSet = fmt.Sprintf("%v-%v-%v", b.Class, b.Items.Subclass.SuperConfig.DamageType, b.Items.Subclass.SuperConfig.Tree)
 		subclassCode = strconv.Itoa(b.Items.Subclass.SuperConfig.DamageType)
 	} else {
-		build.Summary.PrimaryIconSet = fmt.Sprintf("%v-6", b.Class)
-		subclassCode = "6"
+		if b.Items.Subclass.DamageType != nil {
+			build.Summary.PrimaryIconSet = fmt.Sprintf("%v-%v", b.Class, *b.Items.Subclass.DamageType)
+			subclassCode = fmt.Sprintf("%v", *b.Items.Subclass.DamageType)
+		} else {
+			build.Summary.PrimaryIconSet = fmt.Sprintf("%v-6", b.Class)
+			subclassCode = "6"
+		}
 	}
 
 	build.SearchKey = fmt.Sprintf("%v_%v", b.Class, subclassCode)
@@ -373,8 +379,10 @@ type BuildItem struct {
 	Abilities       []PlugItem  `json:"abilities"`
 	Aspects         []PlugItem  `json:"aspects"`
 	Fragments       []PlugItem  `json:"fragments"`
+	Super           []PlugItem  `json:"super"`
 	SuperConfig     SuperConfig `json:"superConfig"`
 	IsLightSubclass bool        `json:"isLightSubclass"`
+	DamageType      *int        `json:"damageType,omitempty"`
 }
 
 type SuperConfig struct {

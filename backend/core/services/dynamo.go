@@ -143,6 +143,7 @@ func FetchUserBuilds(membershipId string) (*[]dbModels.BuildSummary, error) {
 
 		err = dynamodbattribute.UnmarshalMap(i, &b)
 		b.Summary.BuildId = &b.Id
+		b.Summary.PublishedOn = &b.PublishedOn
 
 		if err != nil {
 			return nil, errors.Wrap(err, "(FetchUserBuilds) Unmarshalling dynmamo results")

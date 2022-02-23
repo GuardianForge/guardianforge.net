@@ -4,6 +4,7 @@ import Plug from './Plug'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { BuildItem } from '../../models/Build'
 import Card from './ui/Card'
+import colors from '../../colors'
 
 const Wrapper = styled(Card)`
 	.subclass-card {
@@ -74,6 +75,10 @@ const Wrapper = styled(Card)`
 	.socket-icon-wrapper {
 		display: flex;
 		flex-wrap: wrap;
+
+    .socket-icon img {
+      background-color: ${colors.theme2.socketIconBg};
+    }
 	}
 	.socket-icon {
 		img {
@@ -153,6 +158,7 @@ function SubclassCard(props: Props) {
   const [isSuperTreeHighlighted, setIsSuperTreeHighlighted] = useState(false)
 
   useEffect(() => {
+    console.log(item)
     if(highlights.find(el => el === "subclass-grenade-0-0")) {
       setIsGrenadeHighlighted(true)
     } else {
@@ -260,10 +266,21 @@ function SubclassCard(props: Props) {
                 </div>
               </div>
             </div>
-
           ) : (
             <div className="row">
-              <div className="abilities sockets col-md-6">
+              {item.super && (
+                <div className="abilities sockets col-md-2">
+                  <span>Super</span>
+                  <div className="socket-icon-wrapper">
+                    {item.super.map((el, idx) => (
+                      <div key={`super-${item.itemInstanceId}-${el.plugHash}-${idx}`} className="socket-icon">
+                        <Plug plug={el} plugType="super" onClick={onPlugClicked} highlights={highlights}/>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className={`abilities sockets ${item.super ? "col-md-4" : "col-md-6"}`}>
                 <span>Abilities</span>
                 <div className="socket-icon-wrapper">
                   {item.abilities && item.abilities.map((el, idx) => (
