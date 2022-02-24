@@ -62,7 +62,7 @@ function BookmarkButton(props: Props) {
         }
 
         let buildSummary = buildUtils.convertToSummary(buildId, buildData)
-        let token = await ForgeClient.getToken()
+        let token = ForgeClient.getToken()
         let res = await ForgeApiService.bookmarkBuild(token, buildSummary)
         ForgeClient.userBookmarks = res
       } catch (err) {

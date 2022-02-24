@@ -16,15 +16,111 @@ type AuthData = {
   token_type: string
 }
 
+export enum ErrorMessages {
+  RefreshTokenExpired = "RefreshTokenExpired",
+  ExpiresAtNotSet = "ExpiresAtNotSet",
+  NoTokenSet = "NoTokenSet"
+}
+
+class TokenHandler {
+  forgeApiService: GuardianForgeApiService
+  token: string
+  expiresAt: Date
+  issuedAt: Date
+  refreshToken: string
+  refreshExpiresAt: Date
+  timeoutJob?: NodeJS.Timeout
+
+  constructor(forgeApiService: GuardianForgeApiService, access_token: string, expires_in: number, issuedAt: number, refresh_token: string, refresh_expires_in: number) {
+    this.forgeApiService = forgeApiService
+    this.token = access_token
+    this.expiresAt = new Date(new Date(issuedAt).getTime() + expires_in * 1000)
+    this.issuedAt = new Date(issuedAt)
+    this.refreshToken = refresh_token
+    this.refreshExpiresAt = new Date(new Date(issuedAt).getTime() + refresh_expires_in * 1000)
+  }
+
+  /**
+   * Checks the relevant dates, refreshes the token if needed, and sets up the refresh interval
+   */
+  async init() {
+    let now = new Date()
+    if(this.expiresAt < now) {
+      console.log(this.expiresAt, now)
+      if(this.refreshExpiresAt < now) {
+        await this.refresh()
+      } else {
+        throw new Error(ErrorMessages.RefreshTokenExpired)
+      }
+    }
+    this.watch()
+  }
+
+  isTokenValid(): boolean {
+    let now = new Date()
+    if(now < this.expiresAt) {
+      return true
+    }
+    return false
+  }
+
+  /**
+   * Sets up a timeout job to refresh the token
+   */
+  watch() {
+    if(this.expiresAt) {
+      let waitMs = (this.expiresAt.getTime() - Date.now() - 10)
+      let self = this
+      console.log(`(TokenHandler.watch) Waiting ${waitMs}ms until refresh`)
+      this.timeoutJob = setTimeout(async () => {
+        await self.refresh()
+        self.unwatch()
+        self.watch()
+      }, waitMs)
+    } else {
+      throw new Error(ErrorMessages.ExpiresAtNotSet)
+    }
+  }
+
+
+  /**
+   * Unsets the timeout job to refresh the token
+   */
+  unwatch() {
+    if(this.timeoutJob) {
+      clearTimeout(this.timeoutJob)
+    }
+  }
+
+  /**
+   * Refreshes the token
+   */
+  async refresh() {
+    console.log("(TokenHandler.refresh) Refreshing token...")
+    if(this.refreshExpiresAt < new Date()) {
+      throw new Error(ErrorMessages.RefreshTokenExpired)
+    }
+    let authData =  await this.forgeApiService.refreshToken(this.refreshToken) as AuthData
+    this.token = authData.access_token
+    this.expiresAt = new Date(new Date().getTime() + (authData.expires_in * 1000))
+    this.issuedAt = new Date()
+    this.refreshToken = authData.refresh_token
+    this.refreshExpiresAt = new Date(new Date().getTime() + (authData.refresh_expires_in * 1000))
+  }
+}
+
 export default class GuardianForgeClientService {
   config: AppConfig
   bungieApiService: BungieApiService
   forgeApiService: GuardianForgeApiService
 
+  // Authentication Info
+  authData?: AuthData
+  tokenHandler?: TokenHandler
+
   // TODO: Make models of all these
   latestBuilds: any
   userData: any
-  authData?: AuthData
   userInfo: any
   isUserDataLoaded: boolean = false
   userUpvotes: any
@@ -51,7 +147,6 @@ export default class GuardianForgeClientService {
   }
 
   async init() {
-    // Check localstorage for token, reauth if needed, or prompt to log back in
     let authData = localStorage.getItem("auth")
     if(authData) {
       await this.setAuthData(authData)
@@ -65,34 +160,44 @@ export default class GuardianForgeClientService {
     } else {
       localStorage.setItem("auth", JSON.stringify(authData))
     }
-    this.authData = authData
 
-    // Watch token & refresh as needed
-    let self = this
-    setInterval(async () => {
-      try {
-        let now = Date.now()
-        let refreshExpiry = authData.issuedAt + (authData.refresh_expires_in * 1000)
-        if (self.authData && (now < refreshExpiry)) {
-          await self.forgeApiService.refreshToken(self.authData.refresh_token)
-        }
-      } catch (err) {
-        console.error(err)
+    try {
+      this.authData = authData
+      if(this.authData && !this.tokenHandler) {
+        this.tokenHandler = new TokenHandler(
+          this.forgeApiService,
+          this.authData.access_token,
+          this.authData.expires_in,
+          this.authData.issuedAt,
+          this.authData.refresh_token,
+          this.authData.refresh_expires_in)
+          await this.tokenHandler.init()
       }
-    }, 3500 * 1000)
 
-    let userData = await this.bungieApiService.fetchUserMemberships(authData.membership_id)
-    this.userData = userData
+      let userData = await this.bungieApiService.fetchUserMemberships(authData.membership_id)
+      this.userData = userData
 
-    if(opts && opts.fetchUserData === true) {
-      await this.fetchUserData()
+      if(opts && opts.fetchUserData === true) {
+        await this.fetchUserData()
+      }
+    } catch (err: any) {
+      if(err.message == ErrorMessages.RefreshTokenExpired) {
+        // User needs to log in again
+        this.clearAuthData()
+      }
     }
+  }
+
+  clearAuthData() {
+    this.authData = undefined
+    this.tokenHandler = undefined
+    localStorage.removeItem("auth")
   }
 
   async fetchUserData(force?: boolean) {
     if(this.isLoggedIn()) {
       if(!this.isUserDataLoaded || force === true) {
-        let token = await this.getToken()
+        let token = this.getToken()
         let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(this.userData)
         if(token) {
           let res = await Promise.all([
@@ -116,91 +221,17 @@ export default class GuardianForgeClientService {
     }
   }
 
-  async getToken(opts?: any) {
-    try {
-      let forceLogin = true
-      if(opts) {
-        if(opts.forceLogin !== null && opts.forceLogin !== undefined) {
-          forceLogin = opts.forceLogin
-        }
-      }
-
-      let authData = this.authData
-      let now = Date.now()
-      let requiresRelogin = false
-      let requiresReloginReason = ""
-
-      if(!authData || !authData.access_token) {
-        console.warn("requiresRelogin due to !authData")
-        requiresReloginReason = "No auth token."
-        requiresRelogin = true
-      }
-
-
-      // if(!state.token) {
-      //   console.warn("requiresRelogin due to !state.token")
-      //   requiresReloginReason = "No auth token."
-      //   requiresRelogin = true
-      // }
-
-      if(authData && !authData.issuedAt) {
-        console.warn("requiresRelogin due to !authData.issuedAt")
-        requiresReloginReason = "Token has expired."
-        requiresRelogin = true
-      }
-
-      if(authData && !requiresRelogin) {
-        let expiry = authData.issuedAt + (authData.expires_in * 1000)
-        if (now > expiry) {
-          let refreshExpiry = authData.issuedAt + (authData.refresh_expires_in * 1000)
-          if (now > refreshExpiry) {
-            console.warn("requiresRelogin due to expired refresh")
-            requiresReloginReason = "Token has expired."
-            requiresRelogin = true
-          } else {
-            let refreshRes = await this.forgeApiService.refreshToken(authData.refresh_token)
-            refreshRes.issuedAt = Date.now()
-            this.authData = refreshRes
-            return refreshRes.access_token
-          }
-        } else {
-          return authData.access_token
-        }
-      }
-
-      if(requiresRelogin && !forceLogin) {
-        return null
-      }
-
-      // commit("alerts/addAlert", {
-      //   title: "Login Needed",
-      //   body: `You need to log in to do that (Reason: ${requiresReloginReason})`,
-      //   opts: {
-      //     autohide: false
-      //   },
-      //   buttons: [
-      //     {
-      //       title: "Login",
-      //       fn: () => state.service.redirectToLogin()
-      //     }
-      //   ]
-      // }, { root: true})
-      return false
-      // state.service.redirectToLogin()
-    } catch (err) {
-      console.error("store/auth.getToken", err)
-      // state.service.redirectToLogin()
+  getToken(): string {
+    if(this.tokenHandler && this.tokenHandler.token) {
+      return this.tokenHandler.token
+    } else {
+      throw new Error(ErrorMessages.NoTokenSet)
     }
   }
 
-  isLoggedIn () {
-    if(this.userData && this.userData.bungieNetUser) {
-      let authTokenData = localStorage.getItem("auth") as string
-      authTokenData = JSON.parse(authTokenData)
-      // @ts-ignore
-      if(new Date().getTime() < (authTokenData.issuedAt + (authTokenData.expires_in * 1000))) {
-        return true
-      }
+  isLoggedIn(): boolean {
+    if(this.tokenHandler && this.tokenHandler.isTokenValid()) {
+      return true
     }
     return false
   }
@@ -220,18 +251,37 @@ export default class GuardianForgeClientService {
   }
 
   logout() {
-    localStorage.removeItem("auth")
+    this.clearAuthData()
     // @ts-ignore
     window.location = "/"
   }
 
+  async completeLogin(authCode: string) {
+    let res = await fetch(`${this.config.apiBase}/oauth/code`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        // @ts-ignore
+        code: authCode
+      })
+    })
+    let json = await res.json()
+    if(json.error) {
+      throw new Error(`Error logging in (${json.error})`)
+    }
+    json.issuedAt = Date.now()
+    await this.setAuthData(json)
+  }
+
   async createBuildOpengraphImage(buildId: string) {
-    let token = await this.getToken()
+    let token = this.getToken()
     return await this.forgeApiService.createBuildOpengraphImage(token, buildId)
   }
 
   async createSubscriptionIntent(priceId: string) {
-    let token = await this.getToken()
+    let token = this.getToken()
     let res = await fetch(`${this.config.apiBase}/subscriptions/create-intent`, {
       method: "post",
       headers: {

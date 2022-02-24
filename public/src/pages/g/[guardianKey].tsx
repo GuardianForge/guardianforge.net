@@ -207,7 +207,7 @@ function Guardian({guardianKey}) {
 
       let token = null
       if(ForgeClient.isLoggedIn()) {
-        token = await ForgeClient.getToken()
+        token = ForgeClient.getToken()
         if(ForgeClient.userData && ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser.membershipId) {
           build.createdBy = ForgeClient.userData.bungieNetUser.membershipId
         }

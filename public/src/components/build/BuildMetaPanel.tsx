@@ -282,7 +282,7 @@ function BuildMetaPanel(props: Props) {
   async function archiveBuild() {
     let { ForgeClient, ForgeApiService } = window.services
     try {
-      let token = await ForgeClient.getToken()
+      let token = ForgeClient.getToken()
       await ForgeApiService.archiveBuild(buildId, token)
       ForgeClient.userBuilds = ForgeClient.userBuilds.filter(b => b.id !== buildId)
       setIsOwner(false)
@@ -313,7 +313,7 @@ function BuildMetaPanel(props: Props) {
       setIsEditing(false)
 
       let { ForgeClient, ForgeApiService } = window.services
-      let token = await ForgeClient.getToken()
+      let token = ForgeClient.getToken()
       await ForgeApiService.updateBuild(buildId, updates, token)
 
       // Update cache

@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import Loading from '../components/app/Loading'
 import { GlobalContext } from '../contexts/GlobalContext'
 import { Helmet } from 'react-helmet'
+import AlertDetail from '../models/AlertDetail'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -14,12 +15,12 @@ const Wrapper = styled.div`
 `
 
 function OAuthHandler() {
-  const { isConfigLoaded, setDidOAuthComplete } = useContext(GlobalContext)
+  const { isConfigLoaded, setDidOAuthComplete, dispatchAlert } = useContext(GlobalContext)
 
   useEffect(() => {
     if(!isConfigLoaded) return
     async function completeLogin() {
-      let {search, hash} = window.location
+      let { search } = window.location
       search = search.replace("?", "")
       let query = {}
       search.split("&").forEach(el => {
@@ -29,49 +30,27 @@ function OAuthHandler() {
       })
 
       let nextState = localStorage.getItem("nextState")
-      // hash = hash.replace("#", "")
-      // let hashMap = {}
-      // hash.split("&").forEach(el => {
-      //   let split = el.split("=")
-      //   hashMap[split[0]] = split[1]
-      // })
-
-      // if(hashMap["state"]) {
-      //   state = hashMap["state"]
-      // }
 
       const { ForgeClient } = window.services
-      let res = await fetch(`${ForgeClient.config.apiBase}/oauth/code`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          // @ts-ignore
-          code: query.code
-        })
-      })
-      let json = await res.json()
-      if(json.error) {
-        throw `Error logging in ${json.error}`
-      }
-      json.issuedAt = Date.now()
 
-      localStorage.setItem("auth", JSON.stringify(json))
-      await ForgeClient.setAuthData(json, {
-        fetchUserData: true
-      })
-
+      // @ts-ignore
+      await ForgeClient.completeLogin(query.code)
       setDidOAuthComplete(true)
 
-      if(nextState) {
+      if(nextState && !nextState.startsWith("/oauth")) {
         localStorage.removeItem("nextState")
         navigate(nextState)
       } else {
         navigate("/app")
       }
     }
-    completeLogin()
+    try {
+      completeLogin()
+    } catch (err) {
+      console.error(err)
+      let alert = new AlertDetail("An error occurred while logging in. Please try again later...", "Login Error", true, false)
+      dispatchAlert(alert)
+    }
   }, [isConfigLoaded])
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactChild } from 'react'
 import { BungieApiService, ManifestService, BungieAuthService, IndexedDbService, InventoryManager } from "@guardianforge/destiny-data-utils"
-import GuardianForgeClientService from '../services/GuardianForgeClientService'
+import GuardianForgeClientService, { ErrorMessages } from '../services/GuardianForgeClientService'
 import GuardianForgeApiService from '../services/GuardianForgeApiService'
 // @ts-ignore
 import gaUtils from "../utils/gaUtils"
@@ -88,15 +88,30 @@ export const Provider = (props: Props) => {
     let { ForgeClient } = window.services
     await ForgeClient.init()
     setIsClientLoaded(true)
-
     if(ForgeClient.isLoggedIn()) {
       await ForgeClient.fetchUserData()
       if(ForgeClient.isPremiumUser()) {
-        console.log("Go premium user!")
         setAreAdsDisabled(true)
       }
       setIsUserDataLoaded(true)
     }
+
+    // try {
+    //   await ForgeClient.init()
+    //   setIsClientLoaded(true)
+    //   if(ForgeClient.isLoggedIn()) {
+    //     await ForgeClient.fetchUserData()
+    //     if(ForgeClient.isPremiumUser()) {
+    //       console.log("Go premium user!")
+    //       setAreAdsDisabled(true)
+    //     }
+    //     setIsUserDataLoaded(true)
+    //   }
+    // } catch (err: any) {
+    //   if(err.message == ErrorMessages.RefreshTokenExpired) {
+    //     redirectToLogin()
+    //   }
+    // }
   }
 
   async function initManifestService() {

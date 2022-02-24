@@ -65,7 +65,7 @@ function UpvoteButton({ buildId, buildData, isBuildArchived }) {
           setIsUpvoted(false)
         }
         let buildSummary = buildUtils.convertToSummary(buildId, buildData)
-        let token = await ForgeClient.getToken()
+        let token = ForgeClient.getToken()
         let res = await ForgeApiService.upvoteBuild(token, buildSummary)
         ForgeClient.userUpvotes = res
       } catch (err) {

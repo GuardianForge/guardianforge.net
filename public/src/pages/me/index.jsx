@@ -55,7 +55,7 @@ function Profile() {
       }
 
       let { ForgeClient, ForgeApiService } = window.services
-      let token = await ForgeClient.getToken()
+      let token = ForgeClient.getToken()
       await ForgeApiService.updateMe(token, updates)
       dispatchAlert({
         title: "Updating Profile",

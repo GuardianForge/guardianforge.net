@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Col, Row } from 'react-bootstrap'
+import { Col, Container, Row } from 'react-bootstrap'
 import userUtils from "../../../utils/userUtils"
 import { Toggles } from '../../../toggles'
 import { Button } from "react-bootstrap"
@@ -7,11 +7,17 @@ import styled from 'styled-components'
 import colors from '../../../colors'
 import FeatureToggle from '../../../models/FeatureToggle'
 import { GlobalContext } from '../../../contexts/GlobalContext'
+import Card from '../../../components/app/ui/Card'
 
-const Wrapper = styled.div`
+const Wrapper = styled(Container)`
   textarea {
     width: 100%;
     height: 200px;
+  }
+
+  .token-wrapper {
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
 
   .toggle {
@@ -29,20 +35,21 @@ const Wrapper = styled.div`
 `
 
 function AdminTools() {
-  const { isInitDone } = useContext(GlobalContext)
+  const { isInitDone, setPageTitle } = useContext(GlobalContext)
   const [userIdToImpersonate, setUserIdToImpersonate] = useState("")
   const [iterator, setIterator] = useState(1)
   const [token, setToken] = useState("")
 
   useEffect(() => {
+    setPageTitle("Admin Tools")
     if(!isInitDone) return
     async function init() {
       const { ForgeClient } = window.services
-      let t = await ForgeClient.getToken()
+      let t = ForgeClient.getToken()
       setToken(t)
     }
     init()
-  }, [])
+  }, [isInitDone])
 
   async function impersonateUser() {
     const { ForgeClient, BungieApiService } = window.services
@@ -84,7 +91,7 @@ function AdminTools() {
       <Row>
         <Col>
           <h2>Token</h2>
-          <textarea disabled>{ token }</textarea>
+          <Card className="token-wrapper">{ token }</Card>
         </Col>
       </Row>
       <Row>

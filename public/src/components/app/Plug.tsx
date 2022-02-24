@@ -31,6 +31,7 @@ type Props = {
   plugType: string
   highlights: Array<string>
   onClick?: Function
+  highlightable?: boolean
 }
 
 function Plug(props: Props) {

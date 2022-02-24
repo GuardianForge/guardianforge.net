@@ -140,7 +140,7 @@ function CreateBuild(props: Props) {
       // TODO: Pull this from ForgeClient user info
 
       let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(ForgeClient.userData)
-      let token = await ForgeClient.getToken()
+      let token = ForgeClient.getToken()
 
       try {
         window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)
@@ -412,7 +412,7 @@ function CreateBuild(props: Props) {
       setState(State.SAVING)
 
       // TODO: Move this into the new Client
-      let token = await ForgeClient.getToken()
+      let token = ForgeClient.getToken()
       const buildId = await ForgeApiService.createBuild(build, token)
       let buildSummary = build.toBuildSummary(buildId)
       ForgeClient.userBuilds.push(buildSummary)

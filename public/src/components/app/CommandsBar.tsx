@@ -157,7 +157,7 @@ function CommandsBar(props: Props) {
       }
 
       let { ForgeClient, ForgeApiService } = window.services
-      let token = await ForgeClient.getToken()
+      let token = ForgeClient.getToken()
       await ForgeApiService.updateBuild(buildId, updates, token)
 
       // Update cache
@@ -186,7 +186,7 @@ function CommandsBar(props: Props) {
     let { ForgeClient, ForgeApiService } = window.services
     try {
       setIsSaving(true)
-      let token = await ForgeClient.getToken()
+      let token = ForgeClient.getToken()
       await ForgeApiService.archiveBuild(buildId, token)
       ForgeClient.userBuilds = ForgeClient.userBuilds.filter((b: BuildSummary) => b.id !== buildId)
       setIsBuildArchived(true)
