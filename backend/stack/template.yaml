@@ -645,6 +645,24 @@ Resources:
           STRIPE_SUCCESS_CALLBACK: !Ref StripeSuccessCallbackParam
           STRIPE_ERROR_CALLBACK: !Ref StripeErrorCallbackParam
 
+  CancelSubscriptionFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/subscriptions/_delete
+      Handler: _post
+      Runtime: go1.x
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /subscriptions
+            Method: DELETE
+      Environment:
+        Variables:
+          STRIPE_SECRET_KEY: !Ref StripeSecretKeyParam
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+          TABLE_NAME: !Ref DbTable
+
   StripeWebhookFn:
     Type: AWS::Serverless::Function
     Properties:

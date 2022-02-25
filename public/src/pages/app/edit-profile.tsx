@@ -6,6 +6,9 @@ import ForgeButton from '../../components/app/forms/Button'
 import SubscribeButton from '../../components/app/stripe/SubscribeButton'
 import FeatureToggleWrapper from '../../components/app/general/FeatureToggle'
 import { Toggles } from '../../toggles'
+import Card from '../../components/app/ui/Card'
+import ForgeModal from '../../components/app/Modal'
+import AlertDetail from '../../models/AlertDetail'
 
 function Profile() {
   const { isUserDataLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
@@ -16,6 +19,7 @@ function Profile() {
   const [facebook, setFacebook] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [subscriptionDetails, setSubscriptionDetails] = useState()
+  const [showCancelSubscriptionModal, setShowCancelSubscriptionModal] = useState(false)
 
   useEffect(() => {
     setPageTitle("Edit Profile")
@@ -83,6 +87,16 @@ function Profile() {
     }
   }
 
+  async function cancelSubscription() {
+    let { ForgeClient } = window.services
+    try {
+      await ForgeClient.cancelSubscription()
+    } catch (err) {
+      let alert = new AlertDetail("An error has occurred while attempting to cancel your subscription. Please try again later, or submit an inquiry.", "Cancel Subscription", true, false)
+      dispatchAlert(alert)
+    }
+  }
+
   return (
     <Container>
       <Row>
@@ -96,15 +110,17 @@ function Profile() {
           <Row>
             <Col>
               {subscriptionDetails ? (
-                <div className="subscription-manager">
-                  Thanks for being a Premium user!
-                  <ForgeButton>Cancel Subscription</ForgeButton>
-                </div>
+                <Card className="subscription-manager">
+                  <h3>💎 Thanks, Oh Supporter Mine!</h3>
+                  <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
+                  <Button onClick={() => setShowCancelSubscriptionModal(true)}>Cancel Subscription</Button>
+                </Card>
               ) : (
-                <div>
-                  Consider subscribing!
+                <Card>
+                  <h3>💎 Eyes Up Guardian!</h3>
+                  <p>Consider becoming a premium GuardianForge user to support the development of the platform!</p>
                   <SubscribeButton />
-                </div>
+                </Card>
               )}
             </Col>
           </Row>
@@ -150,6 +166,13 @@ function Profile() {
           Save
         </Button>
       </Row>
+
+      <ForgeModal show={showCancelSubscriptionModal} onHide={() => setShowCancelSubscriptionModal(false)} title="Cancel Subscription" closeButton>
+        <h3>Sad To See You Go!</h3>
+        <p>If there is something GuardianForge doesn't do for you, please consider sending me a message instead! Otherwise click the button below to cancel.</p>
+        <Button style={{marginRight: "10px"}}>Send a Message</Button>
+        <Button variant="danger" onClick={() => cancelSubscription()}>Cancel</Button>
+      </ForgeModal>
     </Container>
   )
 }
