@@ -5,6 +5,8 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { BuildItem } from '../../models/Build'
 import Card from './ui/Card'
 import colors from '../../colors'
+import V2SubclassCard from './V2SubclassCard'
+import V3SubclassCard from './V3SubclassCard'
 
 const Wrapper = styled(Card)`
 	.subclass-card {
@@ -147,176 +149,21 @@ type Props = {
   onPlugClicked?: Function
   highlights: Array<string>
   className?: string
+  isHighlightable?: boolean
+  onHighlightableClicked?: Function
 }
 
 function SubclassCard(props: Props) {
-  const { item, onPlugClicked, highlights, className } = props
-
-  const [isGrenadeHighlighted, setIsGrenadeHighlighted] = useState(false)
-  const [isMovementHighlighted, setIsMovementHighlighted] = useState(false)
-  const [isSpecialtyHighlighted, setIsSpecialtyHighlighted] = useState(false)
-  const [isSuperTreeHighlighted, setIsSuperTreeHighlighted] = useState(false)
-
-  useEffect(() => {
-    console.log(item)
-    if(highlights.find(el => el === "subclass-grenade-0-0")) {
-      setIsGrenadeHighlighted(true)
-    } else {
-      setIsGrenadeHighlighted(false)
-    }
-    if(highlights.find(el => el === "subclass-movement-0-0")) {
-      setIsMovementHighlighted(true)
-    } else {
-      setIsMovementHighlighted(false)
-    }
-    if(highlights.find(el => el === "subclass-specialty-0-0")) {
-      setIsSpecialtyHighlighted(true)
-    } else {
-      setIsSpecialtyHighlighted(false)
-    }
-    if(highlights.find(el => el === "subclass-supertree-0-0")) {
-      setIsSuperTreeHighlighted(true)
-    } else {
-      setIsSuperTreeHighlighted(false)
-    }
-
-  }, [highlights])
-
-  function onPlugClickedHandler(type: string, subtype: string) {
-    if(onPlugClicked) {
-      onPlugClicked(type, subtype, "0", "0")
-    }
-  }
+  const { item, onPlugClicked, highlights, className, isHighlightable, onHighlightableClicked } = props
 
   return (
-    <Wrapper className={className}>
-      <div className="subclass-card">
-        <div className="item-icon-wrapper d-md-block d-none">
-          <img src={item.iconUrl} className="item-icon" />
-        </div>
-        <div className="item-content">
-          <div className="item-icon-wrapper item-icon-wrapper-sm d-md-none d-sm-block d-xs-block">
-            <img src={item.iconUrl} className="item-icon" />
-          </div>
-          <div className="item-name">
-            {item.name}
-          </div>
-          <hr />
-
-          {(item.isLightSubclass && item.superConfig) ? (
-            <div className="light-subclass">
-              <div className="base-light-config">
-                {item.superConfig && item.superConfig.grenade && (
-                  <div className="base-light-item">
-                    <span>Grenade</span>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 250, hide: 400 }}
-                      overlay={<Tooltip>{item.superConfig.grenade.name}</Tooltip>}>
-                      <img src={item.superConfig.grenade.iconUrl}
-                        className={"img-fluid highlightable super-plug-icon " + (isGrenadeHighlighted ? "highlighted" : "")}
-                        onClick={() => onPlugClickedHandler('subclass', 'grenade')}
-                        id="grenade" />
-                      </OverlayTrigger>
-                  </div>
-                )}
-                {item.superConfig && item.superConfig.movement && (
-                  <div className="base-light-item">
-                    <span>Movement</span>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 250, hide: 400 }}
-                      overlay={<Tooltip>{item.superConfig.movement.name}</Tooltip>}>
-                      <img src={item.superConfig.movement.iconUrl}
-                        className={"img-fluid highlightable super-plug-icon " + (isMovementHighlighted ? "highlighted" : "")}
-                        onClick={() => onPlugClickedHandler('subclass', 'movement')}
-                        id="movement" />
-                      </OverlayTrigger>
-                  </div>
-                )}
-                {item.superConfig && item.superConfig.specialty && (
-                  <div className="base-light-item">
-                    <span>Ability</span>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 250, hide: 400 }}
-                      overlay={<Tooltip>{item?.superConfig?.specialty?.name}</Tooltip>}>
-                      <img src={item?.superConfig?.specialty?.iconUrl}
-                        className={"img-fluid highlightable super-plug-icon " + (isSpecialtyHighlighted ? "highlighted" : "")}
-                        onClick={() => onPlugClickedHandler('subclass', 'specialty')}
-                        id="specialty" />
-                      </OverlayTrigger>
-                  </div>
-                )}
-              </div>
-              <div className="light-config-tree">
-                <div className="tree-title">
-                  { item.superConfig.treeTitle }
-                  {item.superConfig.tree === 1 && (<span> (Top Tree)</span>)}
-                  {item.superConfig.tree === 2 && (<span> (Bottom Tree)</span>)}
-                  {item.superConfig.tree === 3 && (<span> (Middle Tree)</span>)}
-                </div>
-                <div className={"light-tree-perk-wrapper highlightable " + (isSuperTreeHighlighted ? "highlighted" : "")}
-                    onClick={() => onPlugClickedHandler('subclass', 'supertree')}>
-                      {item.superConfig.treeNodes && item.superConfig.treeNodes.map((el, idx) => (
-                        <div key={`treenode-${item?.superConfig?.tree}-${idx}`} className="tree-perk">
-                          <img src={el.iconUrl} />
-                        </div>
-                      ))}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="row">
-              {item.super && (
-                <div className="abilities sockets col-md-2">
-                  <span>Super</span>
-                  <div className="socket-icon-wrapper">
-                    {item.super.map((el, idx) => (
-                      <div key={`super-${item.itemInstanceId}-${el.plugHash}-${idx}`} className="socket-icon">
-                        <Plug plug={el} plugType="super" onClick={onPlugClicked} highlights={highlights}/>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div className={`abilities sockets ${item.super ? "col-md-4" : "col-md-6"}`}>
-                <span>Abilities</span>
-                <div className="socket-icon-wrapper">
-                  {item.abilities && item.abilities.map((el, idx) => (
-                    <div key={`ability-${item.itemInstanceId}-${el.plugHash}-${idx}`} className="socket-icon">
-                      <Plug plug={el} plugType="ability" onClick={onPlugClicked} highlights={highlights}/>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="aspects sockets col-md-6">
-                <span>Aspects</span>
-                <div className="socket-icon-wrapper">
-                  {item.aspects && item.aspects.map((el, idx) => (
-                    <div key={`aspect-${item.itemInstanceId}-${el.plugHash}-${idx}`} className="socket-icon">
-                      <Plug plug={el} plugType="aspect" onClick={onPlugClicked} highlights={highlights}/>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="fragments sockets col-md-12">
-                <span>Fragments</span>
-                <div className="socket-icon-wrapper">
-                  {item.fragments && item.fragments.map((el, idx) => (
-                    <div key={`fragment-${item.itemInstanceId}-${el.plugHash}-${idx}`} className="socket-icon">
-                      <Plug plug={el} plugType="fragment" onClick={onPlugClicked} highlights={highlights} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </Wrapper>
+    <Card className={className}>
+      {item.isLightSubclass ? (
+        <V2SubclassCard buildItem={item} highlights={highlights} isHighlightModeOn={isHighlightable} onHighlightableClicked={onHighlightableClicked} />
+      ) : (
+        <V3SubclassCard buildItem={item} highlights={highlights} isHighlightModeOn={isHighlightable} onHighlightableClicked={onHighlightableClicked} />
+      )}
+    </Card>
   )
 }
 

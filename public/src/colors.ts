@@ -14,7 +14,8 @@ export default {
     border: "#242534",
     text: "#eeeeee",
     text2: "#aaaaaa",
-    socketIconBg: "#111111"
+    socketIconBg: "#111111",
+    highlightColor: "yellow"
   },
   elements: {
     Arc: "#6B9DB9",

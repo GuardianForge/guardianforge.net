@@ -6,16 +6,11 @@ import Card from './ui/Card'
 import colors from '../../colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ItemTierData } from '@guardianforge/destiny-data-utils/dist/models/Item'
+import Highlightable from './Highlightable'
 
 const Wrapper = styled(Card)`
-
   .card-content {
     padding: 9px !important;
-  }
-
-  @media screen and (max-width: 796px) {
-    /* display: flex;
-    justify-content: center; */
   }
 
   .item-card-left {
@@ -44,14 +39,8 @@ const Wrapper = styled(Card)`
     max-width: 75px;
     border-radius: 5px;
     margin-bottom: 10px;
-  }
-
-  .highlightable:hover {
-    cursor: pointer;
-  }
-
-  .highlighted {
-    border: 2px solid yellow;
+    box-sizing: content-box;
+    border: 2px solid rgba(0,0,0,0);
   }
 
   .affinity-icon {
@@ -149,8 +138,6 @@ const Wrapper = styled(Card)`
 
 type Props = {
   item: BuildItem
-  onItemClicked?: Function
-  onPlugClicked?: Function
   highlights: Array<string>
   className?: string
   configurable?: boolean
@@ -158,44 +145,35 @@ type Props = {
   onSwapItemClicked?: Function
   itemTierData?: ItemTierData
   power?: number | null
+  isHighlightable?: boolean
+  onHighlightableClicked?: Function
 }
 
 function ItemCard(props: Props) {
   const { item,
-    onItemClicked,
-    onPlugClicked,
     highlights,
     className,
     configurable,
     onConfigureItemClicked,
     onSwapItemClicked,
     itemTierData,
-    power } = props
-
-  const [isHighlighted, setIsHighlighted] = useState(false)
-
-  useEffect(() => {
-    if(highlights && highlights.find(el => el === `item-${item.itemInstanceId}`)) {
-      setIsHighlighted(true)
-    } else {
-      setIsHighlighted(false)
-    }
-  }, [highlights])
-
-  function onItemClickedHandler() {
-    if(onItemClicked) {
-      onItemClicked(item.itemInstanceId)
-    }
-  }
+    power,
+    isHighlightable,
+    onHighlightableClicked } = props
 
   return (
     <Wrapper className={className}>
       <div className="item-card">
         <div className="item-card-left">
           <div className="item-icon-wrapper">
-            <img src={item.ornamentIconUrl ? item.ornamentIconUrl : item.iconUrl}
-              className={`item-icon highlightable ${isHighlighted ? "highlighted" : ""}`}
-              onClick={onItemClickedHandler} />
+            <Highlightable
+              highlightKey={`item-${item.itemInstanceId}`}
+              highlights={highlights}
+              isHighlightable={isHighlightable}
+              highlightClass="item-icon"
+              onClick={onHighlightableClicked}>
+                <img src={item.ornamentIconUrl ? item.ornamentIconUrl : item.iconUrl} className="item-icon" />
+            </Highlightable>
 
             {item.affinityIcon && (<img src={item.affinityIcon} className="affinity-icon" />)}
 
@@ -203,13 +181,11 @@ function ItemCard(props: Props) {
 
           {(itemTierData !== undefined || power !== undefined) && (
             <div className="item-base-stats">
-              {/* <span>
-                { itemTierData && itemTierData.icon && <img className="item-tier-icon" src={itemTierData.icon} /> }
-              </span> */}
               <div className="power">{ power }</div>
               { itemTierData && itemTierData.tier !== undefined && <div className={`item-tier item-tier-${itemTierData.damageType}`}>{itemTierData.tier} </div>}
             </div>
           )}
+
           {configurable && (
             <div className="item-buttons">
               <FontAwesomeIcon onClick={() => onConfigureItemClicked ? onConfigureItemClicked() : null} icon="cog"/>
@@ -229,7 +205,10 @@ function ItemCard(props: Props) {
                     plug={p}
                     plugType="perk"
                     highlights={highlights}
-                    onClick={onPlugClicked} />
+                    onClick={onHighlightableClicked}
+                    itemInstanceId={item.itemInstanceId ? item.itemInstanceId : ""}
+                    socketIndex={p.socketIndex ? p.socketIndex : 0}
+                    isHighlightable={isHighlightable} />
                 </div>
               ))}
             </div>
@@ -242,7 +221,10 @@ function ItemCard(props: Props) {
                     plug={m}
                     plugType="mod"
                     highlights={highlights}
-                    onClick={onPlugClicked} />
+                    onClick={onHighlightableClicked}
+                    itemInstanceId={item.itemInstanceId !== undefined ? item.itemInstanceId : ""}
+                    socketIndex={m.socketIndex !== undefined ? m.socketIndex : 0}
+                    isHighlightable={isHighlightable} />
                 </div>
               ))}
             </div>

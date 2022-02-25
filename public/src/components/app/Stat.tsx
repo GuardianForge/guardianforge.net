@@ -3,6 +3,7 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import styled from 'styled-components'
 // @ts-ignore
 import { imageFixerMap } from "../../utils/shims"
+import Highlightable from './Highlightable'
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,12 +38,13 @@ type Props = {
   name: string
   onClick?: Function
   highlights: Array<string>
+  isHighlightable?: boolean
+  onHighlightableClicked?: Function
 }
 
 function Stat(props: Props) {
-  const { iconUrl, value, name, onClick, highlights } = props
+  const { iconUrl, value, name, onClick, highlights, isHighlightable, onHighlightableClicked } = props
 
-  const [isHighlighted, setIsHighlighted] = useState(false)
   const [fixedIcon, setFixedIcon] = useState("")
 
   useEffect(() => {
@@ -51,31 +53,19 @@ function Stat(props: Props) {
     }
   }, [])
 
-  useEffect(() => {
-    if(highlights.find(el => el === `stat-${name}-0-0`)) {
-      setIsHighlighted(true)
-    } else {
-      setIsHighlighted(false)
-    }
-  }, [highlights])
-
-  function onClickHandler() {
-    if(onClick) {
-      onClick(name)
-    }
-  }
-
   return (
     <Wrapper>
       <OverlayTrigger
         placement="bottom"
         delay={{ show: 250, hide: 400 }}
         overlay={<Tooltip>{name.charAt(0).toUpperCase() + name.slice(1)}</Tooltip>}>
-        <img src={fixedIcon ? fixedIcon : iconUrl}
-          className={"highlightable " + (isHighlighted ? "highlighted" : "")}
-          onClick={onClickHandler}
-          id={`stat-${name}`}
-        />
+          <Highlightable highlightKey={`stat-${name}-0-0`}
+            isHighlightable={isHighlightable}
+            highlights={highlights}
+            highlightClass="stat-icon"
+            onClick={onHighlightableClicked}>
+            <img src={fixedIcon ? fixedIcon : iconUrl} className="stat-icon" />
+          </Highlightable>
       </OverlayTrigger>
       <span>{value}</span>
     </Wrapper>

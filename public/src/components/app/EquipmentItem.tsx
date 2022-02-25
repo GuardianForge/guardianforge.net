@@ -213,6 +213,8 @@ type EquipmentItemProps = {
   onPlugClicked?: Function
   highlights: Array<string>
   configurable?: boolean
+  isHighlightModeOn?: boolean
+  onHighlightableClicked?: Function
 }
 
 
@@ -225,7 +227,9 @@ function EquipmentItem(props: EquipmentItemProps) {
     highlights,
     onItemClicked,
     onPlugClicked,
-    configurable } = props
+    configurable,
+    isHighlightModeOn,
+    onHighlightableClicked } = props
 
   const [isEditingItem, setIsEditingItem] = useState(false)
   const [isSelectingItem, setIsSelectingItem] = useState(false)
@@ -298,7 +302,6 @@ function EquipmentItem(props: EquipmentItemProps) {
   }
 
   function onItemSelected(itemSelected: Item) {
-    console.log("onItemSelected", itemSelected)
     setItem(itemSelected)
     onItemUpdated(itemSelected)
     setIsSelectingItem(false)
@@ -405,10 +408,10 @@ function EquipmentItem(props: EquipmentItemProps) {
           configurable={configurable}
           itemTierData={item ? item.getItemTier() : undefined}
           power={item ? item.getPower() : undefined}
-          onItemClicked={onItemClickedHandler}
-          onPlugClicked={onPlugClickedHandler}
+          onHighlightableClicked={onHighlightableClicked}
           onConfigureItemClicked={() => setIsEditingItem(true)}
-          onSwapItemClicked={() => selectItem()} />}
+          onSwapItemClicked={() => selectItem()}
+          isHighlightable={isHighlightModeOn} />}
 
       {!buildItem && (
         <div className="select-item-wrapper">
@@ -514,7 +517,7 @@ function EquipmentItem(props: EquipmentItemProps) {
                 <Row>
                   {availableMods && availableMods.map((plug: Item, idx: number) => (
                     <Col md="4" key={`plug-${idx}`} >
-                      <SelectItemButton disabled={plug.cost > maxModCostAllowed} className="activity-option" onClick={() => onSocketPlugClicked(plug)}>
+                      <SelectItemButton disabled={plug.cost !== undefined && (plug.cost > maxModCostAllowed)} className="activity-option" onClick={() => onSocketPlugClicked(plug)}>
                         { plug.iconUrl && <img className="plug-icon" src={plug.iconUrl} />}
                         <div className="right">
                           <div>{ plug.name }</div>

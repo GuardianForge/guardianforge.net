@@ -27,6 +27,31 @@ const Layout = styled.div`
   display: flex;
   height: 100%;
   position: relative;
+
+  .highlightable {
+    &:hover {
+      cursor: pointer;
+    }
+
+    animation: highlightable 2s infinite;
+  }
+
+  .highlighted {
+    border: 2px solid ${colors.theme2.highlightColor} !important;
+  }
+
+  /* Animations */
+  @keyframes highlightable {
+    0% {
+      border-color: ${colors.theme2.highlightColor};
+    }
+    50% {
+      border-color: rgba(255, 255, 0, 0.1);
+    }
+    100% {
+      border-color: ${colors.theme2.highlightColor};
+    }
+  }
 `
 
 const MobileMenu = styled(Offcanvas)`

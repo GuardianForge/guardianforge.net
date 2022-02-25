@@ -42,10 +42,12 @@ type Props = {
   stats: BuildStatCollection
   highlights: Array<string>
   onStatClicked?: Function
+  isHighlightable?: boolean
+  onHighlightableClicked?: Function
 }
 
 function StatBar(props: Props) {
-  const { stats, highlights, onStatClicked } = props
+  const { stats, highlights, onStatClicked, isHighlightable, onHighlightableClicked } = props
 
   return (
     <Wrapper title="Stats">
@@ -55,7 +57,9 @@ function StatBar(props: Props) {
           value={stats.mobility.value}
           name="mobility"
           onClick={onStatClicked ? onStatClicked : undefined}
-          highlights={highlights} />
+          highlights={highlights}
+          onHighlightableClicked={onHighlightableClicked}
+          isHighlightable={isHighlightable} />
       )}
 
       {stats.resilience && (
@@ -64,7 +68,9 @@ function StatBar(props: Props) {
           value={stats.resilience.value}
           name="resilience"
           onClick={onStatClicked ? onStatClicked : undefined}
-          highlights={highlights} />
+          highlights={highlights}
+          onHighlightableClicked={onHighlightableClicked}
+          isHighlightable={isHighlightable}/>
       )}
 
       {stats.recovery && (
@@ -73,7 +79,9 @@ function StatBar(props: Props) {
           value={stats.recovery.value}
           name="recovery"
           onClick={onStatClicked ? onStatClicked : undefined}
-          highlights={highlights} />
+          highlights={highlights}
+          onHighlightableClicked={onHighlightableClicked}
+          isHighlightable={isHighlightable} />
       )}
 
       {stats.discipline && (
@@ -82,7 +90,9 @@ function StatBar(props: Props) {
           value={stats.discipline.value}
           name="discipline"
           onClick={onStatClicked ? onStatClicked : undefined}
-          highlights={highlights} />
+          highlights={highlights}
+          onHighlightableClicked={onHighlightableClicked}
+          isHighlightable={isHighlightable} />
       )}
 
       {stats.intellect && (
@@ -91,7 +101,9 @@ function StatBar(props: Props) {
           value={stats.intellect.value}
           name="intellect"
           onClick={onStatClicked ? onStatClicked : undefined}
-          highlights={highlights} />
+          highlights={highlights}
+          onHighlightableClicked={onHighlightableClicked}
+          isHighlightable={isHighlightable} />
       )}
 
       {stats.strength && (
@@ -100,7 +112,9 @@ function StatBar(props: Props) {
           value={stats.strength.value}
           name="strength"
           onClick={onStatClicked ? onStatClicked : undefined}
-          highlights={highlights} />
+          highlights={highlights}
+          onHighlightableClicked={onHighlightableClicked}
+          isHighlightable={isHighlightable} />
       )}
     </Wrapper>
   )

@@ -71,10 +71,14 @@ type Props = {
   onSubclassUpdated: Function
   selectedClass?: Enums.ClassEnum
   buildItem?: BuildItem
+  highlights: Array<string>
+  onCardPlugClicked?: Function
+  isHighlightModeOn?: boolean
+  onHighlightableClicked?: Function
 }
 
 function Subclass(props: Props) {
-  const { onSubclassUpdated, selectedClass, buildItem, configurable } = props
+  const { onSubclassUpdated, selectedClass, buildItem, configurable, highlights, onCardPlugClicked, isHighlightModeOn, onHighlightableClicked } = props
   const [availableSubclasses, setAvailableSubclass] = useState<Array<Item>>([])
   const [selectedSubclass, setSelectedSubclass] = useState<Item>()
   const [isSelectingSubclass, setIsSelectingSubclass] = useState(false)
@@ -133,14 +137,21 @@ function Subclass(props: Props) {
               subclass={selectedSubclass}
               onChangeSubclassClicked={() => selectSubclass()}
               onSubclassUpdated={onSubclassUpdated}
-              configurable={configurable} />
+              configurable={configurable}
+              highlights={highlights}
+              onCardPlugClicked={onCardPlugClicked}
+              isHighlightModeOn={isHighlightModeOn}
+              onHighlightableClicked={onHighlightableClicked}  />
           ) : (
             <V2SubclassCard
               buildItem={buildItem}
               subclass={selectedSubclass}
               onChangeSubclassClicked={() => selectSubclass()}
               onSubclassUpdated={onSubclassUpdated}
-              configurable={configurable} />
+              configurable={configurable}
+              highlights={highlights}
+              isHighlightModeOn={isHighlightModeOn}
+              onHighlightableClicked={onHighlightableClicked}  />
           )}
         </div>
       )}

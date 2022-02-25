@@ -5,6 +5,9 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 // @ts-ignore
 import { imageFixerMap } from '../../utils/shims'
 import { BuildItemPlug } from '../../models/Build'
+import { Item, SocketItem } from '@guardianforge/destiny-data-utils'
+import colors from '../../colors'
+import Highlightable from './Highlightable'
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,7 +15,7 @@ const Wrapper = styled.div`
   align-items: center;
   color: #ddd;
   font-style: italic;
-  width: 100%;
+  box-sizing: content-box;
 
   .socket-icon img {
     max-width: 45px;
@@ -20,53 +23,65 @@ const Wrapper = styled.div`
     border-radius: 5px;
   }
 
-  .perk { border-radius: 100px !important;
+  .mod {
+    border: 2px solid ${colors.theme2.dark2};
+  }
+
+  .perk {
+    border-radius: 100px !important;
     padding: 3px !important;
-    border: 2px solid #444;
+    border: 2px solid ${colors.theme2.dark1};
   }
 `
 
 type Props = {
-  plug: BuildItemPlug
+  plug?: BuildItemPlug
+  item?: Item | SocketItem
   plugType: string
   highlights: Array<string>
   onClick?: Function
-  highlightable?: boolean
+  itemInstanceId: string
+  socketIndex: number
+  isHighlightable?: boolean
 }
 
 function Plug(props: Props) {
-  const { plug, plugType, highlights, onClick } = props
+  const { plug, item, plugType, highlights, onClick, itemInstanceId, socketIndex, isHighlightable } = props
 
   const { isInitDone } = useContext(GlobalContext)
-  const [plugName, setPlugName] = useState("")
-  const [classes, setClasses] = useState("")
   const [fixedIconUrl, setFixedIconUrl] = useState("")
 
-  useEffect(() => {
-    if(imageFixerMap[plug.iconUrl]) {
-      setFixedIconUrl(imageFixerMap[plug.iconUrl])
-    }
-  }, [])
+  const [plugName, setPlugName] = useState<string>()
+  const [iconUrl, setIconUrl] = useState<string>()
+  const [plugHash, setPlugHash] = useState<string>()
+  const [isEmpty, setIsEmpty] = useState(false)
 
   useEffect(() => {
-    if(!plugName && plug.name) {
-      setPlugName(plug.name)
-    }
-    let classes = ""
-    if(highlights) {
-      let isHighlighted = highlights.find(el => el === `${plugType}-${plug.itemInstanceId}-${plug.socketIndex}-${plug.plugHash}`)
-      if(isHighlighted) {
-        classes += "highlighted "
+    if(item) {
+      setPlugName(item.name)
+      setIconUrl(item.iconUrl)
+      // setSocketIndex()
+      if(item._meta?.manifestDefinition.hash) {
+        setPlugHash(item._meta.manifestDefinition.hash)
+      }
+      if(item.name?.startsWith("Empty")) {
+        setIsEmpty(true)
       }
     }
-    if(!plug.isEmpty) {
-      classes += "highlightable "
+
+    if(plug) {
+      setPlugName(plug.name)
+      if(imageFixerMap[plug.iconUrl]) {
+        setFixedIconUrl(imageFixerMap[plug.iconUrl])
+      } else {
+        setIconUrl(plug.iconUrl)
+      }
+      setPlugHash(plug.plugHash)
+      if(plug.isEmpty) {
+        setIsEmpty(plug.isEmpty)
+      }
     }
-    if(plugType === "perk") {
-      classes += "perk "
-    }
-    setClasses(classes)
-  }, [highlights])
+  }, [])
 
   useEffect(() => {
     if(isInitDone) {
@@ -74,31 +89,33 @@ function Plug(props: Props) {
     }
     const { ManifestService } = window.services
     if(!plugName) {
-      let def = ManifestService.getItem("DestinyInventoryItemDefinition", plug.plugHash as string)
+      let def = ManifestService.getItem("DestinyInventoryItemDefinition", plugHash as string)
       if(def.displayProperties) {
         setPlugName(def.displayProperties.name)
       }
     }
   }, [isInitDone])
 
-  function onClickHandler() {
-    if(!plug.isEmpty && onClick) {
-      onClick(plugType, plug.itemInstanceId, plug.socketIndex, plug.plugHash)
+  function onClickHandler(highlightKey: string) {
+    if(!isEmpty && isHighlightable && onClick) {
+      onClick(highlightKey)
     }
   }
 
   return (
     <Wrapper>
-    <OverlayTrigger
-      placement="bottom"
-      delay={{ show: 250, hide: 400 }}
-      overlay={<Tooltip>{ plugName }</Tooltip>}>
-        <img src={fixedIconUrl ? fixedIconUrl : plug.iconUrl}
-          className={classes}
-          onClick={onClickHandler}
-          id={`plug-${plug.itemInstanceId}-${plug.socketIndex}-${plug.plugHash}`}
-        />
-      </OverlayTrigger>
+      <OverlayTrigger
+        placement="bottom"
+        delay={{ show: 250, hide: 400 }}
+        overlay={<Tooltip>{ plugName }</Tooltip>}>
+          <Highlightable highlightKey={`${plugType}-${itemInstanceId}-${socketIndex}-${plugHash}`}
+            isHighlightable={isHighlightable && !isEmpty}
+            highlights={highlights}
+            highlightClass="socket-icon"
+            onClick={onClickHandler}>
+            <img src={fixedIconUrl ? fixedIconUrl : iconUrl} className={`socket-icon ${plugType === "perk" ? "perk" : "mod"}`} />
+          </Highlightable>
+        </OverlayTrigger>
     </Wrapper>
   )
 }

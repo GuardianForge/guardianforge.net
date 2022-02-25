@@ -6,6 +6,7 @@ import { Button, Col, Container, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import colors from '../../colors';
 import { BuildItem } from '../../models/Build';
+import Highlightable from './Highlightable';
 import ForgeModal from './Modal';
 import V2SuperTree from './V2SuperTree';
 
@@ -28,6 +29,11 @@ const Wrapper = styled.div`
     }
   }
 
+  .highlightable-wrapper {
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+
   .subclass-right {
     flex: 1;
     display: flex;
@@ -43,8 +49,6 @@ const Wrapper = styled.div`
       display: flex;
       flex-wrap: wrap;
 
-
-
       .perks-col {
         margin-right: 50px;
 
@@ -52,7 +56,7 @@ const Wrapper = styled.div`
           margin-bottom: 20px;
           img {
             width: 75px;
-            margin-right: 10px;
+            /* margin-right: 10px; */
           }
         }
       }
@@ -141,13 +145,16 @@ const SubclassConfigModalBody = styled(Container)`
 type Props = {
   subclass?: Item
   buildItem?: BuildItem
-  onChangeSubclassClicked: MouseEventHandler
-  onSubclassUpdated: Function
+  onChangeSubclassClicked?: MouseEventHandler
+  onSubclassUpdated?: Function
   configurable?: boolean
+  isHighlightModeOn?: boolean
+  highlights: Array<string>
+  onHighlightableClicked?: Function
 }
 
 function V2SubclassCard(props: Props) {
-  const { subclass, onChangeSubclassClicked, buildItem, onSubclassUpdated, configurable } = props
+  const { subclass, onChangeSubclassClicked, buildItem, onSubclassUpdated, configurable, isHighlightModeOn, highlights, onHighlightableClicked } = props
   const [specialty, setSpecialty] = useState<any>()
   const [grenade, setGrenade] = useState<any>()
   const [movement, setMovement] = useState<any>()
@@ -221,6 +228,12 @@ function V2SubclassCard(props: Props) {
     setTree(tree)
   }
 
+  function onHighlightableClickedHandler(highlightKey: string) {
+    if(onHighlightableClicked) {
+      onHighlightableClicked(highlightKey)
+    }
+  }
+
   if(subclass) {
     return (
       <Wrapper>
@@ -243,24 +256,57 @@ function V2SubclassCard(props: Props) {
             <div className="perks-col">
               {grenade && (
                 <div className="perk">
-                  <img src={`https://www.bungie.net${grenade.icon}`} />
+                  <Highlightable highlightKey="subclass-grenade"
+                    alternateKeys={["subclass-grenade-0-0"]}
+                    highlights={highlights}
+                    isHighlightable={isHighlightModeOn}
+                    onClick={onHighlightableClickedHandler}
+                    className="highlightable-wrapper">
+                    <img src={`https://www.bungie.net${grenade.icon}`} />
+                  </Highlightable>
                   <span className="perk-title">{grenade.name}</span>
                 </div>
               )}
               {specialty && (
                 <div className="perk">
+                <Highlightable highlightKey="subclass-specialty"
+                  alternateKeys={["subclass-specialty-0-0"]}
+                  highlights={highlights}
+                  isHighlightable={isHighlightModeOn}
+                  onClick={onHighlightableClickedHandler}
+                  className="highlightable-wrapper">
                   <img src={`https://www.bungie.net${specialty.icon}`} />
+                </Highlightable>
+                  {/* <img src={`https://www.bungie.net${specialty.icon}`} /> */}
                   <span className="perk-title">{specialty.name}</span>
                 </div>
               )}
               {movement && (
                 <div className="perk">
-                  <img src={`https://www.bungie.net${movement.icon}`} />
+                  <Highlightable highlightKey="subclass-movement"
+                    alternateKeys={["subclass-movement-0-0"]}
+                    highlights={highlights}
+                    isHighlightable={isHighlightModeOn}
+                    onClick={onHighlightableClickedHandler}
+                    className="highlightable-wrapper">
+                    <img src={`https://www.bungie.net${movement.icon}`} />
+                  </Highlightable>
                   <span className="perk-title">{movement.name}</span>
                 </div>
               )}
             </div>
-            {tree && <V2SuperTree className="equipped-tree" tree={tree} affinity={affinity} hideName/>}
+            {tree &&
+              <Highlightable highlightKey="subclass-super"
+                alternateKeys={["subclass-super-0-0"]}
+                highlights={highlights}
+                isHighlightable={isHighlightModeOn}
+                highlightClass="tree-diamond"
+                onClick={onHighlightableClickedHandler}>
+                <V2SuperTree className="equipped-tree"
+                  tree={tree}
+                  affinity={affinity}
+                  hideName />
+              </Highlightable>}
           </div>
         </div>
 
@@ -355,24 +401,57 @@ function V2SubclassCard(props: Props) {
             <div className="perks-col">
               {grenade && (
                 <div className="perk">
-                  <img src={grenade.iconUrl.startsWith("http") ? grenade.iconUrl : `https://www.bungie.net${grenade.iconUrl}`} />
+                  <Highlightable highlightKey="subclass-grenade"
+                    alternateKeys={["subclass-grenade-0-0"]}
+                    highlights={highlights}
+                    isHighlightable={isHighlightModeOn}
+                    onClick={onHighlightableClickedHandler}
+                    className="highlightable-wrapper">
+                    <img src={grenade.iconUrl.startsWith("http") ? grenade.iconUrl : `https://www.bungie.net${grenade.iconUrl}`} />
+                  </Highlightable>
                   <span className="perk-title">{grenade.name}</span>
                 </div>
               )}
               {specialty && (
                 <div className="perk">
-                <img src={specialty.iconUrl.startsWith("http") ? specialty.iconUrl : `https://www.bungie.net${specialty.iconUrl}`} />
+                <Highlightable highlightKey="subclass-specialty"
+                  alternateKeys={["subclass-specialty-0-0"]}
+                  highlights={highlights}
+                  isHighlightable={isHighlightModeOn}
+                  onClick={onHighlightableClickedHandler}
+                  className="highlightable-wrapper">
+                  <img src={specialty.iconUrl.startsWith("http") ? specialty.iconUrl : `https://www.bungie.net${specialty.iconUrl}`} />
+                </Highlightable>
+                  {/* <img src={`https://www.bungie.net${specialty.icon}`} /> */}
                   <span className="perk-title">{specialty.name}</span>
                 </div>
               )}
               {movement && (
                 <div className="perk">
-                  <img src={movement.iconUrl.startsWith("http") ? movement.iconUrl : `https://www.bungie.net${movement.iconUrl}`} />
+                  <Highlightable highlightKey="subclass-movement"
+                    alternateKeys={["subclass-movement-0-0"]}
+                    highlights={highlights}
+                    isHighlightable={isHighlightModeOn}
+                    onClick={onHighlightableClickedHandler}
+                    className="highlightable-wrapper">
+                    <img src={movement.iconUrl.startsWith("http") ? movement.iconUrl : `https://www.bungie.net${movement.iconUrl}`} />
+                  </Highlightable>
                   <span className="perk-title">{movement.name}</span>
                 </div>
               )}
             </div>
-            {tree && <V2SuperTree className="equipped-tree" tree={tree} affinity={affinity} hideName/>}
+            {tree &&
+              <Highlightable highlightKey="subclass-super"
+                alternateKeys={["subclass-super-0-0"]}
+                highlights={highlights}
+                isHighlightable={isHighlightModeOn}
+                highlightClass="tree-diamond"
+                onClick={onHighlightableClickedHandler}>
+                <V2SuperTree className="equipped-tree"
+                  tree={tree}
+                  affinity={affinity}
+                  hideName />
+              </Highlightable>}
           </div>
         </div>
 

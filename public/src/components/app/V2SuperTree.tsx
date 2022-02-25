@@ -94,7 +94,7 @@ function V2SuperTree(props: Props) {
       <div className={`tree-diamond ${onClick ? 'tree-diamond-clickable' : ""} ${selected ? "tree-diamond-selected" : ""}`}
         onClick={onClick ? () => onClick(tree) : undefined}>
         {tree.perks && tree.perks.map((p: any, idx: number) => (
-          <div className={`img-wrapper-outer ${tree.pos === idx ? `img-wrapper-outer-${idx}` : ""}`}>
+          <div key={`tree-${tree.pos}-${idx}`} className={`img-wrapper-outer ${tree.pos === idx ? `img-wrapper-outer-${idx}` : ""}`}>
             <div className={`img-wrapper img-wrapper-${affinity}`}>
               <img src={p.icon.startsWith("http") ? p.icon : `https://www.bungie.net${p.icon}`} />
             </div>

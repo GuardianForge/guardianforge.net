@@ -205,7 +205,7 @@ function Guardian({guardianKey}) {
         build.primaryActivity = primaryActivity.value
       }
 
-      let token = null
+      let token;
       if(ForgeClient.isLoggedIn()) {
         token = ForgeClient.getToken()
         if(ForgeClient.userData && ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser.membershipId) {
@@ -226,7 +226,7 @@ function Guardian({guardianKey}) {
     }
   }
 
-  function updateHighlights(key) {
+  function updateHighlights(key: string) {
     let _highlights = highlights
     if(_highlights.find(el => el === key)) {
       _highlights = _highlights.filter(el => el !== key)
@@ -235,21 +235,6 @@ function Guardian({guardianKey}) {
     }
     setHighlights([..._highlights])
     console.log(highlights)
-  }
-
-  function onItemClicked(itemInstanceId) {
-    let key = `item-${itemInstanceId}`
-    updateHighlights(key)
-  }
-
-  function onStatClicked(statName) {
-    let key = `stat-${statName}-0-0`
-    updateHighlights(key)
-  }
-
-  function onPlugClicked(type, instanceId, socketIndex, plugHash) {
-    let key = `${type}-${instanceId}-${socketIndex}-${plugHash}`
-    updateHighlights(key)
   }
 
   function onActivityChanged(activity) {
@@ -371,27 +356,27 @@ function Guardian({guardianKey}) {
 
           <BuildAd />
 
-          <StatBar stats={stats} highlights={highlights} onStatClicked={onStatClicked} centered />
+          <StatBar stats={stats} highlights={highlights} onHighlightableClicked={updateHighlights} isHighlightable={isBuildModeActive} />
 
           <h4>Subclass</h4>
           <div className="items subclass row">
-            {items.subclass && (<SubclassCard item={items.subclass} onPlugClicked={onPlugClicked} highlights={highlights}/>)}
+            {items.subclass && (<SubclassCard item={items.subclass} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}/>)}
           </div>
 
           <h4>Weapons</h4>
           <div className="items weapons row">
-            {items.kinetic && (<ItemCard className="col-md-4" item={items.kinetic} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights} />)}
-            {items.energy && (<ItemCard className="col-md-4" item={items.energy} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
-            {items.power && (<ItemCard className="col-md-4" item={items.power} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
+            {items.kinetic && (<ItemCard className="col-md-4" item={items.kinetic} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}/>)}
+            {items.energy && (<ItemCard className="col-md-4" item={items.energy} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+            {items.power && (<ItemCard className="col-md-4" item={items.power} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
           </div>
 
           <h4>Armor</h4>
           <div className="items armor row">
-            {items.helmet && (<ItemCard className="col-md-4" item={items.helmet} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
-            {items.arms && (<ItemCard className="col-md-4" item={items.arms} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
-            {items.chest && (<ItemCard className="col-md-4" item={items.chest} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
-            {items.legs && (<ItemCard className="col-md-4" item={items.legs} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
-            {items.classItem && (<ItemCard className="col-md-4" item={items.classItem} onItemClicked={onItemClicked} onPlugClicked={onPlugClicked} highlights={highlights}  />)}
+            {items.helmet && (<ItemCard className="col-md-4" item={items.helmet} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+            {items.arms && (<ItemCard className="col-md-4" item={items.arms} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+            {items.chest && (<ItemCard className="col-md-4" item={items.chest} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+            {items.legs && (<ItemCard className="col-md-4" item={items.legs} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive} />)}
+            {items.classItem && (<ItemCard className="col-md-4" item={items.classItem} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
           </div>
 
           <BuildAd />

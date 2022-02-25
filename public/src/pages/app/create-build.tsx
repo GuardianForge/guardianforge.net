@@ -10,7 +10,7 @@ import Subclass from '../../components/app/Subclass'
 import { State } from '../../models/Enums'
 import Loading from '../../components/app/Loading'
 import ButtonBar from '../../components/app/forms/ButtonBar'
-import { faCube, faExclamationTriangle, faStickyNote } from '@fortawesome/free-solid-svg-icons'
+import { faBan, faCube, faExchangeAlt, faExclamationTriangle, faMarker, faSave, faStickyNote } from '@fortawesome/free-solid-svg-icons'
 import Input from '../../components/app/forms/Input'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 import YouTubeEmbed from '../../components/app/YouTubeEmbed'
@@ -91,6 +91,7 @@ function CreateBuild(props: Props) {
   const [isInventoryLoaded, setIsInventoryLoaded] = useState(false)
   const [isPrivate, setIsPrivate] = useState(false)
   const [highlights, setHighlights] = useState<Array<string>>([])
+  const [isHighlightModeOn, setIsHighlightModeOn] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
 
   // Build Items
@@ -372,7 +373,6 @@ function CreateBuild(props: Props) {
       build.primaryActivity = activity.value
     }
 
-    // TODO: Is Private
     if(isPrivate) {
       build.isPrivate = true
     }
@@ -461,7 +461,6 @@ function CreateBuild(props: Props) {
     }
   ]
 
-  // #region Highlights
   function updateHighlights(key: string) {
     let _highlights = highlights
     if(_highlights.find(el => el === key)) {
@@ -472,22 +471,6 @@ function CreateBuild(props: Props) {
     setHighlights([..._highlights])
     console.log(highlights)
   }
-
-  function onItemClicked(itemInstanceId: string) {
-    let key = `item-${itemInstanceId}`
-    updateHighlights(key)
-  }
-
-  function onStatClicked(statName: string) {
-    let key = `stat-${statName}-0-0`
-    updateHighlights(key)
-  }
-
-  function onPlugClicked(type: string, instanceId: string, socketIndex: string, plugHash: string) {
-    let key = `${type}-${instanceId}-${socketIndex}-${plugHash}`
-    updateHighlights(key)
-  }
-  // #endregion
 
   const inputStyleOptions: Array<ModalSelectorOption> = [
     {
@@ -512,8 +495,21 @@ function CreateBuild(props: Props) {
           <Row>
             <Col>
               <ButtonBar>
-                <Button onClick={onSaveClicked} disabled={!isBuildValid || _state === State.SAVING}>Save</Button>
-                <Button onClick={() => setIsClassSelectModalOpen(true)} disabled={_state === State.SAVING}>Change Class</Button>
+                <Button onClick={onSaveClicked} disabled={!isBuildValid || _state === State.SAVING}>
+                  <FontAwesomeIcon icon={faSave} />Save
+                </Button>
+                <Button onClick={() => setIsClassSelectModalOpen(true)} disabled={_state === State.SAVING}>
+                  <FontAwesomeIcon icon={faExchangeAlt} /> Change Class
+                </Button>
+                {isHighlightModeOn ? (
+                  <Button onClick={() => setIsHighlightModeOn(false)}>
+                    <FontAwesomeIcon icon={faBan} /> Exit Highlight Mode
+                  </Button>
+                ) : (
+                  <Button onClick={() => setIsHighlightModeOn(true)}>
+                    <FontAwesomeIcon icon={faMarker} /> Highlight Mode
+                  </Button>
+                )}
                 {/* <Button>Optimize</Button> */}
               </ButtonBar>
             </Col>
@@ -595,7 +591,7 @@ function CreateBuild(props: Props) {
                   <ClassCard classType={selectedClass} />
                 </Col>
                 <Col md="12" lg="9">
-                  <StatBar stats={stats} highlights={highlights} onStatClicked={onStatClicked} />
+                  <StatBar stats={stats} highlights={highlights} isHighlightable={isHighlightModeOn} onHighlightableClicked={updateHighlights} />
                 </Col>
                 <Col md="12">
                   <h4>Subclass</h4>
@@ -604,7 +600,10 @@ function CreateBuild(props: Props) {
                   <Subclass buildItem={subclass}
                     onSubclassUpdated={onItemUpdated}
                     selectedClass={selectedClass}
-                    configurable={isOwner}/>
+                    configurable={isOwner}
+                    highlights={highlights}
+                    isHighlightModeOn={isHighlightModeOn}
+                    onHighlightableClicked={updateHighlights} />
                 </Col>
               </Row>
 
@@ -619,9 +618,9 @@ function CreateBuild(props: Props) {
                     classType={selectedClass}
                     onItemUpdated={onItemUpdated}
                     highlights={highlights}
-                    onItemClicked={onItemClicked}
-                    onPlugClicked={onPlugClicked}
-                    configurable={isOwner} />
+                    configurable={isOwner}
+                    isHighlightModeOn={isHighlightModeOn}
+                    onHighlightableClicked={updateHighlights} />
                 </Col>
                 <Col lg="4"  md="6" sm="6">
                   <EquipmentItem buildItem={energy}
@@ -629,9 +628,9 @@ function CreateBuild(props: Props) {
                     classType={selectedClass}
                     onItemUpdated={onItemUpdated}
                     highlights={highlights}
-                    onItemClicked={onItemClicked}
-                    onPlugClicked={onPlugClicked}
-                    configurable={isOwner} />
+                    onHighlightableClicked={updateHighlights}
+                    configurable={isOwner}
+                    isHighlightModeOn={isHighlightModeOn} />
                 </Col>
                 <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={power}
@@ -639,9 +638,9 @@ function CreateBuild(props: Props) {
                     classType={selectedClass}
                     onItemUpdated={onItemUpdated}
                     highlights={highlights}
-                    onItemClicked={onItemClicked}
-                    onPlugClicked={onPlugClicked}
-                    configurable={isOwner} />
+                    onHighlightableClicked={updateHighlights}
+                    configurable={isOwner}
+                    isHighlightModeOn={isHighlightModeOn} />
                 </Col>
               </Row>
 
@@ -656,9 +655,9 @@ function CreateBuild(props: Props) {
                     classType={selectedClass}
                     onItemUpdated={onItemUpdated}
                     highlights={highlights}
-                    onItemClicked={onItemClicked}
-                    onPlugClicked={onPlugClicked}
-                    configurable={isOwner} />
+                    onHighlightableClicked={updateHighlights}
+                    configurable={isOwner}
+                    isHighlightModeOn={isHighlightModeOn} />
                 </Col>
                 <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={arms}
@@ -666,9 +665,9 @@ function CreateBuild(props: Props) {
                     classType={selectedClass}
                     onItemUpdated={onItemUpdated}
                     highlights={highlights}
-                    onItemClicked={onItemClicked}
-                    onPlugClicked={onPlugClicked}
-                    configurable={isOwner} />
+                    onHighlightableClicked={updateHighlights}
+                    configurable={isOwner}
+                    isHighlightModeOn={isHighlightModeOn} />
                 </Col>
                 <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={chest}
@@ -676,9 +675,9 @@ function CreateBuild(props: Props) {
                     classType={selectedClass}
                     onItemUpdated={onItemUpdated}
                     highlights={highlights}
-                    onItemClicked={onItemClicked}
-                    onPlugClicked={onPlugClicked}
-                    configurable={isOwner} />
+                    onHighlightableClicked={updateHighlights}
+                    configurable={isOwner}
+                    isHighlightModeOn={isHighlightModeOn} />
                 </Col>
                 <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={legs}
@@ -686,9 +685,9 @@ function CreateBuild(props: Props) {
                     classType={selectedClass}
                     onItemUpdated={onItemUpdated}
                     highlights={highlights}
-                    onItemClicked={onItemClicked}
-                    onPlugClicked={onPlugClicked}
-                    configurable={isOwner} />
+                    onHighlightableClicked={updateHighlights}
+                    configurable={isOwner}
+                    isHighlightModeOn={isHighlightModeOn} />
                 </Col>
                 <Col lg="4" md="6" sm="6">
                   <EquipmentItem buildItem={classItem}
@@ -696,9 +695,9 @@ function CreateBuild(props: Props) {
                     classType={selectedClass}
                     onItemUpdated={onItemUpdated}
                     highlights={highlights}
-                    onItemClicked={onItemClicked}
-                    onPlugClicked={onPlugClicked}
-                    configurable={isOwner} />
+                    onHighlightableClicked={updateHighlights}
+                    configurable={isOwner}
+                    isHighlightModeOn={isHighlightModeOn} />
                 </Col>
               </div>
             </Col>

@@ -31,7 +31,13 @@ class TokenHandler {
   refreshExpiresAt: Date
   timeoutJob?: NodeJS.Timeout
 
-  constructor(forgeApiService: GuardianForgeApiService, access_token: string, expires_in: number, issuedAt: number, refresh_token: string, refresh_expires_in: number) {
+  constructor(forgeApiService: GuardianForgeApiService,
+    access_token: string,
+    expires_in: number,
+    issuedAt: number,
+    refresh_token: string,
+    refresh_expires_in: number
+  ) {
     this.forgeApiService = forgeApiService
     this.token = access_token
     this.expiresAt = new Date(new Date(issuedAt).getTime() + expires_in * 1000)
@@ -101,6 +107,8 @@ class TokenHandler {
       throw new Error(ErrorMessages.RefreshTokenExpired)
     }
     let authData =  await this.forgeApiService.refreshToken(this.refreshToken) as AuthData
+    authData.issuedAt = Date.now()
+    localStorage.setItem("auth", JSON.stringify(authData))
     this.token = authData.access_token
     this.expiresAt = new Date(new Date().getTime() + (authData.expires_in * 1000))
     this.issuedAt = new Date()
@@ -272,7 +280,9 @@ export default class GuardianForgeClientService {
       throw new Error(`Error logging in (${json.error})`)
     }
     json.issuedAt = Date.now()
-    await this.setAuthData(json)
+    await this.setAuthData(json, {
+      fetchUserData: true
+    })
   }
 
   async createBuildOpengraphImage(buildId: string) {
