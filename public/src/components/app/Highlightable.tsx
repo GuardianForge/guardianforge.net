@@ -16,13 +16,13 @@ const Wrapper = styled.div<IHighlightableStyleProps>`
       return `
         .${props.highlightClass} {
           border: 2px solid ${props.isHighlighted ? `${colors.theme2.highlightColor} !important` : "rgba(0,0,0,0)"};
-          animation: ${props.isHighlightable ? "highlightable 2s infinite !important" : ""};
+          animation: ${props.isHighlightable ? "highlightable 2s infinite" : ""};
         }
       `
     } else {
       return `
         border: 2px solid ${props.isHighlighted ? `${colors.theme2.highlightColor} !important` : "rgba(0,0,0,0)"};
-        animation: ${props.isHighlightable ? "highlightable 2s infinite !important" : ""};
+        animation: ${props.isHighlightable ? "highlightable 2s infinite" : ""};
       `
     }
   }}
