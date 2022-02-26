@@ -18,6 +18,7 @@ type SubscriptionDetails struct {
 	SubscriptionId *string  `dynamodbav:"subscriptionId" json:"subscriptionId"`
 	StartDate      *float64 `dynamodbav:"startDate" json:"startDate"`
 	EndDate        *float64 `dynamodbav:"endDate" json:"endDate"`
+	AutoRenew      *bool    `dynamodbav:"autoRenew" json:"autoRenew"`
 }
 
 func MakeUserRecord(membershipId string) (*UserRecord, error) {

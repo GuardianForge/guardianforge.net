@@ -44,8 +44,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		status := event.Data.Object["status"].(string)
 		start := event.Data.Object["current_period_start"].(float64)
 		end := event.Data.Object["current_period_end"].(float64)
+		cancelAtPeriodEnd := event.Data.Object["cancel_at_period_end"].(bool)
 		if status == "active" {
-			err = addSubscriptionToUser(membershipId, subscriptionId, start, end)
+			err = addSubscriptionToUser(membershipId, subscriptionId, start, end, cancelAtPeriodEnd)
 		} else {
 			err = removeSubscriptionFromUser(membershipId)
 		}
@@ -67,16 +68,19 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	return utils.OkResponse(nil)
 }
 
-func addSubscriptionToUser(membershipId string, subscriptionId string, startDate float64, endDate float64) error {
+func addSubscriptionToUser(membershipId string, subscriptionId string, startDate float64, endDate float64, cancelAtPeriodEnd bool) error {
 	userData, err := services.GetUserInfo(membershipId)
 	if err != nil {
 		return errors.Wrap(err, "(addSubscriptionToUser) services.GetUserInfo")
 	}
 
+	autoRenew := !cancelAtPeriodEnd
+
 	userData.SubscriptionDetails = &models.SubscriptionDetails{
 		SubscriptionId: &subscriptionId,
 		StartDate:      &startDate,
 		EndDate:        &endDate,
+		AutoRenew:      &autoRenew,
 	}
 	record, err := models.MakeUserRecord(membershipId)
 	if err != nil {

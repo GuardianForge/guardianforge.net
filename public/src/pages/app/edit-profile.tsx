@@ -9,6 +9,7 @@ import { Toggles } from '../../toggles'
 import Card from '../../components/app/ui/Card'
 import ForgeModal from '../../components/app/Modal'
 import AlertDetail from '../../models/AlertDetail'
+import { SubscriptionDetails } from '../../models/User'
 
 function Profile() {
   const { isUserDataLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
@@ -18,7 +19,9 @@ function Profile() {
   const [youtube, setYoutube] = useState("")
   const [facebook, setFacebook] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [subscriptionDetails, setSubscriptionDetails] = useState()
+
+  const [isAutoRenewUpdating, setIsAutoRenewUpdating] = useState(false)
+  const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails>()
   const [showCancelSubscriptionModal, setShowCancelSubscriptionModal] = useState(false)
 
   useEffect(() => {
@@ -87,13 +90,36 @@ function Profile() {
     }
   }
 
-  async function cancelSubscription() {
+  async function reenableSubscription() {
+    // TODO: Update the model to refelct it in the UI
     let { ForgeClient } = window.services
     try {
-      await ForgeClient.cancelSubscription()
+      setIsAutoRenewUpdating(true)
+      await ForgeClient.enableSubscription()
     } catch (err) {
-      let alert = new AlertDetail("An error has occurred while attempting to cancel your subscription. Please try again later, or submit an inquiry.", "Cancel Subscription", true, false)
+      console.error(err)
+      let alert = new AlertDetail("An error has occurred while attempting to re-enable your subscription. Please try again later, or send us a note.", "Re-Enable Subscription", true, false)
       dispatchAlert(alert)
+    } finally {
+      setIsAutoRenewUpdating(false)
+    }
+  }
+
+  async function cancelSubscription() {
+    // TODO: Update the model to refelect it in the UI
+    let { ForgeClient } = window.services
+    try {
+      setIsAutoRenewUpdating(true)
+      await ForgeClient.cancelSubscription()
+      let alert = new AlertDetail("Auto renew has been disabled.", "Cancel Subscription")
+      dispatchAlert(alert)
+    } catch (err) {
+      console.error(err)
+      let alert = new AlertDetail("An error has occurred while attempting to stop your subscription. Please try again later, or send us a note.", "Cancel Subscription", true, false)
+      dispatchAlert(alert)
+    } finally {
+      setShowCancelSubscriptionModal(false)
+      setIsAutoRenewUpdating(false)
     }
   }
 
@@ -113,7 +139,15 @@ function Profile() {
                 <Card className="subscription-manager">
                   <h3>💎 Thanks, Oh Supporter Mine!</h3>
                   <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
-                  <Button onClick={() => setShowCancelSubscriptionModal(true)}>Cancel Subscription</Button>
+                  {subscriptionDetails.endDate &&
+                    <p>Subscription Expires: {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
+                  }
+                  <p>Auto Renew: {subscriptionDetails.autoRenew ? "Enabled" : "Disabled"}</p>
+                  {subscriptionDetails.autoRenew ? (
+                    <Button onClick={() => setShowCancelSubscriptionModal(true)} disabled={isAutoRenewUpdating}>Disable Auto Renew</Button>
+                  ) : (
+                    <Button onClick={() => reenableSubscription()} disabled={isAutoRenewUpdating}>Enable Auto Renew</Button>
+                  )}
                 </Card>
               ) : (
                 <Card>

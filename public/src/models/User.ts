@@ -24,6 +24,14 @@ export type UserInfo = {
   about?: string
   social?: SocialInfo
   uniqueName?: string
+  subscriptionDetails?: SubscriptionDetails
+}
+
+export type SubscriptionDetails = {
+  subscriptionId?: string
+  startDate?: number
+  endDate?: number
+  autoRenew?: boolean
 }
 
 export type SocialInfo = {

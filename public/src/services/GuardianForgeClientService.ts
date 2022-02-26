@@ -307,6 +307,18 @@ export default class GuardianForgeClientService {
     return await res.json()
   }
 
+  async enableSubscription() {
+    let token = this.getToken()
+    let res = await fetch(`${this.config.apiBase}/subscriptions`, {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    return await res.json()
+  }
+
   async cancelSubscription() {
     let token = this.getToken()
     let res = await fetch(`${this.config.apiBase}/subscriptions`, {

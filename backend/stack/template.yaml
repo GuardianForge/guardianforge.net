@@ -649,7 +649,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: api/subscriptions/_delete
-      Handler: _post
+      Handler: _delete
       Runtime: go1.x
       Events:
         CatchAll:
@@ -657,6 +657,24 @@ Resources:
           Properties:
             Path: /subscriptions
             Method: DELETE
+      Environment:
+        Variables:
+          STRIPE_SECRET_KEY: !Ref StripeSecretKeyParam
+          BUNGIE_API_KEY: !Ref BungieApiKeyParam
+          TABLE_NAME: !Ref DbTable
+
+  ReEnableSubscriptionFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/subscriptions/_put
+      Handler: _put
+      Runtime: go1.x
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /subscriptions
+            Method: PUT
       Environment:
         Variables:
           STRIPE_SECRET_KEY: !Ref StripeSecretKeyParam
