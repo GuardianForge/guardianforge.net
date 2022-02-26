@@ -55,18 +55,18 @@ function Stat(props: Props) {
 
   return (
     <Wrapper>
-      <OverlayTrigger
-        placement="bottom"
-        delay={{ show: 250, hide: 400 }}
-        overlay={<Tooltip>{name.charAt(0).toUpperCase() + name.slice(1)}</Tooltip>}>
-          <Highlightable highlightKey={`stat-${name}-0-0`}
-            isHighlightable={isHighlightable}
-            highlights={highlights}
-            highlightClass="stat-icon"
-            onClick={onHighlightableClicked}>
-            <img src={fixedIcon ? fixedIcon : iconUrl} className="stat-icon" />
-          </Highlightable>
-      </OverlayTrigger>
+      <Highlightable highlightKey={`stat-${name}-0-0`}
+        isHighlightable={isHighlightable}
+        highlights={highlights}
+        highlightClass="stat-icon"
+        onClick={onHighlightableClicked}>
+        <OverlayTrigger
+          placement="bottom"
+          delay={{ show: 250, hide: 400 }}
+          overlay={<Tooltip>{name.charAt(0).toUpperCase() + name.slice(1)}</Tooltip>}>
+              <img src={fixedIcon ? fixedIcon : iconUrl} className="stat-icon" />
+        </OverlayTrigger>
+      </Highlightable>
       <span>{value}</span>
     </Wrapper>
   )

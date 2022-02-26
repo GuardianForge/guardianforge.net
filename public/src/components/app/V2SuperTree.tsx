@@ -1,4 +1,5 @@
 import React, { MouseEventHandler } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import styled from 'styled-components';
 import colors from '../../colors';
 
@@ -96,7 +97,12 @@ function V2SuperTree(props: Props) {
         {tree.perks && tree.perks.map((p: any, idx: number) => (
           <div key={`tree-${tree.pos}-${idx}`} className={`img-wrapper-outer ${tree.pos === idx ? `img-wrapper-outer-${idx}` : ""}`}>
             <div className={`img-wrapper img-wrapper-${affinity}`}>
-              <img src={p.icon.startsWith("http") ? p.icon : `https://www.bungie.net${p.icon}`} />
+              <OverlayTrigger
+                placement="bottom"
+                delay={{ show: 250, hide: 400 }}
+                overlay={<Tooltip>{ p.name }</Tooltip>}>
+                <img src={p.icon.startsWith("http") ? p.icon : `https://www.bungie.net${p.icon}`} />
+              </OverlayTrigger>
             </div>
           </div>
         ))}

@@ -104,18 +104,18 @@ function Plug(props: Props) {
 
   return (
     <Wrapper>
-      <OverlayTrigger
-        placement="bottom"
-        delay={{ show: 250, hide: 400 }}
-        overlay={<Tooltip>{ plugName }</Tooltip>}>
-          <Highlightable highlightKey={`${plugType}-${itemInstanceId}-${socketIndex}-${plugHash}`}
-            isHighlightable={isHighlightable && !isEmpty}
-            highlights={highlights}
-            highlightClass="socket-icon"
-            onClick={onClickHandler}>
-            <img src={fixedIconUrl ? fixedIconUrl : iconUrl} className={`socket-icon ${plugType === "perk" ? "perk" : "mod"}`} />
-          </Highlightable>
+      <Highlightable highlightKey={`${plugType}-${itemInstanceId}-${socketIndex}-${plugHash}`}
+        isHighlightable={isHighlightable && !isEmpty}
+        highlights={highlights}
+        highlightClass="socket-icon"
+        onClick={onClickHandler}>
+        <OverlayTrigger
+          placement="bottom"
+          delay={{ show: 250, hide: 400 }}
+          overlay={<Tooltip>{ plugName }</Tooltip>}>
+          <img src={fixedIconUrl ? fixedIconUrl : iconUrl} className={`socket-icon ${plugType === "perk" ? "perk" : "mod"}`} />
         </OverlayTrigger>
+      </Highlightable>
     </Wrapper>
   )
 }
