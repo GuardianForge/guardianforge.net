@@ -109,7 +109,7 @@ const IndexPage = () => {
         </Col>
       </Row>
 
-      <Row className="py-5 my-5">
+      <Row className="py-5 my-5 align-items-center">
         <Col md="8">
           <div className="px-2">
             <h2>Create Your Own Builds</h2>
