@@ -99,7 +99,8 @@ function ActivitySelector(props: Props) {
   const [areOptionsOpen, setAreOptionsOpen] = useState(false)
 
   useEffect(() => {
-    setOptions(activityOptions)
+    let opts = activityOptions.filter((o: ActivityOption) => o.isArchived !== true);
+    setOptions(opts)
   }, [])
 
   function onOptionClicked(activity: ActivityOption) {
