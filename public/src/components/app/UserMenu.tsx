@@ -133,11 +133,6 @@ function UserMenu() {
               <li>
                 <a className="dropdown-item" href="#" onClick={logout}>Log Out</a>
               </li>
-              <FeatureToggle toggle={Toggles.SubscribeOptions}>
-                <li>
-                  <a className="dropdown-item" href="#">💎 &nbsp; Support GuardianForge</a>
-                </li>
-              </FeatureToggle>
               {isAdmin && <hr />}
               {isAdmin && (
                 <li>

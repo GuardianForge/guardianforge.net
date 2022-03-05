@@ -10,9 +10,13 @@ import Card from '../../components/app/ui/Card'
 import ForgeModal from '../../components/app/Modal'
 import AlertDetail from '../../models/AlertDetail'
 import { SubscriptionDetails } from '../../models/User'
+import { State } from '../../models/Enums'
+import Loading from '../../components/app/Loading'
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 function Profile() {
   const { isUserDataLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
+  const [compState, setCompState] = useState(State.LOADING)
   const [about, setAbout] = useState("")
   const [twitter, setTwitter] = useState("")
   const [twitch, setTwitch] = useState("")
@@ -26,6 +30,9 @@ function Profile() {
 
   useEffect(() => {
     setPageTitle("Edit Profile")
+  }, [])
+
+  useEffect(() => {
     if(!isUserDataLoaded) return
     function init() {
       const { ForgeClient } = window.services
@@ -35,7 +42,7 @@ function Profile() {
           setAbout(userInfo.about)
         }
         if(userInfo.social) {
-          const { facebook, twitter, youtube, twitch} = userInfo.social
+          const { facebook, twitter, youtube, twitch } = userInfo.social
           if(facebook) setFacebook(facebook)
           if(twitter) setTwitter(twitter)
           if(youtube) setYoutube(youtube)
@@ -45,6 +52,7 @@ function Profile() {
           setSubscriptionDetails(userInfo.subscriptionDetails)
         }
       }
+      setCompState(State.DONE);
     }
     init()
   }, [isUserDataLoaded])
@@ -96,6 +104,11 @@ function Profile() {
     try {
       setIsAutoRenewUpdating(true)
       await ForgeClient.enableSubscription()
+      let subDetails = subscriptionDetails
+      if(subDetails) {
+        subDetails.autoRenew = true
+        setSubscriptionDetails(subDetails)
+      }
     } catch (err) {
       console.error(err)
       let alert = new AlertDetail("An error has occurred while attempting to re-enable your subscription. Please try again later, or send us a note.", "Re-Enable Subscription", true, false)
@@ -113,6 +126,11 @@ function Profile() {
       await ForgeClient.cancelSubscription()
       let alert = new AlertDetail("Auto renew has been disabled.", "Cancel Subscription")
       dispatchAlert(alert)
+      let subDetails = subscriptionDetails
+      if(subDetails) {
+        subDetails.autoRenew = false
+        setSubscriptionDetails(subDetails)
+      }
     } catch (err) {
       console.error(err)
       let alert = new AlertDetail("An error has occurred while attempting to stop your subscription. Please try again later, or send us a note.", "Cancel Subscription", true, false)
@@ -121,6 +139,10 @@ function Profile() {
       setShowCancelSubscriptionModal(false)
       setIsAutoRenewUpdating(false)
     }
+  }
+
+  if(compState === State.LOADING) {
+    return <Loading />
   }
 
   return (
@@ -140,9 +162,17 @@ function Profile() {
                   <h3>💎 Thanks, Oh Supporter Mine!</h3>
                   <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
                   {subscriptionDetails.endDate &&
-                    <p>Subscription Expires: {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
+                    <p><b>Subscription Expires:</b> {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
                   }
-                  <p>Auto Renew: {subscriptionDetails.autoRenew ? "Enabled" : "Disabled"}</p>
+                  <p><b>Auto Renew:</b> {subscriptionDetails.autoRenew ? (
+                    <span>
+                      <FontAwesomeIcon icon={faCheckCircle} style={{color: "green"}} /> Enabled
+                    </span>
+                  ) : (
+                    <span>
+                      <FontAwesomeIcon icon={faTimesCircle} style={{color: "red"}} /> Disabled
+                    </span>
+                  )}</p>
                   {subscriptionDetails.autoRenew ? (
                     <Button onClick={() => setShowCancelSubscriptionModal(true)} disabled={isAutoRenewUpdating}>Disable Auto Renew</Button>
                   ) : (
@@ -202,10 +232,10 @@ function Profile() {
       </Row>
 
       <ForgeModal show={showCancelSubscriptionModal} onHide={() => setShowCancelSubscriptionModal(false)} title="Cancel Subscription" closeButton>
-        <h3>Sad To See You Go!</h3>
-        <p>If there is something GuardianForge doesn't do for you, please consider sending me a message instead! Otherwise click the button below to cancel.</p>
-        <Button style={{marginRight: "10px"}}>Send a Message</Button>
-        <Button variant="danger" onClick={() => cancelSubscription()}>Cancel</Button>
+        <h3>😢 Sad To See You Go!</h3>
+        <p>If there is something GuardianForge doesn't do for you, please consider sending me a message instead! Otherwise click the button below to disable auto renew on your subscription.</p>
+        {/* <Button style={{marginRight: "10px"}}>Send a Message</Button> */}
+        <Button variant="danger" disabled={isAutoRenewUpdating} onClick={() => cancelSubscription()}>Disable Auto Renew</Button>
       </ForgeModal>
     </Container>
   )

@@ -120,9 +120,13 @@ export const Provider = (props: Props) => {
     setIsManifestLoaded(true)
   }
 
-  function redirectToLogin() {
+  function redirectToLogin(nextState?: string) {
     let { BungieAuthService } = window.services
-    localStorage.setItem("nextState", window.location.pathname)
+    if(nextState) {
+      localStorage.setItem("nextState", nextState)
+    } else {
+      localStorage.setItem("nextState", window.location.pathname)
+    }
     BungieAuthService.redirectToLogin()
   }
 

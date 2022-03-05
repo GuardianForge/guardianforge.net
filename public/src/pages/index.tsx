@@ -14,6 +14,7 @@ import ForgeButton from "../components/app/forms/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCube, faDonate, faGem, faSignInAlt, faUser } from "@fortawesome/free-solid-svg-icons"
 import colors from "../colors"
+import SubscribeButton from "../components/app/stripe/SubscribeButton"
 
 // styles
 const GuardianForgeImage = styled.img`
@@ -130,19 +131,20 @@ const IndexPage = () => {
         </Col>
       </Row>
 
-      {/* <Row className="py-5 my-5">
+      <Row className="py-5 my-5">
         <Col md="8">
           <h2>Support GuardianForge</h2>
           <p>
-            GuardianForge is the product of one developer and many hours of development time. You can help keep it online by subscribing to remove ads, or making a one-time donation below!
+            GuardianForge is the product of one developer and many hours of development time. You can help keep it online by subscribing to get an ad-free experience!
           </p>
-          <ForgeButton onClick={() => navigate("/find-builds")} style={{marginRight: "10px"}}><FontAwesomeIcon icon={faGem} /> Subscribe</ForgeButton>
-          <ForgeButton onClick={() => navigate("/find-builds")}><FontAwesomeIcon icon={faDonate} /> Donate</ForgeButton>
+          <SubscribeButton />
+          {/* <ForgeButton onClick={() => navigate("/find-builds")} style={{marginRight: "10px"}}><FontAwesomeIcon icon={faGem} /> Subscribe</ForgeButton> */}
+          {/* <ForgeButton onClick={() => navigate("/find-builds")}><FontAwesomeIcon icon={faDonate} /> Donate</ForgeButton> */}
         </Col>
         <Col md="4">
           <div>gif or image here</div>
         </Col>
-      </Row> */}
+      </Row>
 
 
       <div className="row">

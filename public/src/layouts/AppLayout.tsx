@@ -21,6 +21,7 @@ import FeatureToggleWrapper from '../components/app/general/FeatureToggle'
 import ForgeModal from '../components/app/Modal'
 import ForgeButton from '../components/app/forms/Button'
 import { Helmet } from 'react-helmet'
+import SubscribeModal from '../components/app/stripe/SubscribeModal'
 
 
 const Layout = styled.div`
@@ -367,6 +368,7 @@ function AppLayout(props: Props) {
   const { isInitDone, isClientLoaded, initApp, pageTitle, redirectToLogin } = useContext(GlobalContext)
   const [isSubscribeSuccessModalDisplayed, setIsSubscribeSuccessModalDisplayed] = useState(false)
   const [isSubscribeErrorModalDisplayed, setIsSubscribeErrorModalDisplayed] = useState(false)
+  const [isSubscribeModalShowing, setIsSubscribeModalShowing] = useState(false)
 
   useEffect(() => {
     if(!isInitDone) {
@@ -398,6 +400,9 @@ function AppLayout(props: Props) {
     }
     if(queryKeys.get("subscribe") && queryKeys.get("subscribe") === "error") {
       setIsSubscribeErrorModalDisplayed(true)
+    }
+    if(queryKeys.get("showSubscribeModal") && queryKeys.get("showSubscribeModal") === "true") {
+      setIsSubscribeModalShowing(true)
     }
 
     // Setup fix for Adsense style hijacking
@@ -496,9 +501,7 @@ function AppLayout(props: Props) {
           </div>
         </div>
         <div className="nav-footer">
-          <FeatureToggleWrapper toggle={Toggles.SubscribeOptions}>
-            <SubscribeButton />
-          </FeatureToggleWrapper>
+
         </div>
       </Sidebar>
 
@@ -568,6 +571,8 @@ function AppLayout(props: Props) {
         <p>Something went wrong while subscribing to GuardianForge. Please try again later, or contact me to resolve the issue.</p>
         <p>- Brian (@brianmmdev)</p>
       </ForgeModal>
+
+      <SubscribeModal show={isSubscribeModalShowing} onHide={() => setIsSubscribeModalShowing(false)} />
 
       <FeatureToggleWrapper toggle={Toggles.ShowBreakpoints}>
         <div style={{
