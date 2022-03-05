@@ -30,6 +30,10 @@ const Wrapper = styled(Container)`
     border: 2px solid ${colors.theme2.accent2};
     max-width: 300px;
   }
+
+  .sub-diamond {
+    max-width: 175px;
+  }
 `
 
 // markup
@@ -131,8 +135,8 @@ const IndexPage = () => {
         </Col>
       </Row>
 
-      <Row className="py-5 my-5">
-        <Col md="8">
+      <Row className="py-5 my-5 flex-lg-row-reverse align-items-center">
+        <Col md="9">
           <h2>Support GuardianForge</h2>
           <p>
             GuardianForge is the product of one developer and many hours of development time. You can help keep it online by subscribing to get an ad-free experience!
@@ -141,8 +145,8 @@ const IndexPage = () => {
           {/* <ForgeButton onClick={() => navigate("/find-builds")} style={{marginRight: "10px"}}><FontAwesomeIcon icon={faGem} /> Subscribe</ForgeButton> */}
           {/* <ForgeButton onClick={() => navigate("/find-builds")}><FontAwesomeIcon icon={faDonate} /> Donate</ForgeButton> */}
         </Col>
-        <Col md="4">
-          <div>gif or image here</div>
+        <Col md="3">
+          <img className="sub-diamond" src="/img/orange-diamond.png"/>
         </Col>
       </Row>
 
