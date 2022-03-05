@@ -90,7 +90,7 @@ function Plug(props: Props) {
     const { ManifestService } = window.services
     if(!plugName) {
       let def = ManifestService.getItem("DestinyInventoryItemDefinition", plugHash as string)
-      if(def.displayProperties) {
+      if(def && def.displayProperties) {
         setPlugName(def.displayProperties.name)
       }
     }
