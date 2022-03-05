@@ -29,10 +29,12 @@ const Wrapper = styled(Container)`
     border-radius: 10px;
     border: 2px solid ${colors.theme2.accent2};
     max-width: 300px;
+    width: 100%;
   }
 
   .sub-diamond {
-    max-width: 175px;
+    max-width: 150px;
+    margin-bottom: 10px;
   }
 `
 
@@ -96,7 +98,10 @@ const IndexPage = () => {
         </Alert>
       </div>
 
-      <Row className="py-5 my-5 flex-lg-row-reverse align-items-center">
+      <Row className="py-5 my-5 align-items-center">
+        <Col className="" md="4">
+          <img className="img-fluid home-gif" src="/img/gifs/find-builds.gif" />
+        </Col>
         <Col md="8">
           <div className="px-2">
             <h2>Find Community Builds</h2>
@@ -109,12 +114,12 @@ const IndexPage = () => {
             <ForgeButton onClick={() => navigate("/find-builds")}><FontAwesomeIcon icon={faCube} /> Find Builds</ForgeButton>
           </div>
         </Col>
-        <Col className="" md="4">
-          <img className="img-fluid home-gif" src="/img/gifs/find-builds.gif" />
-        </Col>
       </Row>
 
-      <Row className="py-5 my-5 align-items-center">
+      <Row className="py-5 my-5 flex-lg-row-reverse align-items-center">
+        <Col md="4">
+          <img className="img-fluid home-gif" src="/img/gifs/make-build.gif" />
+        </Col>
         <Col md="8">
           <div className="px-2">
             <h2>Create Your Own Builds</h2>
@@ -130,12 +135,12 @@ const IndexPage = () => {
             </div>
           </div>
         </Col>
-        <Col md="4">
-          <img className="img-fluid home-gif" src="/img/gifs/make-build.gif" />
-        </Col>
       </Row>
 
-      <Row className="py-5 my-5 flex-lg-row-reverse align-items-center">
+      <Row className="py-5 my-5 align-items-center">
+        <Col md="3">
+          <img className="sub-diamond" src="/img/orange-diamond.png"/>
+        </Col>
         <Col md="9">
           <h2>Support GuardianForge</h2>
           <p>
@@ -144,9 +149,6 @@ const IndexPage = () => {
           <SubscribeButton />
           {/* <ForgeButton onClick={() => navigate("/find-builds")} style={{marginRight: "10px"}}><FontAwesomeIcon icon={faGem} /> Subscribe</ForgeButton> */}
           {/* <ForgeButton onClick={() => navigate("/find-builds")}><FontAwesomeIcon icon={faDonate} /> Donate</ForgeButton> */}
-        </Col>
-        <Col md="3">
-          <img className="sub-diamond" src="/img/orange-diamond.png"/>
         </Col>
       </Row>
 
