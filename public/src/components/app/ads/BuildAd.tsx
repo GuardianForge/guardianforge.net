@@ -2,12 +2,21 @@ import React, { useEffect, useContext} from 'react'
 import { GlobalContext } from '../../../contexts/GlobalContext'
 import { useDetectAdBlock } from "adblock-detect-react"
 import styled from 'styled-components';
-import ForgeButton from '../forms/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGem } from '@fortawesome/free-solid-svg-icons';
+import { Alert } from 'react-bootstrap';
+import SubscribeButton from '../stripe/SubscribeButton';
 
-const AdBlockDetectedWrapper = styled.div`
+const AdBlockDetectedWrapper = styled(Alert)`
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
 
+  .inner-wrapper {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `
 
 function BuildAd() {
@@ -26,9 +35,13 @@ function BuildAd() {
   if(areAdsDisabled) return (<></>)
 
   if(adBlockDetected) return (
-    <AdBlockDetectedWrapper>
-      GuardianForge takes a lot of effort and resources to maintain! Please consider disbaling your ad blocker, or becoming a subscriber!
-      <ForgeButton><FontAwesomeIcon icon={faGem} /> Subscribe</ForgeButton>
+    <AdBlockDetectedWrapper variant="warning">
+      <div className="inner-wrapper">
+        <div style={{marginBottom: "10px"}}>
+          GuardianForge takes a lot of effort and resources to maintain. Please consider disabling your ad blocker, or becoming a subscriber!
+        </div>
+        <SubscribeButton />
+      </div>
     </AdBlockDetectedWrapper>
   )
 
