@@ -28,7 +28,7 @@ function BuildAd() {
       const adsbygoogle = window.adsbygoogle || []
       adsbygoogle.push({})
     } catch (err) {
-      console.error(err)
+      console.warn(err)
     }
   }, [])
 

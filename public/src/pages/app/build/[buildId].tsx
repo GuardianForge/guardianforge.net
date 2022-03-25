@@ -8,7 +8,7 @@ import Loading from "../../../components/app/Loading"
 import SubclassCard from '../../../components/app/SubclassCard'
 import ItemCard from '../../../components/app/ItemCard'
 import { Helmet } from 'react-helmet'
-import BuildAd from '../../../components/ads/BuildAd';
+import BuildAd from '../../../components/app/ads/BuildAd';
 import StatBar from '../../../components/app/StatBar';
 import { Col, Container, Row } from 'react-bootstrap'
 import CommandsBar from '../../../components/app/CommandsBar'
