@@ -529,11 +529,6 @@ function AppLayout(props: Props) {
               </ul>
             </div>
           </div>
-          <div className="nav-footer">
-            <FeatureToggleWrapper toggle={Toggles.SubscribeOptions}>
-              <SubscribeButton />
-            </FeatureToggleWrapper>
-          </div>
         </Offcanvas.Body>
       </MobileMenu>
 
