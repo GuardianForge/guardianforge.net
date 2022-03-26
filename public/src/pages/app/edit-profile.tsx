@@ -154,41 +154,39 @@ function Profile() {
         </Form.Group>
         <hr />
 
-        <FeatureToggleWrapper toggle={Toggles.SubscribeOptions}>
-          <Row>
-            <Col>
-              {subscriptionDetails ? (
-                <Card className="subscription-manager">
-                  <h3>💎 Thanks, Oh Supporter Mine!</h3>
-                  <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
-                  {subscriptionDetails.endDate &&
-                    <p><b>Subscription Expires:</b> {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
-                  }
-                  <p><b>Auto Renew:</b> {subscriptionDetails.autoRenew ? (
-                    <span>
-                      <FontAwesomeIcon icon={faCheckCircle} style={{color: "green"}} /> Enabled
-                    </span>
-                  ) : (
-                    <span>
-                      <FontAwesomeIcon icon={faTimesCircle} style={{color: "red"}} /> Disabled
-                    </span>
-                  )}</p>
-                  {subscriptionDetails.autoRenew ? (
-                    <Button onClick={() => setShowCancelSubscriptionModal(true)} disabled={isAutoRenewUpdating}>Disable Auto Renew</Button>
-                  ) : (
-                    <Button onClick={() => reenableSubscription()} disabled={isAutoRenewUpdating}>Enable Auto Renew</Button>
-                  )}
-                </Card>
-              ) : (
-                <Card>
-                  <h3>💎 Eyes Up Guardian!</h3>
-                  <p>Consider becoming a premium GuardianForge user to support the development of the platform!</p>
-                  <SubscribeButton />
-                </Card>
-              )}
-            </Col>
-          </Row>
-        </FeatureToggleWrapper>
+        <Row>
+          <Col>
+            {subscriptionDetails ? (
+              <Card className="subscription-manager">
+                <h3>💎 Thanks, Oh Supporter Mine!</h3>
+                <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
+                {subscriptionDetails.endDate &&
+                  <p><b>Subscription Expires:</b> {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
+                }
+                <p><b>Auto Renew:</b> {subscriptionDetails.autoRenew ? (
+                  <span>
+                    <FontAwesomeIcon icon={faCheckCircle} style={{color: "green"}} /> Enabled
+                  </span>
+                ) : (
+                  <span>
+                    <FontAwesomeIcon icon={faTimesCircle} style={{color: "red"}} /> Disabled
+                  </span>
+                )}</p>
+                {subscriptionDetails.autoRenew ? (
+                  <Button onClick={() => setShowCancelSubscriptionModal(true)} disabled={isAutoRenewUpdating}>Disable Auto Renew</Button>
+                ) : (
+                  <Button onClick={() => reenableSubscription()} disabled={isAutoRenewUpdating}>Enable Auto Renew</Button>
+                )}
+              </Card>
+            ) : (
+              <Card>
+                <h3>💎 Eyes Up Guardian!</h3>
+                <p>Consider becoming a premium GuardianForge user to support the development of the platform!</p>
+                <SubscribeButton />
+              </Card>
+            )}
+          </Col>
+        </Row>
 
         <Form.Label>Social Media Links</Form.Label>
         <div className="row">
