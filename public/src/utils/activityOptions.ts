@@ -34,6 +34,7 @@ const ActivityOptions: Array<ActivityOption> = [
   { value: "302", display: "Raid // Deep Stone Crypt", iconUrl: "/img/activities/dsc.png"},
   { value: "303", display: "Raid // Garden of Salvation", iconUrl: "/img/activities/garden.png"},
   { value: "304", display: "Raid // Last Wish", iconUrl: "/img/activities/last-wish.png"},
+  { value: "305", display: "Raid // Vow of the Disciple", iconUrl: "/img/activities/vow.png"},
 
   { value: "400", display: "Gambit", iconUrl: "/img/activities/gambit.png"},
 ]
