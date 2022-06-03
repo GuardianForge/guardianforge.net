@@ -114,7 +114,7 @@ function FindPlayers() {
 
         {compState === COMP_STATE.NO_RESULTS && (
           <div className="search-message">
-          No users match the name '{queryText}'
+            No users match the name '{queryText}'
           </div>
         )}
 

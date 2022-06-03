@@ -12,6 +12,7 @@ import { BuildItem } from '../../models/Build'
 import ItemCard from './ItemCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ModalSelector from './forms/ModalSelector'
+import ItemStatBar from './ItemStatBar'
 
 
 const Wrapper = styled.div`
@@ -45,6 +46,20 @@ const ItemConfigModal = styled(ForgeModal)`
     }
   }
 
+  .config-modal-wrapper {
+    display: flex;
+  }
+
+  .config-modal-left {
+    flex: 1;
+    margin: 0px 5px;
+  }
+
+  .config-modal-right {
+    flex: 1;
+    margin: 0px 5px;
+  }
+
   .intrinsic-trait {
     display: flex;
 
@@ -63,9 +78,31 @@ const ItemConfigModal = styled(ForgeModal)`
     }
   }
 
+  .item-stats {
+    display: flex;
+
+    .item-stat {
+      margin-bottom: 5px;
+    }
+
+    .item-stat-value {
+      margin: 0px 5px;
+    }
+
+    .item-stats-right {
+      flex: 1;
+
+      .item-stat {
+        display: flex;
+      }
+    }
+  }
+
   .row-header {
     font-weight: bold;
-    margin: 5px 0px;
+    margin: 5px 0px 10px 0px;
+    padding-bottom: 2px;
+    border-bottom: 1.5px solid ${colors.theme2.text};
   }
 
   .perks-row {
@@ -217,7 +254,6 @@ type EquipmentItemProps = {
   onHighlightableClicked?: Function
 }
 
-
 function EquipmentItem(props: EquipmentItemProps) {
   const {
     slot,
@@ -292,6 +328,10 @@ function EquipmentItem(props: EquipmentItemProps) {
       }
     }
   }, [item])
+
+  useEffect(() => {
+    console.log(item)
+  }, [isEditingItem])
 
   function onHideModal() {
     setIsEditingItem(false)
@@ -466,72 +506,124 @@ function EquipmentItem(props: EquipmentItemProps) {
           <Button onClick={() => setIsEditingItem(false)}>Close</Button>
         }
         >
-        <div>
-          <div className="intrinsic-row">
+        <div className="config-modal-wrapper">
+          <div className="config-modal-left">
+            {item?.getPerkSockets() && (
+              <div className="perks-row">
+                <div className="row-header">Perks</div>
+                <div className="perks">
+                  {item?.getPerkSockets()?.map((socket: Socket) => (
+                    <div className="perk-column">
+                      {socket.availablePlugs ? socket.availablePlugs?.map((plug: SocketItem) => (
+                        <img onClick={() => setEquippedPlug(socket, plug)} className={`available ${socket.equippedPlug?._meta?.manifestDefinition?.hash === plug._meta?.manifestDefinition?.hash ? 'equipped' : ""}`} src={plug.iconUrl} />
+                      )) : (
+                        <img className="equipped" src={socket.equippedPlug?.iconUrl} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {item?.getModSockets() && (
+              <div className="mods-row">
+                <div className="row-header">Mods</div>
+                <div className="mod-sockets">
+                  {item?.getModSockets()?.map((socket: Socket) => (
+                    <>
+                      {/* TODO: This is a hack, fix it by figuring out why the URL is undefined... */}
+                      {!socket.isItemTierSocket && socket.equippedPlug && socket.equippedPlug.iconUrl !== "https://www.bungie.netundefined" && (
+                        <div className="mod-socket">
+                          <img onClick={() => showModDrawer(socket)} src={socket.equippedPlug?.iconUrl} />
+                        </div>
+                      )}
+                    </>
+                  ))}
+                </div>
+                <ForgeModal
+                  centered
+                  size="xl"
+                  show={isModDrawerOpen}
+                  title="Select Mod"
+                  footer={<Button onClick={() => setIsModDrawerOpen(false)}>Close</Button>}>
+                  <Row>
+                    {availableMods && availableMods.map((plug: Item, idx: number) => (
+                      <Col md="4" key={`plug-${idx}`} >
+                        <SelectItemButton disabled={plug.cost !== undefined && (plug.cost > maxModCostAllowed)} className="activity-option" onClick={() => onSocketPlugClicked(plug)}>
+                          { plug.iconUrl && <img className="plug-icon" src={plug.iconUrl} />}
+                          <div className="right">
+                            <div>{ plug.name }</div>
+                            {plug.cost && (
+                              <div className="energy-cost">Cost: <span className={plug.cost > maxModCostAllowed ? "energy-cost-over" : ""}>{plug.cost}</span></div>
+                            )}
+                          </div>
+                        </SelectItemButton>
+                      </Col>
+                    ))}
+                  </Row>
+                </ForgeModal>
+              </div>
+            )}
             {item?.getIntrinsicTraits()?.map((el: SocketItem, idx: number) => (
-              <div className="intrinsic-trait">
-                <img src={el.iconUrl} />
-                <div>
-                  <div className="intrinsic-trait-name">{ el.name }</div>
-                  <div>{ el.getDescription() }</div>
+              <div className="intrinsic-row">
+                <div className="row-header">Intrinsic Traits</div>
+                <div className="intrinsic-trait">
+                  <img src={el.iconUrl} />
+                  <div>
+                    <div className="intrinsic-trait-name">{ el.name }</div>
+                    <div>{ el.getDescription() }</div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-          {item?.getPerkSockets() && (
-            <div className="perks-row">
-              <div className="row-header">Perks</div>
-              <div className="perks">
-                {item?.getPerkSockets()?.map((socket: Socket) => (
-                  <div className="perk-column">
-                    {socket.availablePlugs ? socket.availablePlugs?.map((plug: SocketItem) => (
-                      <img onClick={() => setEquippedPlug(socket, plug)} className={`available ${socket.equippedPlug?._meta?.manifestDefinition?.hash === plug._meta?.manifestDefinition?.hash ? 'equipped' : ""}`} src={plug.iconUrl} />
-                    )) : (
-                      <img className="equipped" src={socket.equippedPlug?.iconUrl} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {item?.getModSockets() && (
-            <div className="mods-row">
-              <div className="row-header">Mods</div>
-              <div className="mod-sockets">
-                {item?.getModSockets()?.map((socket: Socket) => (
+          <div className="config-modal-right">
+            <div className="row-header">Stats</div>
+            <div className="item-stats">
+              <div className="item-stats-left">
+                {item?.stats?.keys() && [...item.stats.keys()].map(k => (
                   <>
-                    {!socket.isItemTierSocket && (
-                      <div className="mod-socket">
-                        <img onClick={() => showModDrawer(socket)} src={socket.equippedPlug?.iconUrl} />
+                    {k !== "Rounds Per Minute" && k !== "Magazine" && (
+                      <div className="item-stat">
+                        <div>{k}: </div>
                       </div>
                     )}
                   </>
                 ))}
+                {item?.stats.get("Magazine") && (
+                  <div className="item-stat">
+                    <div>Magazine: </div>
+                  </div>
+                )}
+                {item?.stats.get("Rounds Per Minute") && (
+                  <div className="item-stat">
+                    <div>Rounds Per Minute: </div>
+                  </div>
+                )}
               </div>
-              <ForgeModal
-                centered
-                size="xl"
-                show={isModDrawerOpen}
-                title="Select Mod"
-                footer={<Button onClick={() => setIsModDrawerOpen(false)}>Close</Button>}>
-                <Row>
-                  {availableMods && availableMods.map((plug: Item, idx: number) => (
-                    <Col md="4" key={`plug-${idx}`} >
-                      <SelectItemButton disabled={plug.cost !== undefined && (plug.cost > maxModCostAllowed)} className="activity-option" onClick={() => onSocketPlugClicked(plug)}>
-                        { plug.iconUrl && <img className="plug-icon" src={plug.iconUrl} />}
-                        <div className="right">
-                          <div>{ plug.name }</div>
-                          {plug.cost && (
-                            <div className="energy-cost">Cost: <span className={plug.cost > maxModCostAllowed ? "energy-cost-over" : ""}>{plug.cost}</span></div>
-                          )}
-                        </div>
-                      </SelectItemButton>
-                    </Col>
-                  ))}
-                </Row>
-              </ForgeModal>
+              <div className="item-stats-right">
+                {item?.stats?.keys() && [...item.stats.keys()].map(k => (
+                  <>
+                    {k !== "Rounds Per Minute" && k !== "Magazine" && (
+                      <div className="item-stat">
+                        <div className="item-stat-value">{item?.stats?.get(k)?.value}</div>
+                        <ItemStatBar value={item?.stats?.get(k)?.value} />
+                      </div>
+                    )}
+                  </>
+                ))}
+                {item?.stats.get("Magazine") && (
+                  <div className="item-stat">
+                    <div className="item-stat-value">{item?.stats?.get("Magazine")?.value}</div>
+                  </div>
+                )}
+                {item?.stats.get("Rounds Per Minute") && (
+                  <div className="item-stat">
+                    <div className="item-stat-value">{item?.stats?.get("Rounds Per Minute")?.value}</div>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+          </div>
         </div>
       </ItemConfigModal>
     </Wrapper>
