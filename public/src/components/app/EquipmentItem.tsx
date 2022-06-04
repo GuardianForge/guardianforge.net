@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import colors from '../../colors'
 import { Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-utils'
-import EquipmentItemCard from './EquipmentItemCard'
 import ForgeButton from './forms/Button'
-import ForgeModal from './Modal'
-import Input from './forms/Input'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { BuildItem } from '../../models/Build'
 import ItemCard from './ItemCard'
 import ItemConfigModal from './ItemConfigModal'
+import ItemSelectorModal from './ItemSelectorModal'
 
 
 const Wrapper = styled.div`
@@ -31,28 +27,6 @@ const Wrapper = styled.div`
     align-items: center;
     width: 100%;
     height: 100px;
-  }
-`
-
-const ItemSelectorModal = styled(ForgeModal)`
-  .filter {
-    margin: 10px 0px;
-    display: flex;
-
-    &> div {
-      width: 100%;
-    }
-
-    input {
-      border-radius: 3px;
-      width: 100%;
-    }
-  }
-
-  .item-card {
-    &:hover {
-      cursor: pointer;
-    }
   }
 `
 
@@ -82,12 +56,9 @@ function EquipmentItem(props: EquipmentItemProps) {
 
   const [isEditingItem, setIsEditingItem] = useState(false)
   const [isSelectingItem, setIsSelectingItem] = useState(false)
-  const [inventorySubset, setInventorySubset] = useState<Array<Item>>([])
-  const [filteredInventorySubset, setFilteredInventorySubset] = useState<Array<Item>>([])
-  const [inventoryFilter, setInventoryFilter] = useState("")
   const [item, setItem] = useState<Item>()
   const [plugs, setPlugs] = useState<Map<number, Item[]>>()
-  const [buttonText, setButtonText] = useState("")
+  const [friendyBucketName, setFriendlyBucketName] = useState("")
 
   useEffect(() => {
     if(configurable && buildItem && buildItem.itemInstanceId) {
@@ -103,28 +74,28 @@ function EquipmentItem(props: EquipmentItemProps) {
   useEffect(() => {
     switch(slot) {
       case Enums.BucketTypeEnum.Kinetic:
-        setButtonText("Select Kinetic");
+        setFriendlyBucketName("Kinetic")
         break;
       case Enums.BucketTypeEnum.Energy:
-        setButtonText("Select Energy");
+        setFriendlyBucketName("Energy")
         break;
       case Enums.BucketTypeEnum.Power:
-        setButtonText("Select Power");
+        setFriendlyBucketName("Power")
         break;
       case Enums.BucketTypeEnum.Helmet:
-        setButtonText("Select Helmet");
+        setFriendlyBucketName("Helmet")
         break;
       case Enums.BucketTypeEnum.Arms:
-        setButtonText("Select Arms");
+        setFriendlyBucketName("Arms")
         break;
       case Enums.BucketTypeEnum.Chest:
-        setButtonText("Select Chest");
+        setFriendlyBucketName("Chest")
         break;
       case Enums.BucketTypeEnum.Legs:
-        setButtonText("Select Legs");
+        setFriendlyBucketName("Legs")
         break;
       case Enums.BucketTypeEnum.ClassItem:
-        setButtonText("Select Class Item");
+        setFriendlyBucketName("Class Item")
         break;
     }
   }, [])
@@ -158,31 +129,9 @@ function EquipmentItem(props: EquipmentItemProps) {
     setItem(itemSelected)
     onItemUpdated(itemSelected)
     setIsSelectingItem(false)
-    setInventoryFilter("")
-    setInventorySubset([])
-    setFilteredInventorySubset([])
   }
 
   function selectItem() {
-    // @ts-ignore
-    let { InventoryManager } = window.services
-    let items = InventoryManager.lookupItems(undefined, undefined, classType, slot)
-    if(slot === Enums.BucketTypeEnum.Kinetic || slot === Enums.BucketTypeEnum.Energy || slot === Enums.BucketTypeEnum.Power) {
-      let items2 = InventoryManager.lookupItems(undefined, undefined, 3, slot)
-      items2.forEach((i: Item) => items.push(i))
-    }
-    items.sort((a: Item, b: Item) => {
-      if (!a.name || !b.name) return 0;
-      if ( a.name < b.name ){
-        return -1;
-      }
-      if ( a.name > b.name ){
-        return 1;
-      }
-      return 0;
-    })
-    setInventorySubset(items)
-    setFilteredInventorySubset(items)
     setIsSelectingItem(true)
   }
 
@@ -196,18 +145,6 @@ function EquipmentItem(props: EquipmentItemProps) {
     onItemUpdated(i)
   }
 
-  function onInventoryFilterChanged(filter: string) {
-    if(inventorySubset) {
-      if(filter !== "") {
-        let filtered = inventorySubset.filter((i: Item) => i.name?.toLowerCase().includes(filter.toLowerCase()))
-        setFilteredInventorySubset(filtered)
-      } else {
-        setFilteredInventorySubset(inventorySubset)
-      }
-    }
-    setInventoryFilter(filter)
-  }
-
   return (
     <Wrapper>
       {buildItem && <ItemCard item={buildItem}
@@ -217,44 +154,23 @@ function EquipmentItem(props: EquipmentItemProps) {
           power={item ? item.getPower() : undefined}
           onHighlightableClicked={onHighlightableClicked}
           onConfigureItemClicked={() => setIsEditingItem(true)}
-          onSwapItemClicked={() => selectItem()}
+          onSwapItemClicked={() => setIsSelectingItem(true)}
           isHighlightable={isHighlightModeOn} />}
 
       {!buildItem && (
         <div className="select-item-wrapper">
-          <ForgeButton onClick={selectItem}>{ buttonText }</ForgeButton>
+          <ForgeButton onClick={() => setIsSelectingItem(true)}>Select { friendyBucketName }</ForgeButton>
         </div>
       )}
 
-      {/* Item Selector Modal */}
       <ItemSelectorModal
         show={isSelectingItem}
         onHide={onHideSelectItemModal}
-        size="xl"
-        fullscreen="xl-down"
-        scrollable
-        title={buttonText}
-        footer={
-          <Button onClick={() => setIsSelectingItem(false)}>Close</Button>
-        }
-        >
-        <div>
-          <div className="filter">
-            <Input placeholder="Start typing to filter items..."
-              type="text"
-              value={inventoryFilter}
-              prefixIcon={faFilter}
-              onChange={(e: any) => onInventoryFilterChanged(e.target.value)} />
-          </div>
-          <div className="row">
-            {filteredInventorySubset.map((i: Item, idx: number) => (
-              <div className="item-card col-md-4 mb-2" key={`item-${idx}-${i.name}`} onClick={() => onItemSelected(i)}>
-                <EquipmentItemCard item={i} showLocation />
-              </div>
-            ))}
-          </div>
-        </div>
-      </ItemSelectorModal>
+        onClose={() => setIsSelectingItem(false)}
+        classType={classType}
+        onItemSelected={onItemSelected}
+        slot={slot}
+        title={`Select ${friendyBucketName}`} />
 
       <ItemConfigModal
         show={isEditingItem}
