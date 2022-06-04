@@ -183,8 +183,11 @@ function V3SubclassCard(props: Props) {
   const [isConfigureSubclassModalShown, setIsConfigureSubclassModalShown] = useState(false)
   const [socketPlugMap, setSocketPlugMap] = useState<Map<number, Item[]>>()
 
+  const [renderhook, setRenderhook] = useState(1)
+
   useEffect(() => {
     if(subclass) {
+      setRenderhook(renderhook + 1)
       console.log(subclass)
       const { InventoryManager } = window.services
       let map = InventoryManager.getSocketPlugMapForItem(subclass)
@@ -340,6 +343,7 @@ function V3SubclassCard(props: Props) {
               <FontAwesomeIcon icon={faExchangeAlt} onClick={onChangeSubclassClicked} />
             </div>
           )}
+
         </div>
         <div className="subclass-right">
           <span className="name">{ subclass.name }</span>
@@ -351,7 +355,7 @@ function V3SubclassCard(props: Props) {
                   {subclass.sockets?.map(s =>(
                     <>
                       {s._meta?.categoryDefinition.displayProperties.name === "SUPER" && (
-                        <Plug key={`socket-${s.position}`}
+                        <Plug key={`socket-super-${s.position}-${renderhook}`}
                           plugType="super"
                           item={s.equippedPlug}
                           highlights={highlights}
@@ -370,7 +374,7 @@ function V3SubclassCard(props: Props) {
                 {subclass.sockets?.map(s =>(
                   <>
                     {s._meta?.categoryDefinition.displayProperties.name === "ABILITIES" && (
-                      <Plug key={`socket-${s.position}`}
+                      <Plug key={`socket-abilities-${s.position}-${renderhook}`}
                         plugType="ability"
                         item={s.equippedPlug}
                         highlights={highlights}
@@ -389,7 +393,7 @@ function V3SubclassCard(props: Props) {
                 {subclass.sockets?.map(s =>(
                   <>
                     {s._meta?.categoryDefinition.displayProperties.name === "ASPECTS" && (
-                      <Plug key={`socket-${s.position}`}
+                      <Plug key={`socket-aspects-${s.position}-${renderhook}`}
                         plugType="aspect"
                         item={s.equippedPlug}
                         highlights={highlights}
@@ -397,7 +401,6 @@ function V3SubclassCard(props: Props) {
                         socketIndex={Number(s.position)}
                         isHighlightable={isHighlightModeOn}
                         onClick={onHighlightableClicked} />
-                      // <img key={`socket-${s.position}`} src={s.equippedPlug?.iconUrl} />
                     )}
                   </>
                 ))}
@@ -411,7 +414,7 @@ function V3SubclassCard(props: Props) {
                 {subclass.sockets?.map(s =>(
                   <>
                     {s._meta?.categoryDefinition.displayProperties.name === "FRAGMENTS" && (
-                      <Plug key={`socket-${s.position}`}
+                      <Plug key={`socket-fragments-${s.position}-${renderhook}`}
                         plugType="fragment"
                         item={s.equippedPlug}
                         highlights={highlights}
