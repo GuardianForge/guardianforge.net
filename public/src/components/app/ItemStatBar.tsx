@@ -10,6 +10,7 @@ const Wrapper = styled.div<Props>`
   background-color: ${colors.theme2.dark3};
   width: 100%;
   border-radius: 5px;
+  height: 24px;
 
   .filled {
     background-color ${colors.theme2.text};

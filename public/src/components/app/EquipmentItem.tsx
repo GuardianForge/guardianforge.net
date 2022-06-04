@@ -48,6 +48,10 @@ const ItemConfigModal = styled(ForgeModal)`
 
   .config-modal-wrapper {
     display: flex;
+
+    @media screen and (max-width: 992px) {
+      flex-direction: column;
+    }
   }
 
   .config-modal-left {
@@ -79,23 +83,13 @@ const ItemConfigModal = styled(ForgeModal)`
   }
 
   .item-stats {
-    display: flex;
-
-    .item-stat {
-      margin-bottom: 5px;
-    }
-
-    .item-stat-value {
-      margin: 0px 5px;
-    }
-
-    .item-stats-right {
-      flex: 1;
-
-      .item-stat {
-        display: flex;
-      }
-    }
+    /* display: flex; */
+    display: grid;
+    grid-template-columns: 1fr auto 2fr;
+    /* grid-template-columns: repeat(3, 1fr); */
+    grid-rows-auto: auto;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
   }
 
   .row-header {
@@ -579,6 +573,33 @@ function EquipmentItem(props: EquipmentItemProps) {
           <div className="config-modal-right">
             <div className="row-header">Stats</div>
             <div className="item-stats">
+              {item?.stats?.keys() && [...item.stats.keys()].map(k => (
+                <>
+                  {k !== "Rounds Per Minute" && k !== "Magazine" && (
+                    <>
+                      <div>{k}: </div>
+                      <div className="item-stat-value">{item?.stats?.get(k)?.value}</div>
+                      <ItemStatBar value={item?.stats?.get(k)?.value} />
+                    </>
+                  )}
+                </>
+              ))}
+              {item?.stats?.get("Magazine") && (
+                <>
+                  <div>Magazine: </div>
+                  <div>{item?.stats?.get("Magazine")?.value}</div>
+                  <div />
+                </>
+              )}
+              {item?.stats?.get("Rounds Per Minute") && (
+                <>
+                  <div>Rounds Per Minute: </div>
+                  <div>{item?.stats?.get("Rounds Per Minute")?.value}</div>
+                  <div />
+                </>
+              )}
+            </div>
+            {/* <div className="item-stats">
               <div className="item-stats-left">
                 {item?.stats?.keys() && [...item.stats.keys()].map(k => (
                   <>
@@ -622,7 +643,7 @@ function EquipmentItem(props: EquipmentItemProps) {
                   </div>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </ItemConfigModal>
