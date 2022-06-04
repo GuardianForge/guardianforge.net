@@ -183,11 +183,9 @@ function V3SubclassCard(props: Props) {
   const [isConfigureSubclassModalShown, setIsConfigureSubclassModalShown] = useState(false)
   const [socketPlugMap, setSocketPlugMap] = useState<Map<number, Item[]>>()
 
-  const [renderhook, setRenderhook] = useState(1)
 
   useEffect(() => {
     if(subclass) {
-      setRenderhook(renderhook + 1)
       console.log(subclass)
       const { InventoryManager } = window.services
       let map = InventoryManager.getSocketPlugMapForItem(subclass)
@@ -355,7 +353,7 @@ function V3SubclassCard(props: Props) {
                   {subclass.sockets?.map(s =>(
                     <>
                       {s._meta?.categoryDefinition.displayProperties.name === "SUPER" && (
-                        <Plug key={`socket-super-${s.position}-${renderhook}`}
+                        <Plug key={`socket-super-${s.position}-${subclass._meta.inventoryItem.itemInstanceId}`}
                           plugType="super"
                           item={s.equippedPlug}
                           highlights={highlights}
@@ -374,7 +372,7 @@ function V3SubclassCard(props: Props) {
                 {subclass.sockets?.map(s =>(
                   <>
                     {s._meta?.categoryDefinition.displayProperties.name === "ABILITIES" && (
-                      <Plug key={`socket-abilities-${s.position}-${renderhook}`}
+                      <Plug key={`socket-abilities-${s.position}-${subclass._meta.inventoryItem.itemInstanceId}`}
                         plugType="ability"
                         item={s.equippedPlug}
                         highlights={highlights}
@@ -393,7 +391,7 @@ function V3SubclassCard(props: Props) {
                 {subclass.sockets?.map(s =>(
                   <>
                     {s._meta?.categoryDefinition.displayProperties.name === "ASPECTS" && (
-                      <Plug key={`socket-aspects-${s.position}-${renderhook}`}
+                      <Plug key={`socket-aspects-${s.position}-${subclass._meta.inventoryItem.itemInstanceId}`}
                         plugType="aspect"
                         item={s.equippedPlug}
                         highlights={highlights}
@@ -414,7 +412,7 @@ function V3SubclassCard(props: Props) {
                 {subclass.sockets?.map(s =>(
                   <>
                     {s._meta?.categoryDefinition.displayProperties.name === "FRAGMENTS" && (
-                      <Plug key={`socket-fragments-${s.position}-${renderhook}`}
+                      <Plug key={`socket-fragments-${s.position}-${subclass._meta.inventoryItem.itemInstanceId}`}
                         plugType="fragment"
                         item={s.equippedPlug}
                         highlights={highlights}
