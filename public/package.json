@@ -21,6 +21,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@guardianforge/destiny-data-utils": "^0.1.6",
+    "@sentry/gatsby": "^7.0.0",
     "@stripe/react-stripe-js": "^1.7.0",
     "@stripe/stripe-js": "^1.22.0",
     "adblock-detect-react": "^1.0.5",

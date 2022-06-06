@@ -13,6 +13,18 @@ module.exports = {
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
     {
+      resolve: "@sentry/gatsby",
+      options: {
+        // TODO: Move this into the build config
+        dsn: "https://fa1e612f65a54e7fa4c2ffaccb804460@o1277769.ingest.sentry.io/6475597", // this is the default
+        tracesSampleRate: 1, // or tracesSampler (see above)
+        browserTracingOptions: {
+          // disable creating spans for XHR requests
+          traceXHR: false,
+        }
+      }
+    },
+    {
       resolve: `gatsby-source-wordpress`,
       options: {
         url: `${config.wpUrl}/graphql`,
