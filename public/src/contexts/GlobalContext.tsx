@@ -6,6 +6,7 @@ import GuardianForgeApiService from '../services/GuardianForgeApiService'
 import gaUtils from "../utils/gaUtils"
 import AlgoliaService from '../services/AlgoliaService'
 import AlertDetail from '../models/AlertDetail'
+import * as Sentry from "@sentry/gatsby"
 
 interface IGlobalContext {
   isInitDone?: boolean
@@ -188,6 +189,9 @@ export const Provider = (props: Props) => {
   }
 
   function dispatchAlert(detail: AlertDetail) {
+    if(detail.isError) {
+      Sentry.captureException(detail)
+    }
     window.dispatchEvent(new CustomEvent("gf_alert", {
       detail
     }))
