@@ -9,7 +9,9 @@ import searchUtils from "../../utils/searchUtils"
 import { GlobalContext } from "../../contexts/GlobalContext"
 import Loading from "../../components/app/Loading"
 import colors from "../../colors"
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faLink } from '@fortawesome/free-solid-svg-icons';
+import copy from "copy-to-clipboard";
+import AlertDetail from '../../models/AlertDetail';
 
 const Wrapper = styled(Container)`
   @media screen and (max-width: 500px) {
@@ -144,7 +146,7 @@ const pageSize = 18
 const maxPageIterationsToDisplay = 2
 
 function Search() {
-  const { isConfigLoaded, setPageTitle } = useContext(GlobalContext)
+  const { isConfigLoaded, setPageTitle, dispatchAlert } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
   const [searchInput, setSearchInput] = useState("")
   const [availableFilters, setAvailableFilters] = useState({})
@@ -156,14 +158,54 @@ function Search() {
 
   useEffect(() => {
     setPageTitle("Find Builds")
-    const _availableFilters = searchUtils.buildAvailableFilters()
-    setAvailableFilters(_availableFilters)
-    setCompState(COMP_STATE.DONE)
+    if(isConfigLoaded) {
+      const _availableFilters = searchUtils.buildAvailableFilters()
+      setAvailableFilters(_availableFilters)
+      setCompState(COMP_STATE.DONE)
+
+      let flattenedFilters = {}
+      Object.keys(_availableFilters).forEach(k => flattenedFilters = {...flattenedFilters, ..._availableFilters[k]})
+
+      let queryString = window.location.search
+      let _searchInput = ""
+      let _filters: any[] = []
+      if(queryString !== "") {
+        queryString = queryString.replace("?", "")
+        let spl1 = queryString.split("&")
+        spl1.forEach(el => {
+          let spl2 = el.split("=")
+          if(spl2[0] === "searchInput") {
+            _searchInput = decodeURIComponent(spl2[1])
+          }
+          if(spl2[0] === "filters") {
+            let filterString = decodeURIComponent(spl2[1])
+            let splitFilters = filterString.split(",")
+            splitFilters.forEach(sf => {
+              if(flattenedFilters[sf]) {
+                _filters.push(flattenedFilters[sf])
+              }
+            })
+          }
+        })
+        if(_searchInput !== "") {
+          setSearchInput(_searchInput)
+        }
+        if(_filters.length > 0) {
+          setFilters(_filters)
+        }
+        if(_searchInput !== "" || _filters.length > 0) {
+          go(_searchInput, _filters)
+        }
+      }
+    }
   }, [isConfigLoaded])
 
-  function buildFilters() {
+  function buildFilters(inFilters?: any) {
+    if(!inFilters) {
+      inFilters = filters
+    }
     let filterMap = {}
-    filters.forEach(el => {
+    inFilters.forEach(el => {
       if(filterMap[el.fieldName]) {
         filterMap[el.fieldName].values.push(el.value)
       } else {
@@ -197,10 +239,34 @@ function Search() {
     return filterString
   }
 
-  async function go() {
+  async function go(inSearchInput: any, inFilters: any) {
     let { AlgoliaService } = window.services
-    let filters = buildFilters()
-    let results = await AlgoliaService.search(searchInput, filters)
+    if(!inSearchInput) {
+      inSearchInput = searchInput
+    }
+    if(!inFilters) {
+      inFilters = filters
+    }
+    let filterString = buildFilters(inFilters)
+    let results = await AlgoliaService.search(inSearchInput, filterString)
+
+    let queryMap: any = {}
+    if(inSearchInput !== "") {
+      queryMap["searchInput"] = encodeURIComponent(inSearchInput)
+    }
+    if(inFilters.length > 0) {
+      queryMap["filters"] = inFilters.map(el => el.id).join(",")
+    }
+
+    if(Object.keys(queryMap).length > 0) {
+      let queryStringArr: string[] = []
+      Object.keys(queryMap).map(k => queryStringArr.push(`${k}=${queryMap[k]}`))
+      let queryString = queryStringArr.join("&")
+      window.history.replaceState(null, '', `${window.location.pathname}?${queryString}`)
+    } else {
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+
     if(results && results.hits !== undefined) {
       let hits = results.hits
       hits.sort((a,b) => {
@@ -266,6 +332,27 @@ function Search() {
     }
   }
 
+  function copyUrl() {
+    let queryMap: any = {}
+    if(searchInput !== "") {
+      queryMap["searchInput"] = encodeURIComponent(searchInput)
+    }
+    if(filters.length > 0) {
+      queryMap["filters"] = filters.map(el => el.id).join(",")
+    }
+
+    let link = `${window.location.origin}/find-builds`
+    if(Object.keys(queryMap).length > 0) {
+      let queryStringArr: string[] = []
+      Object.keys(queryMap).map(k => queryStringArr.push(`${k}=${queryMap[k]}`))
+      let queryString = queryStringArr.join("&")
+      link += `?${queryString}`
+    }
+    copy(link)
+    let a = new AlertDetail("Link copied to clipboard.", "Link Copied")
+    dispatchAlert(a)
+  }
+
   return (
     <Wrapper>
       <Helmet>
@@ -305,6 +392,7 @@ function Search() {
                   </Dropdown.Menu>
                 </Dropdown>
                 <button className="submit-button" onClick={() => go()}>Go</button>
+                <button className="submit-button" style={{marginLeft: "5px"}} onClick={() => copyUrl()}><FontAwesomeIcon icon={faLink} /></button>
               </div>
               </div>
             {filters.length > 0 && (
