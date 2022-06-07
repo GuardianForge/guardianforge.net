@@ -6,6 +6,7 @@ import ItemStatBar from './ItemStatBar'
 import ItemTierBar from './ItemTierBar'
 import ForgeModal from './Modal'
 import styled from 'styled-components'
+import ItemStatDisplay, { ItemStatDisplayModeEnum } from './ItemStatDisplay'
 
 const Wrapper = styled(ForgeModal)`
   .modal-title {
@@ -339,31 +340,31 @@ function ItemConfigModal(props: Props) {
           <div className="config-modal-right">
             <div className="row-header">Stats</div>
             <div className="item-stats">
-              {item?.stats?.keys() && [...item.stats.keys()].map(k => (
-                <>
-                  {k !== "Rounds Per Minute" && k !== "Magazine" && (
-                    <>
-                      <div>{k}: </div>
-                      <div className="item-stat-value">{item?.stats?.get(k)?.value}</div>
-                      <ItemStatBar value={item?.stats?.get(k)?.value} />
-                    </>
-                  )}
-                </>
-              ))}
-              {item?.stats?.get("Magazine") && (
-                <>
-                  <div>Magazine: </div>
-                  <div>{item?.stats?.get("Magazine")?.value}</div>
-                  <div />
-                </>
-              )}
-              {item?.stats?.get("Rounds Per Minute") && (
-                <>
-                  <div>Rounds Per Minute: </div>
-                  <div>{item?.stats?.get("Rounds Per Minute")?.value}</div>
-                  <div />
-                </>
-              )}
+              {item?.stats?.get("Charge Time") && <ItemStatDisplay name="Charge Time" value={item.stats.get("Charge Time").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Rounds Per Minute") && <ItemStatDisplay name="RPM" value={item.stats.get("Rounds Per Minute").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Blast Radius") && <ItemStatDisplay name="Blast Radius" value={item.stats.get("Blast Radius").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Velocity") && <ItemStatDisplay name="Velocity" value={item.stats.get("Velocity").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Impact") && <ItemStatDisplay name="Impact" value={item.stats.get("Impact").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Guard Efficiency") && <ItemStatDisplay name="Guard Efficiency" value={item.stats.get("Guard Efficiency").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Guard Resistance") && <ItemStatDisplay name="Guard Resistance" value={item.stats.get("Guard Resistance").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Charge Rate") && <ItemStatDisplay name="Charge Rate" value={item.stats.get("Charge Rate").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Guard Endurance") && <ItemStatDisplay name="Guard Endurance" value={item.stats.get("Guard Endurance").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Ammo Capacity") && <ItemStatDisplay name="Ammo Capacity" value={item.stats.get("Ammo Capacity").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Range") && <ItemStatDisplay name="Range" value={item.stats.get("Range").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Stability") && <ItemStatDisplay name="Stability" value={item.stats.get("Stability").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Handling") && <ItemStatDisplay name="Handling" value={item.stats.get("Handling").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Reload Speed") && <ItemStatDisplay name="Reload Speed" value={item.stats.get("Reload Speed").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Aim Assist") && <ItemStatDisplay name="Aim Assist" value={item.stats.get("Aim Assist").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Zoom") && <ItemStatDisplay name="Zoom" value={item.stats.get("Zoom").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {/* {item?.stats?.get("Recoil Direction") && <ItemStatDisplay name="Recoil Direction" value={item.stats.get("Recoil Direction").value} displayMode={ItemStatDisplayModeEnum.None} />} */}
+              {item?.stats?.get("Magazine") && <ItemStatDisplay name="Magazine" value={item.stats.get("Magazine").value} displayMode={ItemStatDisplayModeEnum.None} />}
+
+              {item?.stats?.get("Mobility") && <ItemStatDisplay name="Mobility" value={item.stats.get("Mobility").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Resilience") && <ItemStatDisplay name="Resilience" value={item.stats.get("Resilience").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Recovery") && <ItemStatDisplay name="Recovery" value={item.stats.get("Recovery").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Discipline") && <ItemStatDisplay name="Discipline" value={item.stats.get("Discipline").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Intellect") && <ItemStatDisplay name="Intellect" value={item.stats.get("Intellect").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Strength") && <ItemStatDisplay name="Strength" value={item.stats.get("Strength").value} displayMode={ItemStatDisplayModeEnum.None} />}
             </div>
           </div>
         </div>
