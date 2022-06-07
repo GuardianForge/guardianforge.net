@@ -92,12 +92,6 @@ const IndexPage = () => {
         </div>
       </div>
 
-      <div>
-        <Alert>
-          A new GuardianForge is coming! Read more about it <Link to="/blog/a-new-guardianforge-is-coming">here</Link>.
-        </Alert>
-      </div>
-
       <Row className="py-5 my-5 align-items-center">
         <Col className="" md="4">
           <img className="img-fluid home-gif" src="/img/gifs/find-builds.gif" />
