@@ -4,5 +4,6 @@
   "analyticsId": "G-M45L21ZX4Q",
   "wpUrl": "",
   "wpUsername": "",
-  "wpPass": ""
+  "wpPass": "",
+  "sentryEnvironment": "qa"
 }

@@ -17,6 +17,7 @@ module.exports = {
       options: {
         // TODO: Move this into the build config
         dsn: "https://fa1e612f65a54e7fa4c2ffaccb804460@o1277769.ingest.sentry.io/6475597", // this is the default
+        environment: config.sentryEnvironment,
         tracesSampleRate: 1, // or tracesSampler (see above)
         browserTracingOptions: {
           // disable creating spans for XHR requests
