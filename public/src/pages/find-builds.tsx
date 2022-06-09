@@ -336,7 +336,7 @@ function Search() {
       queryMap["filters"] = filters.map(el => el.id).join(",")
     }
 
-    let link = `${window.location.origin}/find-builds`
+    let link = `${window.location.origin}/find-builds/`
     if(Object.keys(queryMap).length > 0) {
       let queryStringArr: string[] = []
       Object.keys(queryMap).map(k => queryStringArr.push(`${k}=${queryMap[k]}`))
