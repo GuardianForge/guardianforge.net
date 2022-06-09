@@ -254,6 +254,8 @@ func (b *Build) ToAlgoliaRecord(buildId string, dbRecord dbModels.Build) Algolia
 	subclassInt, err := strconv.Atoi(splitSubclass[0])
 	if err != nil {
 		algoliaBuild.Subclass = subclassInt
+	} else {
+		log.Println("(ToAlgoliaBuildRecord) failed to parse subclass:", err)
 	}
 
 	algoliaBuild.PlayerDetails += b.SelectedUser.BungieNetUserId + "|"
