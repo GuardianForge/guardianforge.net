@@ -230,12 +230,6 @@ function Guardian() {
 
                 <BuildAd />
               </Col>
-  {/*
-              <Col md="4">
-                <Card title="User Info">
-                  User info here
-                </Card>
-              </Col> */}
             </Row>
           </Container>
         )}

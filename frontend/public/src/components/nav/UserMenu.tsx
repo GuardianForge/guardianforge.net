@@ -4,6 +4,7 @@ import { GlobalContext } from '../../contexts/GlobalContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styled from 'styled-components'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+import { Dropdown, NavDropdown } from 'react-bootstrap'
 
 const Wrapper = styled.div`
   display: flex;
@@ -36,7 +37,9 @@ function UserMenu() {
         setLoginUrl(ForgeClient.config.loginUrl)
       }
 
-      if(ForgeClient.isLoggedIn()) {
+      console.log(ForgeClient.userData)
+
+      if(ForgeClient.isLoggedIn() && ForgeClient.userData) {
         setUserData(ForgeClient.userData)
         setIsLoggedIn(true)
 
@@ -56,7 +59,6 @@ function UserMenu() {
         setLoginUrl(ForgeClient.config.loginUrl)
       }
 
-
       if(ForgeClient.isLoggedIn()) {
         setUserData(ForgeClient.userData)
         setIsLoggedIn(true)
@@ -74,42 +76,42 @@ function UserMenu() {
     <Wrapper className="d-flex">
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         {isLoggedIn ? (
-          <li className="nav-item dropdown">
-            <a className="nav-link dropdown-toggle user-badge" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <Dropdown align="end">
+            <Dropdown.Toggle className="dropdown-toggle user-badge">
               {userData && userData.bungieNetUser && (
                 <>
-                  <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} />
+                  <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} alt="User Profile Img" />
                   <span>{ userData.bungieNetUser.displayName }</span>
                 </>
               )}
-            </a>
-            <ul className="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-              <li>
-                <Link className="dropdown-item" to="/me">Profile</Link>
-              </li>
-              <li>
-                <Link className="dropdown-item" to="/me/guardians">My Guardians</Link>
-              </li>
-              <li>
-                <Link className="dropdown-item" to="/me/builds">My Builds</Link>
-              </li>
-              <li>
-                <Link className="dropdown-item" to="/me/bookmarks">Bookmarked Builds</Link>
-              </li>
-              <li>
-                <Link className="dropdown-item" to="/me/private-builds">Private Builds</Link>
-              </li>
-              <li>
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item>
+                <Link className="dropdown-item" to="/app/me">Profile</Link>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <Link className="dropdown-item" to="/app">My Guardians</Link>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <Link className="dropdown-item" to="/app/my-builds">My Builds</Link>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <Link className="dropdown-item" to="/app/bookmarks">Bookmarked Builds</Link>
+              </Dropdown.Item>
+              <Dropdown.Item>
                 <a className="dropdown-item" href="#" onClick={logout}>Log Out</a>
-              </li>
-              {isAdmin && <hr />}
+              </Dropdown.Item>
               {isAdmin && (
-                <li>
-                  <Link className="dropdown-item" to="/admin/admin-tools">Admin</Link>
-                </li>
+                <>
+                  <hr />
+                  <Dropdown.Item>
+                    <Link className="dropdown-item" to="/admin/admin-tools">Admin</Link>
+                  </Dropdown.Item>
+                </>
               )}
-            </ul>
-          </li>
+            </Dropdown.Menu>
+          </Dropdown>
         ) : (
           <li className="nav-item">
             <a className="nav-link" href={loginUrl}>
