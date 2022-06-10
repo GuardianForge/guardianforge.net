@@ -7,6 +7,7 @@ import ForgeModal from './Modal'
 import ForgeButton from './forms/Button'
 import colors from '../colors'
 import { Button } from 'react-bootstrap'
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
 const Wrapper = styled.div`
   color: #eee;
@@ -115,10 +116,10 @@ function ActivitySelector(props: Props) {
     <Wrapper id="activitySelector" className={className}>
       <ForgeButton className="activity-select-activator" onClick={showOptions}>
         <Selection>
-          {value.iconUrl && <img className="activity-icon" src={value.iconUrl} />}
+          {value.iconUrl && <img className="activity-icon" src={value.iconUrl} alt="Activity Icon" />}
           <span>{ value.display }</span>
         </Selection>
-        <span><FontAwesomeIcon icon="caret-down" /></span>
+        <span><FontAwesomeIcon icon={faCaretDown} /></span>
       </ForgeButton>
       <ForgeModal
         scrollable

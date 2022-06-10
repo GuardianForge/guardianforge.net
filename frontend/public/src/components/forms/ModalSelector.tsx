@@ -6,6 +6,7 @@ import ForgeButton from '../forms/Button'
 import colors from '../../colors'
 import { Button } from 'react-bootstrap'
 import ModalSelectorOption from '../../models/ModalSelectorOption'
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
 const Wrapper = styled.div`
   color: #eee;
@@ -114,10 +115,10 @@ function ModalSelector(props: Props) {
       {children ? (children) : (
         <ForgeButton className="activity-select-activator" onClick={showOptions}>
           <Selection>
-            {value.iconUrl && <img className="activity-icon" src={value.iconUrl} />}
+            {value.iconUrl && <img className="activity-icon" src={value.iconUrl} alt="Option Icon" />}
             <span>{ value.display }</span>
           </Selection>
-          <span><FontAwesomeIcon icon="caret-down" /></span>
+          <span><FontAwesomeIcon icon={faCaretDown} /></span>
         </ForgeButton>
       )}
       <ForgeModal

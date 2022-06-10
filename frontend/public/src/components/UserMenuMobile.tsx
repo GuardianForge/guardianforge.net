@@ -8,6 +8,7 @@ import colors from "../colors"
 import ForgeButton from './forms/Button'
 import ForgeModal from './Modal'
 import { Button } from 'react-bootstrap'
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 
 const Wrapper = styled.div`
   display: flex;
@@ -169,7 +170,7 @@ function UserMenuMobile(props: Props) {
         ) : (
           <li className="nav-item">
             <a className="nav-link" href={loginUrl}>
-              <FontAwesomeIcon icon="sign-in-alt" /> Login w/Bungie
+              <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
             </a>
           </li>
         )}

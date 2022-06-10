@@ -72,7 +72,7 @@ function UserMenu() {
         setLoginUrl(ForgeClient.config.loginUrl)
       }
 
-      if(ForgeClient.isLoggedIn()) {
+      if(ForgeClient.isLoggedIn() && ForgeClient.userData) {
         setUserData(ForgeClient.userData)
         setIsLoggedIn(true)
 

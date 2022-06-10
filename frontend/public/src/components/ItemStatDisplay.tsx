@@ -18,12 +18,12 @@ function ItemStatDisplay(props: ItemStatDisplayProps) {
   return (
     <>
       <div>{name}: </div>
-      <div>{value}{displayMode == ItemStatDisplayModeEnum.Ms && "ms"}</div>
-      {displayMode == ItemStatDisplayModeEnum.Bar && (
-        <ItemStatBar value={Number(value)} />
+      <div>{value}{displayMode === ItemStatDisplayModeEnum.Ms && "ms"}</div>
+      {displayMode === ItemStatDisplayModeEnum.Bar && (
+        <ItemStatBar value={value as number} />
       )}
-      {displayMode == ItemStatDisplayModeEnum.Ms && <div />}
-      {displayMode == ItemStatDisplayModeEnum.None && <div />}
+      {displayMode === ItemStatDisplayModeEnum.Ms && <div />}
+      {displayMode === ItemStatDisplayModeEnum.None && <div />}
     </>
   )
 }

@@ -7,6 +7,7 @@ import colors from '../colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ItemTierData } from '@guardianforge/destiny-data-utils/dist/models/Item'
 import Highlightable from './Highlightable'
+import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 
 const Wrapper = styled(Card)`
   .card-content {
@@ -172,10 +173,10 @@ function ItemCard(props: Props) {
               isHighlightable={isHighlightable}
               highlightClass="item-icon"
               onClick={onHighlightableClicked}>
-                <img src={item.ornamentIconUrl ? item.ornamentIconUrl : item.iconUrl} className="item-icon" />
+                <img src={item.ornamentIconUrl ? item.ornamentIconUrl : item.iconUrl} className="item-icon" alt="Item Icon" />
             </Highlightable>
 
-            {item.affinityIcon && (<img src={item.affinityIcon} className="affinity-icon" />)}
+            {item.affinityIcon && (<img src={item.affinityIcon} className="affinity-icon" alt="Affinity Icon" />)}
 
           </div>
 
@@ -188,8 +189,8 @@ function ItemCard(props: Props) {
 
           {configurable && (
             <div className="item-buttons">
-              <FontAwesomeIcon onClick={() => onConfigureItemClicked ? onConfigureItemClicked() : null} icon="cog"/>
-              <FontAwesomeIcon onClick={() => onSwapItemClicked ? onSwapItemClicked() : null} icon="exchange-alt"/>
+              <FontAwesomeIcon onClick={() => onConfigureItemClicked ? onConfigureItemClicked() : null} icon={faCog} />
+              <FontAwesomeIcon onClick={() => onSwapItemClicked ? onSwapItemClicked() : null} icon={faExchangeAlt} />
             </div>
           )}
         </div>

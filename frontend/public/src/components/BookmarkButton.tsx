@@ -78,7 +78,7 @@ function BookmarkButton(props: Props) {
       {isLoggedIn ? (
         <Button type="button" className="btn" onClick={bookmarkBuild} isBookmarked={isBookmarked}>
           <FontAwesomeIcon icon={isBookmarked ? fasBookmark : farBookmark}/>
-          <span className="d-none d-sm-inline">{isBookmarked ? "Remove from Bookmarks" : "Add to Bookmarks"}</span>
+          <span className="d-none d-md-inline">{isBookmarked ? "Remove from Bookmarks" : "Add to Bookmarks"}</span>
         </Button>
       ) : (
           <OverlayTrigger
@@ -90,7 +90,7 @@ function BookmarkButton(props: Props) {
                 className="btn"
                 disabled>
                 <FontAwesomeIcon icon={farBookmark} />
-                <span className="d-none d-sm-inline">Add to Bookmarks</span>
+                <span className="d-none d-md-inline">Add to Bookmarks</span>
               </button>
             </div>
           </OverlayTrigger>
