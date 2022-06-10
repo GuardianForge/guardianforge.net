@@ -359,12 +359,12 @@ function ItemConfigModal(props: Props) {
               {/* {item?.stats?.get("Recoil Direction") && <ItemStatDisplay name="Recoil Direction" value={item.stats.get("Recoil Direction").value} displayMode={ItemStatDisplayModeEnum.None} />} */}
               {item?.stats?.get("Magazine") && <ItemStatDisplay name="Magazine" value={item.stats.get("Magazine").value} displayMode={ItemStatDisplayModeEnum.None} />}
 
-              {item?.stats?.get("Mobility") && <ItemStatDisplay name="Mobility" value={item.stats.get("Mobility").value} displayMode={ItemStatDisplayModeEnum.None} />}
-              {item?.stats?.get("Resilience") && <ItemStatDisplay name="Resilience" value={item.stats.get("Resilience").value} displayMode={ItemStatDisplayModeEnum.None} />}
-              {item?.stats?.get("Recovery") && <ItemStatDisplay name="Recovery" value={item.stats.get("Recovery").value} displayMode={ItemStatDisplayModeEnum.None} />}
-              {item?.stats?.get("Discipline") && <ItemStatDisplay name="Discipline" value={item.stats.get("Discipline").value} displayMode={ItemStatDisplayModeEnum.None} />}
-              {item?.stats?.get("Intellect") && <ItemStatDisplay name="Intellect" value={item.stats.get("Intellect").value} displayMode={ItemStatDisplayModeEnum.None} />}
-              {item?.stats?.get("Strength") && <ItemStatDisplay name="Strength" value={item.stats.get("Strength").value} displayMode={ItemStatDisplayModeEnum.None} />}
+              {item?.stats?.get("Mobility") && <ItemStatDisplay name="Mobility" value={item.stats.get("Mobility").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Resilience") && <ItemStatDisplay name="Resilience" value={item.stats.get("Resilience").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Recovery") && <ItemStatDisplay name="Recovery" value={item.stats.get("Recovery").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Discipline") && <ItemStatDisplay name="Discipline" value={item.stats.get("Discipline").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Intellect") && <ItemStatDisplay name="Intellect" value={item.stats.get("Intellect").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
+              {item?.stats?.get("Strength") && <ItemStatDisplay name="Strength" value={item.stats.get("Strength").value} displayMode={ItemStatDisplayModeEnum.Bar} />}
             </div>
           </div>
         </div>
