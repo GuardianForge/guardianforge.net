@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/brian/Documents/Repos/guardianforge/guardianforge.net'
+make: Leaving directory `/Users/brian/Documents/Repos/guardianforge/guardianforge.net'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
