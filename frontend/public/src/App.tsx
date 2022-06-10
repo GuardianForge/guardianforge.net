@@ -1,8 +1,7 @@
 import ForgeRouter from './Router';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { createGlobalStyle } from "styled-components"
-import { create } from 'domain';
-import { GlobalContext, Provider } from './contexts/GlobalContext';
+import { Provider } from './contexts/GlobalContext';
 
 const GlobalStyle = createGlobalStyle`
   * {
