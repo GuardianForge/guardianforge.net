@@ -1,4 +1,5 @@
 import algoliasearch, { SearchIndex } from 'algoliasearch/lite';
+import { AppConfig } from '../models/AppConfig';
 
 export default class AlgoliaService {
   index: SearchIndex

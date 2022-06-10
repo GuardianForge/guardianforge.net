@@ -1,4 +1,5 @@
 import { BungieApiService } from "@guardianforge/destiny-data-utils"
+import { AppConfig } from "../models/AppConfig"
 import userUtils from "../utils/userUtils"
 import GuardianForgeApiService from "./GuardianForgeApiService"
 
