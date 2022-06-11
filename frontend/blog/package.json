@@ -42,6 +42,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-helmet": "^5.2.1",
+    "shared": "file:../shared",
     "typeface-merriweather": "1.1.13",
     "typeface-montserrat": "1.1.13"
   },
