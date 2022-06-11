@@ -9,7 +9,7 @@ import searchUtils from "../../utils/searchUtils"
 import { GlobalContext } from "../../contexts/GlobalContext"
 import Loading from "../../components/Loading"
 import colors from "../../colors"
-import { faCaretLeft, faCaretRight, faEllipsisH, faLink, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faCaretLeft, faCaretRight, faEllipsisH, faLink, faPlus, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import copy from "copy-to-clipboard";
 import AlertDetail from '../../models/AlertDetail';
 import AppLayout from '../../layouts/AppLayout';
@@ -405,7 +405,7 @@ function Search() {
                       style={{ backgroundColor: f.color ? f.color : "" }}>
                       {f.iconPath && <img src={f.iconPath} alt="Filter icon" />}
                       {f.friendlyName}: {f.displayValue}
-                      <FontAwesomeIcon icon="times"
+                      <FontAwesomeIcon icon={faTimes}
                         style={{ cursor: "pointer" }}
                         onClick={() => removeFilter(f.id)} />
                     </span>

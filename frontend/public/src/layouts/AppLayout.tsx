@@ -9,7 +9,6 @@ import UserMenu from '../components/UserMenu'
 import { Offcanvas } from 'react-bootstrap'
 // @ts-ignore
 import SiteLogo from "../images/site-logo.png"
-import UserMenuMobile from '../components/UserMenuMobile'
 import AlertLayer from '../components/alerting/AlertLayer'
 import { Toggles } from '../toggles'
 import FeatureToggleWrapper from '../components/FeatureToggle'
@@ -516,7 +515,7 @@ function AppLayout(props: Props) {
         <Offcanvas.Body>
           <div className="nav-main">
             <div className="nav-section">
-              <UserMenuMobile onMenuItemClicked={() => setIsMenuOpen(false)} />
+              <UserMenu isMobile onMenuItemClicked={() => setIsMenuOpen(false)} />
               <ul>
                 {navItems.map((ni: any, idx: any) => (
                   <li key={`nav-item-${idx}`}>

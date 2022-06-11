@@ -1,20 +1,86 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { GlobalContext } from '../contexts/GlobalContext'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styled from 'styled-components'
 import User from '../models/User'
 import colors from "../colors"
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+import { Button, Dropdown } from 'react-bootstrap'
+import ForgeModal from './Modal'
+import ForgeButton from './forms/Button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   margin-right: 10px;
-  /* background-color: ${colors.theme2.dark2}; */
   border-radius: 5px;
-  padding: 0px 10px;
   transition: background-color .15s;
+
+  &:hover {
+    background-color: ${colors.theme2.dark2}
+  }
+
+  /* This is when the menu is clicked */
+  .show>.btn-primary.dropdown-toggle {
+    background-color: ${colors.theme2.dark2};
+  }
+
+  .dropdown-toggle {
+    color: ${colors.theme2.text} !important;
+    background-color: rgba(0,0,0,0);
+    border: none !important;
+
+    &:hover {
+      color: ${colors.theme2.text} !important;
+      cursor: pointer;
+    }
+
+    &:active {
+      color: ${colors.theme2.text} !important;
+    }
+  }
+
+  .dropdown-menu {
+    background-color: ${colors.theme2.dark2};
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
+  }
+
+  img {
+    max-width: 20px;
+    margin-right: 5px;
+    border-radius: 5px;
+  }
+
+  span {
+    font-weight: 1.5rem;
+  }
+
+  .dropdown-item {
+    color: ${colors.theme2.text};
+
+    &:hover {
+      background-color: ${colors.theme2.dark3};
+    }
+  }
+`
+
+const MobileWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  background-color: ${colors.theme2.dark2};
+  border-radius: 5px;
+  margin-left: 5px;
+  transition: background-color .15s;
+  margin-bottom: 10px;
+
+  ul, a {
+    margin-bottom: 0px !important;
+  }
+
+  .nav-link {
+    margin-bottom: 0px;
+  }
 
   &:hover {
     background-color: ${colors.theme2.dark2}
@@ -34,7 +100,7 @@ const Wrapper = styled.div`
   }
 
   .display-name {
-    /* color: ${colors.theme2.icon} !important; */
+    color: ${colors.theme2.text} !important;
   }
 
   .dropdown-toggle::after {
@@ -48,7 +114,8 @@ const Wrapper = styled.div`
 
   img {
     max-width: 20px;
-    margin-right: 5px;
+    margin-left: 10px;
+    margin-right: 15px;
     border-radius: 5px;
   }
 
@@ -57,25 +124,45 @@ const Wrapper = styled.div`
   }
 `
 
-function UserMenu() {
+const SelectItemButton = styled(Button)`
+  width: 100%;
+  background-color: ${colors.theme2.dark2} !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: start;
+  margin-bottom: 10px;
+
+  &:hover {
+    background-color: ${colors.theme2.dark3} !important;
+  }
+
+  img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+`
+
+type Props = {
+  isMobile?: boolean
+  onMenuItemClicked?: Function
+}
+
+function UserMenu(props: Props) {
+  const { isMobile, onMenuItemClicked } = props
+  const navigate = useNavigate()
   const { isClientLoaded, didOAuthComplete } = useContext(GlobalContext)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [loginUrl, setLoginUrl] = useState("")
   const [userData, setUserData] = useState<User>({})
   const [isAdmin, setIsAdmin] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
   useEffect(() => {
     if(!isClientLoaded) return
     function init() {
       let { ForgeClient } = window.services
-      if(ForgeClient.config && ForgeClient.config.loginUrl) {
-        setLoginUrl(ForgeClient.config.loginUrl)
-      }
-
       if(ForgeClient.isLoggedIn() && ForgeClient.userData) {
         setUserData(ForgeClient.userData)
-        setIsLoggedIn(true)
-
         if(ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser.membershipId === "14214042") {
           setIsAdmin(true)
         }
@@ -88,29 +175,31 @@ function UserMenu() {
     if(!didOAuthComplete || !isClientLoaded) return
     function init() {
       let { ForgeClient } = window.services
-      if(ForgeClient.config && ForgeClient.config.loginUrl) {
-        setLoginUrl(ForgeClient.config.loginUrl)
-      }
-
       if(ForgeClient.isLoggedIn()) {
         setUserData(ForgeClient.userData)
-        setIsLoggedIn(true)
       }
     }
     init()
   }, [didOAuthComplete, isClientLoaded])
+
+  function navigateTo(to: string) {
+    navigate(to)
+    setIsUserMenuOpen(false)
+
+    if(onMenuItemClicked) onMenuItemClicked()
+  }
 
   function logout() {
     const { ForgeClient } = window.services
     ForgeClient.logout()
   }
 
-  return (
-    <Wrapper className="d-flex">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-        {isLoggedIn ? (
+  if(isMobile) {
+    return (
+      <MobileWrapper className="d-flex">
+        <ul className="navbar-nav me-auto mb-2 mb-lg-0" style={{width: "100%"}}>
           <li className="nav-item dropdown">
-            <a className="nav-link dropdown-toggle user-badge" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a className="nav-link user-badge" href="#" onClick={() => setIsUserMenuOpen(true)}>
               {userData.bungieNetUser && userData.bungieNetUser.profilePicturePath && (
                 <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} />
               )}
@@ -118,36 +207,71 @@ function UserMenu() {
                 <span className="display-name">{ userData.bungieNetUser.displayName }</span>
               )}
             </a>
-            <ul className="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-              {userData && userData.bungieNetUser && (
-                <li>
-                  <Link className="dropdown-item" to={`/app/u/${userData.bungieNetUser.uniqueName}`}>My Profile</Link>
-                </li>
-              )}
-              <li>
-                <Link className="dropdown-item" to="/app/edit-profile">Edit Profile</Link>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#" onClick={logout}>Log Out</a>
-              </li>
-              {isAdmin && <hr />}
-              {isAdmin && (
-                <li>
+          </li>
+        </ul>
+
+        <ForgeModal
+          show={isUserMenuOpen}
+          title="User Menu"
+          footer={<ForgeButton onClick={() => setIsUserMenuOpen(false)}>Close</ForgeButton>}>
+          {userData && userData.bungieNetUser && (
+            <SelectItemButton className="class-option" onClick={() => navigateTo(`/app/u/${userData?.bungieNetUser?.uniqueName}`)}>
+              My Profile
+            </SelectItemButton>
+          )}
+          <SelectItemButton className="class-option" onClick={() => navigateTo("/app/edit-profile")}>
+            Edit Profile
+          </SelectItemButton>
+          <SelectItemButton className="class-option" onClick={logout}>
+            Log Out
+          </SelectItemButton>
+          {isAdmin && <hr />}
+          {isAdmin && (
+            <SelectItemButton className="class-option" onClick={() => navigateTo("/app/admin/admin-tools")}>
+              Admin
+            </SelectItemButton>
+          )}
+        </ForgeModal>
+      </MobileWrapper>
+    )
+  } else {
+    return (
+      <Wrapper className="d-flex">
+        <Dropdown align="end">
+          <Dropdown.Toggle className="user-badge">
+            {userData && userData.bungieNetUser && (
+              <>
+                <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} alt="User Profile Img" />
+                <span>{ userData.bungieNetUser.displayName }</span>
+              </>
+            )}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {userData && userData.bungieNetUser && (
+              <Dropdown.Item>
+                <a className="dropdown-item" onClick={() => navigateTo(`/app/u/${userData?.bungieNetUser?.uniqueName}`)}>My Profile</a>
+              </Dropdown.Item>
+            )}
+            <Dropdown.Item>
+              <Link className="dropdown-item" to="/app/edit-profile">Edit Profile</Link>
+            </Dropdown.Item>
+            <Dropdown.Item>
+              <a className="dropdown-item" href="#" onClick={logout}>Log Out</a>
+            </Dropdown.Item>
+            {isAdmin && (
+              <>
+                <hr />
+                <Dropdown.Item>
                   <Link className="dropdown-item" to="/app/admin/admin-tools">Admin</Link>
-                </li>
-              )}
-            </ul>
-          </li>
-        ) : (
-          <li className="nav-item">
-            <a className="nav-link" href={loginUrl}>
-              <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
-            </a>
-          </li>
-        )}
-      </ul>
-    </Wrapper>
-  )
+                </Dropdown.Item>
+              </>
+            )}
+          </Dropdown.Menu>
+        </Dropdown>
+      </Wrapper>
+    )
+  }
+
 }
 
 export default UserMenu

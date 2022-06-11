@@ -15,6 +15,8 @@ import GuardianProfile from './views/app/GuardianProfile'
 import AppBuild from './views/app/Build'
 import MyBuilds from './views/app/MyBuilds'
 import CreateBuild from './views/app/CreateBuild'
+import EditProfile from './views/app/EditProfile'
+import AdminTools from './views/app/admin/AdminTools'
 
 function ForgeRouter() {
   return (
@@ -36,6 +38,8 @@ function ForgeRouter() {
         <Route path="/app/u/:username" element={<UserProfile />} />
         <Route path="/app/g/:guardianKey" element={<GuardianProfile />} />
         <Route path="/app/build/:buildId" element={<AppBuild />} />
+        <Route path="/app/edit-profile" element={<EditProfile />} />
+        <Route path="/app/admin/admin-tools" element={<AdminTools />} />
       </Routes>
     </BrowserRouter>
   )

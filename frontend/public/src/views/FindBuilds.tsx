@@ -7,7 +7,7 @@ import BuildSummaryCard from '../components/BuildSummaryCard'
 import searchUtils from "../utils/searchUtils"
 import { GlobalContext } from "../contexts/GlobalContext"
 import Loading from "../components/Loading"
-import { faCaretLeft, faCaretRight, faEllipsisH, faLink, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faCaretLeft, faCaretRight, faEllipsisH, faLink, faPlus, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import copy from "copy-to-clipboard";
 import AlertDetail from '../models/AlertDetail';
 import MainLayout from '../layouts/MainLayout';
