@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 
-import Bio from "../components/bio"
+import Bio from "../components/Bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 
