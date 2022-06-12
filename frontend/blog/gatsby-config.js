@@ -1,6 +1,7 @@
 const config = require("./build.config.js")
 
 module.exports = {
+  pathPrefix: "/blog",
   plugins: [
     {
       resolve: `gatsby-source-wordpress`,
@@ -44,5 +45,6 @@ module.exports = {
     },
 
     `gatsby-plugin-react-helmet`,
+    "gatsby-plugin-styled-components",
   ],
 }

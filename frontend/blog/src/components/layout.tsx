@@ -1,9 +1,25 @@
-import React from "react"
+import React, { ReactNode } from "react"
 import { Link, useStaticQuery, graphql } from "gatsby"
-import parse from "html-react-parser"
-import { BaseLayout } from "shared"
+import { BaseLayout, colors, ForgeNav } from "shared"
+import { Badge, Container, Nav } from 'react-bootstrap'
+import SiteLogo from '../images/site-logo.png'
+import { createGlobalStyle } from 'styled-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 
-const Layout = ({ isHomePage, children }) => {
+const GlobalStyle = createGlobalStyle`
+  #forge-nav {
+    margin-bottom: 20px;
+  }
+`
+
+type Props = {
+  children: ReactNode
+  className?: string
+}
+
+const Layout = (props: Props) => {
+  const { className, children } = props
   const {
     wp: {
       generalSettings: { title },
@@ -20,30 +36,19 @@ const Layout = ({ isHomePage, children }) => {
   `)
 
   return (
-    <BaseLayout>
-      <div className="global-wrapper" data-is-root-path={isHomePage}>
-        <header className="global-header">
-          {isHomePage ? (
-            <h1 className="main-heading">
-              <Link to="/">{parse(title)}</Link>
-            </h1>
-          ) : (
-            <Link className="header-link-home" to="/">
-              {title}
-            </Link>
-          )}
-        </header>
-
+    <BaseLayout className={className}>
+      <GlobalStyle />
+      <ForgeNav branding={
+        <Link className="navbar-brand" to="/">
+          <img src={SiteLogo} alt="GuardianForge Logo" height="40" width="40" /> GuardianForge <Badge bg="white" style={{color: colors.theme2.dark2}}>Blog</Badge>
+        </Link>}>
+        <Nav.Link href="/">
+          <FontAwesomeIcon icon={faArrowLeft} /> Back Home
+        </Nav.Link>
+      </ForgeNav>
+      <Container style={{maxWidth: "800px"}}>
         <main>{children}</main>
-
-        <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.com">Gatsby</a>
-          {` `}
-          And <a href="https://wordpress.org/">WordPress</a>
-        </footer>
-      </div>
+      </Container>
     </BaseLayout>
   )
 }

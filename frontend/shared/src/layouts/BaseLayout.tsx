@@ -42,13 +42,14 @@ const Wrapper = styled.div`
 
 export interface Props {
   children: ReactNode
+  className?: string
 }
 
 const BaseLayout: React.FunctionComponent<Props> = props => {
-  const { children } = props
+  const { children, className } = props
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <GlobalStyle />
       { children }
     </Wrapper>
