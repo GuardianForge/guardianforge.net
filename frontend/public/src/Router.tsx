@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import Build from './views/Build'
 import FindBuilds from './views/FindBuilds'
 import FindPlayers from './views/FindPlayers'
@@ -40,6 +40,8 @@ function ForgeRouter() {
         <Route path="/app/build/:buildId" element={<AppBuild />} />
         <Route path="/app/edit-profile" element={<EditProfile />} />
         <Route path="/app/admin/admin-tools" element={<AdminTools />} />
+
+        <Route path="/blog" element={<Navigate to="/blog/index.html" />} />
       </Routes>
     </BrowserRouter>
   )
