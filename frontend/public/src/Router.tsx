@@ -17,6 +17,16 @@ import MyBuilds from './views/app/MyBuilds'
 import CreateBuild from './views/app/CreateBuild'
 import EditProfile from './views/app/EditProfile'
 import AdminTools from './views/app/admin/AdminTools'
+import NotFound from './views/NotFound'
+
+type Props = {
+  to: string
+}
+
+function Redirect(props: Props) {
+  window.location.replace(props.to)
+  return null
+}
 
 function ForgeRouter() {
   return (
@@ -41,7 +51,11 @@ function ForgeRouter() {
         <Route path="/app/edit-profile" element={<EditProfile />} />
         <Route path="/app/admin/admin-tools" element={<AdminTools />} />
 
-        <Route path="/blog" element={<Navigate to="/blog/index.html" />} />
+        {/* Redirects */}
+        <Route path="/blog" element={<Redirect to="/blog/index.html" />} />
+
+        {/* 404s */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )
