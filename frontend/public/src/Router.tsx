@@ -18,6 +18,7 @@ import CreateBuild from './views/app/CreateBuild'
 import EditProfile from './views/app/EditProfile'
 import AdminTools from './views/app/admin/AdminTools'
 import NotFound from './views/NotFound'
+import About from './views/About'
 
 type Props = {
   to: string
@@ -33,6 +34,7 @@ function ForgeRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/find-builds" element={<FindBuilds />} />
         <Route path="/find-players" element={<FindPlayers />} />
         <Route path="/oauth" element={<OAuthHandler />} />
@@ -53,6 +55,7 @@ function ForgeRouter() {
 
         {/* Redirects */}
         <Route path="/blog" element={<Redirect to="/blog/index.html" />} />
+        <Route path="/docs" element={<Redirect to="/docs/index.html" />} />
 
         {/* 404s */}
         <Route path="*" element={<NotFound />} />
