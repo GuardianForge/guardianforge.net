@@ -105,7 +105,6 @@ Resources:
               OriginAccessIdentity: ''
           - Id: !Join ["-", ["S3-GuardianForge-Blog", !Ref EnvironmentParam]]
             DomainName: !GetAtt SiteBucket.RegionalDomainName
-            OriginPath: "/blog"
             S3OriginConfig:
               OriginAccessIdentity: ''
           - Id: !Join ["-", ["API-GuardianForge", !Ref EnvironmentParam]]
