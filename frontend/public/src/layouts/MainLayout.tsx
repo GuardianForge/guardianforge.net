@@ -2,12 +2,13 @@ import React, { useEffect, useState, useContext, ReactNode } from 'react'
 import styled from 'styled-components'
 
 import MainNav from '../components/nav/MainNav'
-import Footer from '../components/Footer'
+import { Footer } from 'shared'
 import { GlobalContext } from '../contexts/GlobalContext'
 import AlertLayer from '../components/alerting/AlertLayer'
 import { Helmet } from 'react-helmet'
 import { Alert } from 'react-bootstrap'
 import { createGlobalStyle } from 'styled-components'
+import { Link } from 'react-router-dom'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -101,7 +102,7 @@ function MainLayout(props: Props) {
       <Main className={wide ? "container-fluid" : "container"}>
         {children}
       </Main>
-      <Footer extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} />
+      <Footer linkComponent={Link} extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} />
 
       {bannerMessage && (
         <div style={{

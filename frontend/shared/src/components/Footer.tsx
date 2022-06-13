@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
 import { faPenSquare, faBook, faInfoCircle, faCommentMedical } from '@fortawesome/free-solid-svg-icons'
 import { faDiscord, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons'
+import { Col, Row } from 'react-bootstrap'
 
 const Wrapper = styled.div`
   border-top: 1px solid #333;
@@ -21,6 +21,9 @@ const Wrapper = styled.div`
   }
 
   .footer-content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
     color: #ccc;
 
     div {
@@ -35,44 +38,43 @@ const Wrapper = styled.div`
   }
 `
 
-type Props = {
+export interface Props {
   extraPadding?: boolean
+  linkComponent: React.ElementType
 }
 
 function Footer(props: Props) {
-  const { extraPadding } = props
+  const { extraPadding, linkComponent: LinkComponent } = props
 
   return (
     <Wrapper className="container" style={{ paddingBottom: extraPadding ? "120px" : "0px"}}>
-      <div className="row">
-        <div className="col-md-4 footer-col">
+      <Row>
+        <Col md={4} className="footer-col">
           <div className="footer-header">Info</div>
           <div className="footer-content">
-            <div><FontAwesomeIcon icon={faPenSquare} /> <Link to="/blog"> Blog </Link></div>
+            <FontAwesomeIcon icon={faPenSquare} /> <LinkComponent to="/blog"> Blog </LinkComponent>
             {/* <!-- <div><FontAwesomeIcon icon="history" /> <g-link to="/changelog"> Changelog </g-link></div> --> */}
-            <div><FontAwesomeIcon icon={faBook} /><Link to="/docs">Docs </Link></div>
-            <div><FontAwesomeIcon icon={faInfoCircle} /><Link to="/about">About </Link></div>
-            <div>
-              <FontAwesomeIcon icon={faCommentMedical} /> <a href="https://forms.gle/5i8BG34h6Kv5F7zk9" target="_blank" rel="noreferrer"> Give Feedback </a>
-            </div>
+            <FontAwesomeIcon icon={faBook} /><LinkComponent to="/docs">Docs </LinkComponent>
+            <FontAwesomeIcon icon={faInfoCircle} /><LinkComponent to="/about">About </LinkComponent>
+            <FontAwesomeIcon icon={faCommentMedical} /> <a href="https://forms.gle/5i8BG34h6Kv5F7zk9" target="_blank" rel="noreferrer"> Give Feedback </a>
           </div>
-        </div>
-        <div className="col-md-4 footer-col">
+        </Col>
+        <Col md={4} className="footer-col">
           <div className="footer-header">Connect</div>
           <div className="footer-content">
-            <div><FontAwesomeIcon icon={faDiscord} /> <a href="https://discord.gg/tctVKqXG6g" target="_blank" rel="noreferrer">Discord</a></div>
-            <div><FontAwesomeIcon icon={faTwitter} /> <a href="https://twitter.com/guardianforge" target="_blank" rel="noreferrer">Twitter</a></div>
-            <div><FontAwesomeIcon icon={faInstagram} /> <a href="https://www.instagram.com/guardianforge" target="_blank" rel="noreferrer">Instagram</a></div>
+            <FontAwesomeIcon icon={faDiscord} /> <a href="https://discord.gg/tctVKqXG6g" target="_blank" rel="noreferrer">Discord</a>
+            <FontAwesomeIcon icon={faTwitter} /> <a href="https://twitter.com/guardianforge" target="_blank" rel="noreferrer">Twitter</a>
+            <FontAwesomeIcon icon={faInstagram} /> <a href="https://www.instagram.com/guardianforge" target="_blank" rel="noreferrer">Instagram</a>
           </div>
-        </div>
-        <div className="col-md-4 footer-col">
+        </Col>
+        <Col md={4} className="footer-col">
           <div className="footer-header">Support</div>
-          <div className="footer-content">
+          <div>
             <p>GuardianForge was made by <a href="https://twitter.com/brianmmdev" target="_blank" rel="noreferrer">@brianmmdev</a></p>
             <p>If you would like to support the development of Forge, please consider <a href="https://www.buymeacoffee.com/brianmmdev" target="_blank" rel="noreferrer">buying me a coffee</a>!</p>
           </div>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </Wrapper>
   )
 }

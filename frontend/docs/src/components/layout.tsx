@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react"
 import { Link, useStaticQuery, graphql } from "gatsby"
-import { BaseLayout, colors, ForgeNav } from "shared"
+import { BaseLayout, colors, Footer, ForgeNav } from "shared"
 import { Badge, Container, Nav } from 'react-bootstrap'
 import SiteLogo from '../images/site-logo.png'
 import { createGlobalStyle } from 'styled-components'
@@ -51,6 +51,7 @@ const Layout = (props: Props) => {
       <Container style={{maxWidth: "800px"}}>
         <DocsNav />
         <main>{children}</main>
+        <Footer linkComponent={Link} />
       </Container>
     </BaseLayout>
   )
