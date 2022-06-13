@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useContext, ReactNode } from 'react'
+import { useEffect, useContext, ReactNode } from 'react'
 import styled from 'styled-components'
 
 import MainNav from '../components/nav/MainNav'
 import { Footer } from 'shared'
 import { GlobalContext } from '../contexts/GlobalContext'
 import AlertLayer from '../components/alerting/AlertLayer'
-import { Helmet } from 'react-helmet'
 import { Alert } from 'react-bootstrap'
 import { createGlobalStyle } from 'styled-components'
 import { Link } from 'react-router-dom'
@@ -65,18 +64,6 @@ function MainLayout(props: Props) {
   const { wide, children } = props
   const { isInitDone, initApp, bannerMessage } = useContext(GlobalContext)
 
-  // const data = useStaticQuery(graphql`
-  //   query MainLayoutQuery {
-  //     site {
-  //       siteMetadata {
-  //         siteUrl
-  //         title,
-  //         siteDescription
-  //       }
-  //     }
-  //   }
-  // `)
-
   useEffect(() => {
     initApp()
   }, [isInitDone])
@@ -84,20 +71,6 @@ function MainLayout(props: Props) {
   return (
     <Wrapper>
       <GlobalStyle />
-      {/* <Helmet>
-        <title>GuardianForge</title>
-        <meta property="og:image" content={`${data.site.siteMetadata.siteUrl}/img/social.png`} />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="GuardianForge" />
-        <meta property="og:description" content={data.site.siteMetadata.siteDescription} />
-        <meta property="og:url" content={data.site.siteMetadata.siteUrl} />
-        <meta property="og:site_name" content="GuardianForge" />
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:title" content="GuardianForge" />
-        <meta property="twitter:site" content="@guardianforge" />
-        <meta property="twitter:creator" content="@guardianforge" />
-        <meta property="twitter:description" content={data.site.siteMetadata.siteDescription} />
-      </Helmet> */}
       <MainNav />
       <Main className={wide ? "container-fluid" : "container"}>
         {children}

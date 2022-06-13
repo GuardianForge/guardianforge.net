@@ -1,9 +1,9 @@
 exports.init = function (id) {
   try {
-    // let gaScript = document.createElement('script')
-    // gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${id}`
-    // gaScript.async = true
-    // document.head.appendChild(gaScript)
+    let gaScript = document.createElement('script')
+    gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${id}`
+    gaScript.async = true
+    document.head.appendChild(gaScript)
 
     const dataLayer = window.dataLayer || [];
     window.gtag = function () {
