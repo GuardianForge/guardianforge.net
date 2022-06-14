@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Mon Jun 13 15:18:43 2022
+# Make data base, printed on Tue Jun 14 16:14:21 2022
 
 # Variables
 
@@ -36,6 +36,8 @@ _ = /usr/bin/make
 # makefile
 MAKEFILE_LIST := 
 # environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
@@ -44,13 +46,17 @@ INFOPATH = /opt/homebrew/share/info:
 # environment
 P9K_SSH = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/td/yjfbhwbs2jn722c_4rgbh76h0000gn/T/vscode-ipc-ec953012-237b-42bc-8908-d592ac32708c.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/td/yjfbhwbs2jn722c_4rgbh76h0000gn/T/vscode-ipc-273f027b-7c46-485f-a70f-470b6dadf5b9.sock
 # environment
 VSCODE_CWD = /
+# environment
+GOPROXY = https://proxy.golang.org,direct
 # environment
 PATH = /Users/brian/.nvm/versions/node/v12.22.7/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin
 # environment
 LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+GOPATH = /Users/brian/go
 # environment
 NVM_BIN = /Users/brian/.nvm/versions/node/v12.22.7/bin
 # environment
@@ -60,7 +66,7 @@ ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.m9RnwK1EIc/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.Ffk76sOTtX/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -74,7 +80,7 @@ ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 # environment
 MANPATH = /Users/brian/.nvm/versions/node/v12.22.7/share/man:/opt/homebrew/share/man::
 # environment
-VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+GOMODCACHE = /Users/brian/go/pkg/mod
 # environment
 HOME = /Users/brian
 # default
@@ -164,9 +170,9 @@ LANG = C
 # environment
 DOCKER_HOST = ssh://nixadmin@10.30.0.112
 # environment
-VSCODE_PID = 1502
+VSCODE_PID = 1923
 # variable set hash-table stats:
-# Load=77/1024=8%, Rehash=0, Collisions=1/98=1%
+# Load=80/1024=8%, Rehash=0, Collisions=2/101=2%
 
 # Pattern-specific Variable Values
 
@@ -174,7 +180,7 @@ VSCODE_PID = 1502
 
 # Directories
 
-# . (device 16777230, inode 21635095): 11 files, no impossibilities.
+# . (device 16777232, inode 21635095): 11 files, no impossibilities.
 
 # 11 files, no impossibilities in 1 directories.
 
@@ -248,7 +254,7 @@ GNUmakefile:
 # strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
 # strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
-# Finished Make data base on Mon Jun 13 15:18:43 2022
+# Finished Make data base on Tue Jun 14 16:14:21 2022
 
  
 make: *** No rule to make target `all'.  Stop.

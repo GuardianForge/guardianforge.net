@@ -31,6 +31,7 @@ function Build() {
   const navigate = useNavigate()
   const { buildId } = useParams()
   const { isConfigLoaded, dispatchAlert } = useContext(GlobalContext)
+  const [loginUrl, setLoginUrl] = useState("")
 
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
   // TODO: this shouldnt be any
@@ -47,6 +48,10 @@ function Build() {
 
       if(ForgeClient.isLoggedIn()) {
         navigate(`/app/build/${buildId}`)
+      }
+
+      if(ForgeClient.config && ForgeClient.config.loginUrl) {
+        setLoginUrl(ForgeClient.config.loginUrl)
       }
 
       let buildData = await ForgeApiService.fetchBuild(buildId)
@@ -114,7 +119,7 @@ function Build() {
 
           <div style={{ marginTop: "15px" }}>
             <Alert>
-              Login with your Bungie account to unlock more features! <a href="#">Login w/Bungie</a>.
+              Login with your Bungie account to unlock more features! <a href={loginUrl}>Login w/Bungie</a>.
             </Alert>
           </div>
 
