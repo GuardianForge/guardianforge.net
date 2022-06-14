@@ -15,8 +15,8 @@ import (
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	publicPath := os.Getenv("PUBLIC_PATH")
 	dataBucketName := os.Getenv("DATA_BUCKET_NAME")
-	srcOgImageTag := fmt.Sprintf("<meta data-react-helmet=\"true\" property=\"og:image\" content=\"%v/img/social.png\"/>", publicPath)
-	dstOgImageTag := fmt.Sprintf("<meta data-react-helmet=\"true\" property=\"og:image\" content=\"https://%v.s3.amazonaws.com/og/%v.png\">", dataBucketName, request.PathParameters["buildId"])
+	srcOgImageTag := fmt.Sprintf("<meta property=\"og:image\" content=\"%v/img/social.png\"/>", publicPath)
+	dstOgImageTag := fmt.Sprintf("<meta property=\"og:image\" content=\"https://%v.s3.amazonaws.com/og/%v.png\">", dataBucketName, request.PathParameters["buildId"])
 
 	res, err := http.Get(publicPath)
 
@@ -40,7 +40,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	html := string(htmlByte)
 	html = strings.Replace(html, srcOgImageTag, dstOgImageTag, 1)
-	html = strings.Replace(html, "<meta data-react-helmet=\"true\" property=\"twitter:card\" content=\"summary_large_image\"/>", "<meta name=\"twitter:card\" content=\"summary\">", 1)
+	html = strings.Replace(html, "<meta property=\"twitter:card\" content=\"summary_large_image\"/>", "<meta name=\"twitter:card\" content=\"summary\">", 1)
 
 	return events.APIGatewayProxyResponse{
 		Body: html,

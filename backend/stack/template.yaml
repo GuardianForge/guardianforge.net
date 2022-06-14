@@ -103,10 +103,6 @@ Resources:
             OriginPath: "/app"
             S3OriginConfig:
               OriginAccessIdentity: ''
-          - Id: !Join ["-", ["S3-GuardianForge-Blog", !Ref EnvironmentParam]]
-            DomainName: !GetAtt SiteBucket.RegionalDomainName
-            S3OriginConfig:
-              OriginAccessIdentity: ''
           - Id: !Join ["-", ["API-GuardianForge", !Ref EnvironmentParam]]
             DomainName: !Ref ApiDomainNameParam
             CustomOriginConfig:
@@ -122,7 +118,7 @@ Resources:
               OriginReadTimeout: 30
               OriginKeepaliveTimeout: 5
         DefaultCacheBehavior:
-          TargetOriginId: !Join ["-", ["S3-Direct-GuardianForge", !Ref EnvironmentParam]]
+          TargetOriginId: !Join ["-", ["S3-GuardianForge", !Ref EnvironmentParam]]
           ViewerProtocolPolicy: redirect-to-https
           ForwardedValues:
             QueryString: false
@@ -145,7 +141,7 @@ Resources:
               - HEAD
               - GET
           - PathPattern: blog/*
-            TargetOriginId: !Join ["-", ["S3-GuardianForge-Blog", !Ref EnvironmentParam]]
+            TargetOriginId: !Join ["-", ["S3-Direct-GuardianForge", !Ref EnvironmentParam]]
             ViewerProtocolPolicy: redirect-to-https
             ForwardedValues:
               QueryString: false
@@ -156,7 +152,7 @@ Resources:
               - HEAD
               - GET
           - PathPattern: docs/*
-            TargetOriginId: !Join ["-", ["S3-GuardianForge-Blog", !Ref EnvironmentParam]]
+            TargetOriginId: !Join ["-", ["S3-Direct-GuardianForge", !Ref EnvironmentParam]]
             ViewerProtocolPolicy: redirect-to-https
             ForwardedValues:
               QueryString: false
