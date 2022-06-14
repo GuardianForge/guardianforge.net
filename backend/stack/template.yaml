@@ -111,7 +111,6 @@ Resources:
               OriginKeepaliveTimeout: 5
           - Id: !Join ["-", ["S3-Direct-GuardianForge", !Ref EnvironmentParam]]
             DomainName: !Select [1, !Split ["//", !GetAtt SiteBucket.WebsiteURL]]
-            OriginPath: "/app"
             # DomainName: !GetAtt SiteBucket.WebsiteURL
             CustomOriginConfig:
               OriginProtocolPolicy: http-only
