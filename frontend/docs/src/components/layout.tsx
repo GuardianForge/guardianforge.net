@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react"
 import { Link, useStaticQuery, graphql } from "gatsby"
 import { BaseLayout, colors, Footer, ForgeNav } from "shared"
-import { Badge, Container, Nav } from 'react-bootstrap'
+import { Badge, Col, Container, Nav, Row } from 'react-bootstrap'
 import SiteLogo from '../images/site-logo.png'
-import { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import Home from "../pages/home"
@@ -12,6 +12,21 @@ import DocsNav from "./DocsNav"
 const GlobalStyle = createGlobalStyle`
   #forge-nav {
     margin-bottom: 20px;
+  }
+`
+
+const Wrapper = styled(Container)`
+  .content {
+    flex: 1;
+    margin: 0px 10px;
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid ${colors.theme2.dark1};
+      border-radius: 5px;
+      margin: 5px 0px;
+    }
   }
 `
 
@@ -48,11 +63,17 @@ const Layout = (props: Props) => {
           <FontAwesomeIcon icon={faArrowLeft} /> Back Home
         </Nav.Link>
       </ForgeNav>
-      <Container style={{maxWidth: "800px"}}>
-        <DocsNav />
-        <main>{children}</main>
-        <Footer linkComponent={Link} />
-      </Container>
+      <Wrapper>
+        <Row className="nav-wrapper">
+          <Col md={3}>
+            <DocsNav />
+          </Col>
+          <Col md={9} className="content">
+            {children}
+          </Col>
+        </Row>
+      </Wrapper>
+      <Footer linkComponent={Link} />
     </BaseLayout>
   )
 }
