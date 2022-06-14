@@ -42,22 +42,12 @@ const Wrapper = styled(Layout)`
 export const pageQuery = graphql`
   query DocById(
     $id: String!
-    $previousPostId: String
-    $nextPostId: String
   ) {
     post: wpDocument(id: { eq: $id }) {
       id
       content
       title
       date(formatString: "MMMM DD, YYYY")
-    }
-    previous: wpDocument(id: { eq: $previousPostId }) {
-      uri
-      title
-    }
-    next: wpDocument(id: { eq: $nextPostId }) {
-      uri
-      title
     }
   }
 `
@@ -67,7 +57,7 @@ type Props = {
 }
 
 const BlogPostTemplate = (props: Props) => {
-  const { data: { previous, next, post } } = props
+  const { data: { post } } = props
 
   return (
     <Wrapper>
@@ -89,34 +79,6 @@ const BlogPostTemplate = (props: Props) => {
 
         <hr />
       </article>
-
-      <nav className="blog-post-nav">
-        <ul
-          style={{
-            display: `flex`,
-            flexWrap: `wrap`,
-            justifyContent: `space-between`,
-            listStyle: `none`,
-            padding: 0,
-          }}
-        >
-          <li>
-            {previous && (
-              <ForgeButton onClick={() => navigate(previous.uri)}>
-                ← {parse(previous.title)}
-              </ForgeButton>
-            )}
-          </li>
-
-          <li>
-            {next && (
-              <ForgeButton onClick={() => navigate(next.uri)}>
-                {parse(next.title)} →
-              </ForgeButton>
-            )}
-          </li>
-        </ul>
-      </nav>
     </Wrapper>
   )
 }
