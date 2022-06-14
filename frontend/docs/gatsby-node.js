@@ -34,7 +34,7 @@ const createIndividualBlogPostPages = async ({ posts, gatsbyUtilities }) =>
   Promise.all(
     posts.map(({ previous, post, next }) =>
       gatsbyUtilities.actions.createPage({
-        path: post.uri,
+        path: post.slug,
         component: path.resolve(`./src/templates/blog-post.tsx`),
         context: {
           id: post.id,
@@ -69,7 +69,7 @@ async function createBlogPostArchive({ posts, gatsbyUtilities }) {
       const pageNumber = index + 1
       const getPagePath = page => {
         if (page > 0 && page <= totalPages) {
-          return page === 1 ? `/` : `/blog/${page}`
+          return page === 1 ? `/` : `/docs/${page}`
         }
         return null
       }
@@ -98,6 +98,7 @@ async function getPosts({ graphql, reporter }) {
           post: node {
             id
             uri
+            slug
           }
           next {
             id

@@ -51,13 +51,14 @@ function DocsNav() {
   `)
 
   const posts = data.allWpDocument.edges.map(el => el.node)
-  posts.forEach(el => el.uri.startsWith("/docs/docs") ? el.uri = el.uri.replace("/docs") : null)
+  // posts.forEach(el => el.uri.startsWith("/docs/docs") ? el.uri = el.uri.replace("/docs") : null)
+  // console.log("posts", posts)
 
   return (
     <Wrapper defaultActiveKey="/" className="flex-column">
       <Nav.Link as={Link} to="/">Quick Start</Nav.Link>
       {posts.map(post =>
-        <Nav.Link as={Link} to={post.uri}>{post.title}</Nav.Link>
+        <Nav.Link as={Link} to={`/${post.slug}`}>{post.title}</Nav.Link>
       )}
     </Wrapper>
   )
