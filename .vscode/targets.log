@@ -6,8 +6,11 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
+ 
+make: *** No rule to make target `all'.  Stop.
 
-# Make data base, printed on Tue Jun 14 16:14:21 2022
+
+# Make data base, printed on Mon Jun 20 11:49:27 2022
 
 # Variables
 
@@ -46,7 +49,7 @@ INFOPATH = /opt/homebrew/share/info:
 # environment
 P9K_SSH = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/td/yjfbhwbs2jn722c_4rgbh76h0000gn/T/vscode-ipc-273f027b-7c46-485f-a70f-470b6dadf5b9.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/td/yjfbhwbs2jn722c_4rgbh76h0000gn/T/vscode-ipc-0ba1a535-073a-4d01-a05e-27fa538c2a01.sock
 # environment
 VSCODE_CWD = /
 # environment
@@ -86,7 +89,7 @@ HOME = /Users/brian
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/brian/Library/Application Support/Code/CachedData/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
+VSCODE_CODE_CACHE_PATH = /Users/brian/Library/Application Support/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
 # environment
 LOGNAME = brian
 # environment
@@ -126,7 +129,7 @@ TMPDIR = /var/folders/td/yjfbhwbs2jn722c_4rgbh76h0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/brian/Library/Application Support/Code/1.68.0-main.sock
+VSCODE_IPC_HOOK = /Users/brian/Library/Application Support/Code/1.68.1-main.sock
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -136,7 +139,7 @@ MFLAGS = -Rrqp
 # environment
 NVM_DIR = /Users/brian/.nvm
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.50392205.50392211
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.52608844.52608850
 # environment
 HOMEBREW_PREFIX = /opt/homebrew
 # automatic
@@ -170,7 +173,7 @@ LANG = C
 # environment
 DOCKER_HOST = ssh://nixadmin@10.30.0.112
 # environment
-VSCODE_PID = 1923
+VSCODE_PID = 76708
 # variable set hash-table stats:
 # Load=80/1024=8%, Rehash=0, Collisions=2/101=2%
 
@@ -254,8 +257,6 @@ GNUmakefile:
 # strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
 # strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
-# Finished Make data base on Tue Jun 14 16:14:21 2022
+# Finished Make data base on Mon Jun 20 11:49:27 2022
 
  
-make: *** No rule to make target `all'.  Stop.
-
