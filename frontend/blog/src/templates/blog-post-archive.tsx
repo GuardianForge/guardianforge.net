@@ -44,11 +44,13 @@ export const pageQuery = graphql`
 type Props = {
   data: any
   pageContext: any
+  location: any
 }
 
 const BlogIndex = (props: Props) => {
   const {
     data,
+    location,
     pageContext: { nextPagePath, previousPagePath },
   } = props
 
@@ -58,7 +60,7 @@ const BlogIndex = (props: Props) => {
   if (!posts.length) {
     return (
       <Layout>
-        <Seo title="All posts" />
+        <Seo pageTitle="All posts" location={location} />
         <p>
           No blog posts found. Add posts to your WordPress site and they'll
           appear here!
@@ -69,7 +71,7 @@ const BlogIndex = (props: Props) => {
 
   return (
     <Layout>
-      <Seo title="All posts" />
+      <Seo pageTitle="All posts" location={location} />
       <ol style={{ listStyle: `none` }}>
         {posts.map(post => <PostCard post={post} key={post.uri} />)}
       </ol>

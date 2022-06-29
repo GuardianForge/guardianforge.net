@@ -6,6 +6,7 @@ import SiteLogo from '../images/site-logo.png'
 import { createGlobalStyle } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
+import Helmet from 'react-helmet'
 
 const GlobalStyle = createGlobalStyle`
   #forge-nav {
@@ -16,6 +17,9 @@ const GlobalStyle = createGlobalStyle`
 type Props = {
   children: ReactNode
   className?: string
+  description?: string
+  ogImageUrl?: string
+  pageTitle?: string
 }
 
 const Layout = (props: Props) => {

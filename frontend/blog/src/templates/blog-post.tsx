@@ -88,20 +88,22 @@ export const pageQuery = graphql`
 `
 
 type Props = {
-  data: any
+  data: any,
+  location: any
 }
 
 const BlogPostTemplate = (props: Props) => {
-  const { data: { previous, next, post } } = props
+  const { location, data: { previous, next, post } } = props
 
   const featuredImage = {
     data: post.featuredImage?.node?.localFile?.childImageSharp?.gatsbyImageData,
     alt: post.featuredImage?.node?.alt || ``,
+    url: post.featuredImage?.node?.localFile?.childImageSharp?.gatsbyImageData?.images?.fallback?.src,
   }
 
   return (
     <Wrapper>
-      <Seo title={post.title} description={post.excerpt} />
+      <Seo location={location} pageTitle={post.title} description={post.excerpt} ogImageUrl={featuredImage?.url ? featuredImage.url : undefined} />
 
       <article
         className="blog-post"
