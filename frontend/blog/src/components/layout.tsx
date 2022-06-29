@@ -17,9 +17,6 @@ const GlobalStyle = createGlobalStyle`
 type Props = {
   children: ReactNode
   className?: string
-  description?: string
-  ogImageUrl?: string
-  pageTitle?: string
 }
 
 const Layout = (props: Props) => {
