@@ -86,25 +86,18 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		splitSearchKey := strings.Split(dbBuild.SearchKey, "_")
 		subclassCode := splitSearchKey[1]
 
-		err = services.PutBuildToDynamo(sess, dbBuild)
+		// err = services.PutBuildToDynamo(sess, dbBuild)
+		// if err != nil {
+		// 	return utils.ErrorResponse(err, "(handler) put build to dynamo")
+		// }
+
+		err := services.CreateBuild(dbBuild)
 		if err != nil {
-			return utils.ErrorResponse(err, "(handler) put build to dynamo")
+			return utils.ErrorResponse(err, "(handler) CreateBuild")
 		}
 
 		// TODO: Move this into the post-build handler
-		// Post embed to Discord
 		sendToPostBuildHandler2(buildId, subclassCode, time.Now().Unix(), membershipId)
-
-		// workspace := os.Getenv("ALGOLIA_WORKSPACE")
-		// key := os.Getenv("ALGOLIA_KEY")
-		// indexName := os.Getenv("ALGOLIA_INDEX")
-		// algoliaRecord := build.ToAlgoliaRecord(buildId, dbBuild)
-		// err = services.PostToAlgolia(workspace, key, indexName, algoliaRecord)
-		// if err != nil {
-		// 	return utils.ErrorResponse(err, "(handler) post to algolia")
-		// }
-
-		// sendToAlgolia(build, dbBuild.Summary, buildId, subclassCode)
 	}
 
 	res := PostBuildResponse{

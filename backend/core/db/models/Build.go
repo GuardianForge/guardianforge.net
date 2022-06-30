@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"guardianforge.net/core/utils"
 )
 
 type Build struct {
@@ -34,6 +35,38 @@ func (b *Build) GetBuildSummary() (*BuildSummary, error) {
 		b.Summary.Activity = &activityId
 	}
 	return &b.Summary, nil
+}
+
+type PSBuild struct {
+	Id              string
+	PublishedOn     int64
+	CreatedById     string
+	SearchKey       string
+	Upvotes         int
+	SeasonalUpvotes string
+	UserId          string
+	Username        string
+	Highlights      string
+	Name            string
+	PrimaryIconSet  string
+}
+
+func (b *Build) ToPSBuild() *PSBuild {
+	seasonalUpvotes, _ := utils.ConvertToJsonString(b.SeasonalUpvotes)
+	highlights, _ := utils.ConvertToJsonString(b.Summary.Highlights)
+	return &PSBuild{
+		Id:              b.Id,
+		PublishedOn:     b.PublishedOn,
+		CreatedById:     b.CreatedById,
+		SearchKey:       b.SearchKey,
+		Upvotes:         b.Upvotes,
+		SeasonalUpvotes: seasonalUpvotes,
+		UserId:          b.Summary.UserId,
+		Username:        b.Summary.Username,
+		Highlights:      highlights,
+		Name:            b.Summary.Name,
+		PrimaryIconSet:  b.Summary.PrimaryIconSet,
+	}
 }
 
 type PrivateBuildsRecord struct {

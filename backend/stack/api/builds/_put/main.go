@@ -6,7 +6,6 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"guardianforge.net/core/services"
 	"guardianforge.net/core/utils"
 )
@@ -19,7 +18,7 @@ type UpdateBuildRequest struct {
 	InputStyle      *string `json:"inputStyle"`
 }
 
-var sess *session.Session
+// var sess *session.Session
 
 func main() {
 	lambda.Start(handler)
@@ -44,7 +43,8 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	buildId := request.PathParameters["buildId"]
 
 	// Fetch from Dynamo, confirm userId matches
-	record, err := services.FetchBuildById(buildId)
+	// record, err := services.FetchBuildById(buildId)
+	record, err := services.PSFetchBuildById(buildId)
 	if err != nil {
 		return utils.ErrorResponse(err, "(updateBuild) FetchBuildsById")
 	}
@@ -53,15 +53,20 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 
 	if requestModel.Name != nil {
-		sess, err := session.NewSession()
-		if err != nil {
-			return utils.ErrorResponse(err, "(updateBuild) Creating AWS session to update Dynamo record")
-		}
+		// sess, err := session.NewSession()
+		// if err != nil {
+		// 	return utils.ErrorResponse(err, "(updateBuild) Creating AWS session to update Dynamo record")
+		// }
 
 		record.Summary.Name = *requestModel.Name
-		err = services.PutBuildToDynamo(sess, *record)
+		// err = services.PutBuildToDynamo(sess, *record)
+		// if err != nil {
+		// 	return utils.ErrorResponse(err, "(updateBuild) Put build to Dynamo")
+		// }
+
+		err = services.UpdateBuild(buildId, *record)
 		if err != nil {
-			return utils.ErrorResponse(err, "(updateBuild) Put build to Dynamo")
+			return utils.ErrorResponse(err, "(updateBuild) Update build in PlanetScale")
 		}
 	}
 
