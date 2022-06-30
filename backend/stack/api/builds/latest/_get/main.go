@@ -15,7 +15,8 @@ func main() {
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-	builds, err := services.FetchLatestBuilds()
+	// builds, err := services.FetchLatestBuilds()
+	builds, err := services.PSFetchLatestBuilds()
 	if err != nil {
 		return utils.ErrorResponse(err, "(handler) fetch latest builds")
 	}

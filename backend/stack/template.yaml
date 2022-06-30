@@ -631,6 +631,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref DbTable
+          PS_CONN_STR: !Ref PlanetScaleConnectionStringParam
 
   FetchBuildUpvoteCountFn:
     Type: AWS::Serverless::Function
