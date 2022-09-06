@@ -1,6 +1,6 @@
 {
   "oauthClientId": "36835",
-  "apiBase": "http://10.30.0.112:4000",
+  "apiBase": "http://localhost:4000",
   "bungieApiKey": "5644dbc884454c6e8785d5fd293f6b6b",
   "buildS3Bucket": "guardianforge-qa-data",
   "loginUrl": "https://www.bungie.net/en/oauth/authorize?client_id=36835&response_type=code",
