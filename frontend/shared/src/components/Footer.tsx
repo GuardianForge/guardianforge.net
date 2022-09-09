@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenSquare, faBook, faInfoCircle, faCommentMedical } from '@fortawesome/free-solid-svg-icons'
+import { faPenSquare, faBook, faCommentMedical } from '@fortawesome/free-solid-svg-icons'
 import { faDiscord, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons'
 import { Col, Row } from 'react-bootstrap'
 import AppTypeEnum from '../models/AppTypeEnum'
