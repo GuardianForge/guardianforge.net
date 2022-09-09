@@ -2,7 +2,7 @@ import { useEffect, useContext, ReactNode } from 'react'
 import styled from 'styled-components'
 
 import MainNav from '../components/nav/MainNav'
-import { Footer } from 'shared'
+import { Footer, AppTypeEnum } from 'shared'
 import { GlobalContext } from '../contexts/GlobalContext'
 import AlertLayer from '../components/alerting/AlertLayer'
 import { Alert } from 'react-bootstrap'
@@ -75,7 +75,7 @@ function MainLayout(props: Props) {
       <Main className={wide ? "container-fluid" : "container"}>
         {children}
       </Main>
-      <Footer linkComponent={Link} extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} />
+      <Footer appType={AppTypeEnum.App} linkComponent={Link} extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} />
 
       {bannerMessage && (
         <div style={{

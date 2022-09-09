@@ -58,9 +58,8 @@ function Footer(props: Props) {
           <div className="footer-content">
             <FontAwesomeIcon icon={faPenSquare} /> {appType === AppTypeEnum.Blog ? <LinkComponent to="/blog">Blog </LinkComponent> : <a href="/blog">Blog </a>}
             <FontAwesomeIcon icon={faBook} /> {appType === AppTypeEnum.Docs ? <LinkComponent to="/docs">Docs </LinkComponent> : <a href="/docs">Docs </a>}
+            <FontAwesomeIcon icon={faBook} /> {appType === AppTypeEnum.App ? <LinkComponent to="/about">About </LinkComponent> : <a href="/about">About </a>}
             {/* <!-- <div><FontAwesomeIcon icon="history" /> <g-link to="/changelog"> Changelog </g-link></div> --> */}
-            {/* <FontAwesomeIcon icon={faBook} /><LinkComponent to="/docs">Docs </LinkComponent> */}
-            <FontAwesomeIcon icon={faInfoCircle} /><LinkComponent to="/about">About </LinkComponent>
             <FontAwesomeIcon icon={faCommentMedical} /> <a href="https://forms.gle/5i8BG34h6Kv5F7zk9" target="_blank" rel="noreferrer"> Give Feedback </a>
           </div>
         </Col>

@@ -1,5 +1,5 @@
 enum AppTypeEnum {
-  Core = 0,
+  App = 0,
   Blog = 1,
   Docs = 2
 }

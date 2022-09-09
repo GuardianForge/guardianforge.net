@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react"
 import { Link, useStaticQuery, graphql } from "gatsby"
-import { BaseLayout, colors, Footer, ForgeNav } from "shared"
+import { BaseLayout, colors, Footer, ForgeNav, AppTypeEnum } from "shared"
 import { Badge, Col, Container, Nav, Row } from 'react-bootstrap'
 import SiteLogo from '../images/site-logo.png'
 import styled, { createGlobalStyle } from 'styled-components'
@@ -73,7 +73,7 @@ const Layout = (props: Props) => {
           </Col>
         </Row>
       </Wrapper>
-      <Footer linkComponent={Link} />
+      <Footer appType={AppTypeEnum.Docs} linkComponent={Link} />
     </BaseLayout>
   )
 }
