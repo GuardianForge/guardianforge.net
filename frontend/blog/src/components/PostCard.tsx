@@ -52,7 +52,7 @@ function PostCard(props: Props) {
   const { post } = props
 
   const title = post.title
-  console.log(post.excerpt)
+  // console.log(post.excerpt)
 
   return (
     <Wrapper to={post.uri}>

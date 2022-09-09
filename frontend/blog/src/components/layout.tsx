@@ -1,12 +1,11 @@
 import React, { ReactNode } from "react"
 import { Link, useStaticQuery, graphql } from "gatsby"
-import { BaseLayout, colors, Footer, ForgeNav } from "shared"
+import { BaseLayout, colors, Footer, ForgeNav, AppTypeEnum } from "shared"
 import { Badge, Container, Nav } from 'react-bootstrap'
 import SiteLogo from '../images/site-logo.png'
 import { createGlobalStyle } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
-import Helmet from 'react-helmet'
 
 const GlobalStyle = createGlobalStyle`
   #forge-nav {
@@ -50,7 +49,7 @@ const Layout = (props: Props) => {
       <Container style={{maxWidth: "800px"}}>
         <main>{children}</main>
       </Container>
-      <Footer linkComponent={Link} />
+      <Footer appType={AppTypeEnum.Blog} linkComponent={Link} />
     </BaseLayout>
   )
 }

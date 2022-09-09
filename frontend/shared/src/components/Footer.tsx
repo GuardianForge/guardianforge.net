@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenSquare, faBook, faInfoCircle, faCommentMedical } from '@fortawesome/free-solid-svg-icons'
 import { faDiscord, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons'
 import { Col, Row } from 'react-bootstrap'
+import AppTypeEnum from '../models/AppTypeEnum'
 
 const Wrapper = styled.div`
   border-top: 1px solid #333;
@@ -39,12 +40,15 @@ const Wrapper = styled.div`
 `
 
 export interface Props {
+  appType: AppTypeEnum
   extraPadding?: boolean
   linkComponent: React.ElementType
 }
 
 function Footer(props: Props) {
-  const { extraPadding, linkComponent: LinkComponent } = props
+  const { appType, extraPadding, linkComponent: LinkComponent } = props
+
+  console.log("apptype", appType)
 
   return (
     <Wrapper className="container" style={{ paddingBottom: extraPadding ? "120px" : "0px"}}>
@@ -52,9 +56,10 @@ function Footer(props: Props) {
         <Col md={4} className="footer-col">
           <div className="footer-header">Info</div>
           <div className="footer-content">
-            <FontAwesomeIcon icon={faPenSquare} /> <LinkComponent to="/blog"> Blog </LinkComponent>
+            <FontAwesomeIcon icon={faPenSquare} /> {appType === AppTypeEnum.Blog ? <LinkComponent to="/blog">Blog </LinkComponent> : <a href="/blog">Blog </a>}
+            <FontAwesomeIcon icon={faBook} /> {appType === AppTypeEnum.Docs ? <LinkComponent to="/docs">Docs </LinkComponent> : <a href="/docs">Docs </a>}
             {/* <!-- <div><FontAwesomeIcon icon="history" /> <g-link to="/changelog"> Changelog </g-link></div> --> */}
-            <FontAwesomeIcon icon={faBook} /><LinkComponent to="/docs">Docs </LinkComponent>
+            {/* <FontAwesomeIcon icon={faBook} /><LinkComponent to="/docs">Docs </LinkComponent> */}
             <FontAwesomeIcon icon={faInfoCircle} /><LinkComponent to="/about">About </LinkComponent>
             <FontAwesomeIcon icon={faCommentMedical} /> <a href="https://forms.gle/5i8BG34h6Kv5F7zk9" target="_blank" rel="noreferrer"> Give Feedback </a>
           </div>
