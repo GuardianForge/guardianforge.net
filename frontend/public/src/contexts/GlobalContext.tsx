@@ -4,6 +4,7 @@ import GuardianForgeClientService from '../services/GuardianForgeClientService'
 import GuardianForgeApiService from '../services/GuardianForgeApiService'
 // @ts-ignore
 import gaUtils from "../utils/gaUtils"
+import ReactGA from 'react-ga';
 import AlgoliaService from '../services/AlgoliaService'
 import AlertDetail from '../models/AlertDetail'
 import * as Sentry from "@sentry/react"
@@ -139,7 +140,9 @@ export const Provider = (props: Props) => {
       const config = await res.json()
 
       // Init Google Analytics
-      gaUtils.init(config.analyticsId)
+      ReactGA.initialize(config.analyticsId);
+      // gaUtils.init(config.analyticsId)
+
 
       const components = [
         "DestinyInventoryItemDefinition",
