@@ -17,5 +17,7 @@ declare global {
 	interface Window {
 		services: ServiceCollection;
 		adsbygoogle: any;
+		gtag: any;
+		dataLayer: any;
 	}
 }

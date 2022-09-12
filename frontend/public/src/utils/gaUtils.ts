@@ -1,4 +1,4 @@
-exports.init = function (id) {
+export function init(id: string) {
   try {
     let gaScript = document.createElement('script')
     gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${id}`

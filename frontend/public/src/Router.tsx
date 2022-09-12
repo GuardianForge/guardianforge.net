@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Build from './views/Build'
 import FindBuilds from './views/FindBuilds'
 import FindPlayers from './views/FindPlayers'
@@ -19,6 +19,7 @@ import EditProfile from './views/app/EditProfile'
 import AdminTools from './views/app/admin/AdminTools'
 import NotFound from './views/NotFound'
 import About from './views/About'
+import { useEffect } from 'react'
 
 type Props = {
   to: string
@@ -30,6 +31,13 @@ function Redirect(props: Props) {
 }
 
 function ForgeRouter() {
+  const location = useLocation()
+
+  useEffect(() => {
+    window.gtag("event", "page_view", {
+      page_path: location.pathname + location.search,
+    });
+  }, [location])
   return (
     <BrowserRouter>
       <Routes>
