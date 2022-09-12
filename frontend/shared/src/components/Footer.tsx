@@ -48,8 +48,6 @@ export interface Props {
 function Footer(props: Props) {
   const { appType, extraPadding, linkComponent: LinkComponent } = props
 
-  console.log("apptype", appType)
-
   return (
     <Wrapper className="container" style={{ paddingBottom: extraPadding ? "120px" : "0px"}}>
       <Row>

@@ -19,7 +19,8 @@ import EditProfile from './views/app/EditProfile'
 import AdminTools from './views/app/admin/AdminTools'
 import NotFound from './views/NotFound'
 import About from './views/About'
-import { useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { GlobalContext } from './contexts/GlobalContext'
 
 type Props = {
   to: string
@@ -30,16 +31,27 @@ function Redirect(props: Props) {
   return null
 }
 
-function ForgeRouter() {
+function LocationHandler() {
+  const { isInitDone } = useContext(GlobalContext)
   const location = useLocation()
+  const [curr, setCurr] = useState("")
 
   useEffect(() => {
-    window.gtag("event", "page_view", {
-      page_path: location.pathname + location.search,
-    });
+    const page_path = location.pathname + location.search
+    if(isInitDone && curr !== page_path) {
+      setCurr(page_path)
+      window.gtag("event", "page_view", {
+        page_path,
+      });
+    }
   }, [location])
+  return (<></>)
+}
+
+function ForgeRouter() {
   return (
     <BrowserRouter>
+      <LocationHandler />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

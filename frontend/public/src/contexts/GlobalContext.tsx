@@ -6,6 +6,7 @@ import * as gaUtils from "../utils/gaUtils"
 import AlgoliaService from '../services/AlgoliaService'
 import AlertDetail from '../models/AlertDetail'
 import * as Sentry from "@sentry/react"
+import { useLocation } from 'react-router-dom'
 
 interface IGlobalContext {
   isInitDone?: boolean
