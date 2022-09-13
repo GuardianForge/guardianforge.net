@@ -1,4 +1,5 @@
 import { BungieApiService } from "@guardianforge/destiny-data-utils"
+import posthog from "posthog-js"
 import { AppConfig } from "../models/AppConfig"
 import userUtils from "../utils/userUtils"
 import GuardianForgeApiService from "./GuardianForgeApiService"
@@ -169,6 +170,8 @@ export default class GuardianForgeClientService {
     } else {
       localStorage.setItem("auth", JSON.stringify(authData))
     }
+
+    posthog.identify(authData.membership_id)
 
     try {
       this.authData = authData

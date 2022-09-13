@@ -6,7 +6,7 @@ import * as gaUtils from "../utils/gaUtils"
 import AlgoliaService from '../services/AlgoliaService'
 import AlertDetail from '../models/AlertDetail'
 import * as Sentry from "@sentry/react"
-import { useLocation } from 'react-router-dom'
+import posthog from 'posthog-js'
 
 interface IGlobalContext {
   isInitDone?: boolean
@@ -141,6 +141,8 @@ export const Provider = (props: Props) => {
       // Init Google Analytics
       // ReactGA.initialize(config.analyticsId);
       gaUtils.init(config.analyticsId)
+
+      posthog.init(config.posthogId, { api_host: 'https://app.posthog.com' })
 
       const components = [
         "DestinyInventoryItemDefinition",
