@@ -139,10 +139,13 @@ export const Provider = (props: Props) => {
       const config = await res.json()
 
       // Init Google Analytics
-      // ReactGA.initialize(config.analyticsId);
       gaUtils.init(config.analyticsId)
 
-      posthog.init(config.posthogId, { api_host: 'https://app.posthog.com' })
+      posthog.init(config.posthogId, { 
+        api_host: 'https://app.posthog.com',
+        capture_pageview: false,
+        autocapture: false
+      })
 
       const components = [
         "DestinyInventoryItemDefinition",
