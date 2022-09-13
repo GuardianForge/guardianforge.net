@@ -21,6 +21,9 @@ import NotFound from './views/NotFound'
 import About from './views/About'
 import React, { useContext, useEffect, useState } from 'react'
 import { GlobalContext } from './contexts/GlobalContext'
+import posthog from 'posthog-js'
+
+posthog.init('phc_c0L26n4Q9jYQ0NnwI6j8GC5HR7IKxAAFAxzCBya4ios', { api_host: 'https://app.posthog.com' })
 
 type Props = {
   to: string
@@ -40,6 +43,7 @@ function LocationHandler() {
     const page_path = location.pathname + location.search
     if(isInitDone && curr !== page_path) {
       setCurr(page_path)
+      posthog.capture('my page_view', { property: page_path })
       window.gtag("event", "page_view", {
         page_path,
       });
