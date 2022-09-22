@@ -13,5 +13,6 @@
   "algoliaIndex": "GuardianForge-Qa-Builds",
   "monthlyPriceId": "price_1KTXcLIVxbxup9XbUJ6rIhHe",
   "yearlyPriceId": "price_1KTXcLIVxbxup9XbiEw4sqfh",
-  "posthogId": "phc_SQwfgeH3vCmwN5JBrqaQyd7mUKp1HoN9EtOD1yqnfYZ"
+  "posthogId": "phc_SQwfgeH3vCmwN5JBrqaQyd7mUKp1HoN9EtOD1yqnfYZ",
+  "sentryEnvironment": "dev"
 }

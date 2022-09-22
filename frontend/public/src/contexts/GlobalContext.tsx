@@ -7,6 +7,7 @@ import AlgoliaService from '../services/AlgoliaService'
 import AlertDetail from '../models/AlertDetail'
 import * as Sentry from "@sentry/react"
 import posthog from 'posthog-js'
+import { BrowserTracing } from "@sentry/tracing";
 
 interface IGlobalContext {
   isInitDone?: boolean
@@ -138,14 +139,21 @@ export const Provider = (props: Props) => {
       let res = await fetch("/config.json")
       const config = await res.json()
 
-      // Init Google Analytics
-      gaUtils.init(config.analyticsId)
-
       posthog.init(config.posthogId, { 
         api_host: 'https://app.posthog.com',
         capture_pageview: false,
         autocapture: false
       })
+
+      Sentry.init({
+        dsn: "https://fa1e612f65a54e7fa4c2ffaccb804460@o1277769.ingest.sentry.io/6475597",
+        integrations: [
+          new BrowserTracing(),
+          new posthog.SentryIntegration(posthog, 'morrison-software-development', 6475597)
+        ],
+        tracesSampleRate: 1.0,
+        environment: config.sentryEnvironment
+      });
 
       const components = [
         "DestinyInventoryItemDefinition",
