@@ -42,9 +42,6 @@ function LocationHandler() {
     if(isInitDone && curr !== page_path) {
       setCurr(page_path)
       posthog.capture('$pageview')
-      window.gtag("event", "page_view", {
-        page_path,
-      });
     }
   }, [location])
   return (<></>)
