@@ -164,7 +164,7 @@ export const Provider = (props: Props) => {
         "DestinyTalentGridDefinition",
         "DestinyActivityDefinition",
         "DestinyActivityTypeDefinition",
-        "DestinyActivityModeDefinition",
+        // "DestinyActivityModeDefinition",
         "DestinyActivityGraphDefinition",
         "DestinyEnergyTypeDefinition"
       ]
