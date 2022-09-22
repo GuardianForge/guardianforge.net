@@ -2,7 +2,6 @@ import React, { useState, useEffect, ReactNode } from 'react'
 import { BungieApiService, ManifestService, BungieAuthService, IndexedDbService, InventoryManager } from "@guardianforge/destiny-data-utils"
 import GuardianForgeClientService from '../services/GuardianForgeClientService'
 import GuardianForgeApiService from '../services/GuardianForgeApiService'
-import * as gaUtils from "../utils/gaUtils"
 import AlgoliaService from '../services/AlgoliaService'
 import AlertDetail from '../models/AlertDetail'
 import * as Sentry from "@sentry/react"
