@@ -75,7 +75,7 @@ function MainLayout(props: Props) {
       <Main className={wide ? "container-fluid" : "container"}>
         {children}
       </Main>
-      <Footer appType={AppTypeEnum.App} linkComponent={Link} extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} />
+      {/* <Footer appType={AppTypeEnum.App} linkComponent={Link} extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} /> */}
 
       {bannerMessage && (
         <div style={{
