@@ -72,9 +72,9 @@ function MainLayout(props: Props) {
     <Wrapper>
       <GlobalStyle />
       <MainNav />
-      <Main className={wide ? "container-fluid" : "container"}>
+      <div className="container max-w-[960px] mx-auto">
         {children}
-      </Main>
+      </div>
       {/* <Footer appType={AppTypeEnum.App} linkComponent={Link} extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} /> */}
 
       {bannerMessage && (

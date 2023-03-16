@@ -1,75 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import UpvoteIcon from './UpvoteIcon'
 // @ts-ignore
 import { imageFixerMap } from "../utils/shims"
 import BuildSummary from '../models/BuildSummary'
-import colors from "../colors"
 import { faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons'
-
-const Wrapper = styled.div`
-  padding: 5px 10px;
-  box-shadow: 2px 2px 2px rgba(0,0,0,0.05);
-  background-color: ${colors.theme2.dark2};
-  border-radius: 5px;
-  cursor: pointer;
-  border: 1px solid ${colors.theme2.border};
-  margin-bottom: 10px;
-
-&:hover {
-  border: 1px solid ${colors.theme2.accent2};
-}
-
-.build-summary-header {
-  display: flex;
-
-  .build-summary-name {
-    font-weight: bold;
-    flex: 1;
-  }
-
-}
-
-.build-summary-card-main {
-  display: flex;
-  img {
-    max-width: 55px;
-    margin: 0px 3px 3px 0px;
-    border-radius: 5px;
-  }
-}
-
-.class-subclass-icon {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.class-icon {
-  position: absolute;
-  width: 30px;
-}
-
-.build-summary-footer {
-  display: flex;
-  justify-content: space-between;
-}
-
-@media screen and (min-width: 576px) {
-  .build-summary-card-main img {
-    max-width: 45px;
-    margin: 0px 3px 3px 0px;
-    border-radius: 5px;
-  }
-
-  .class-icon {
-    width: 35px;
-  }
-}
-`
+import { EyeSlashIcon, UserIcon } from '@heroicons/react/24/solid'
 
 type Props = {
   buildSummary: BuildSummary
@@ -124,39 +61,16 @@ function BuildSummaryCard(props: Props) {
   }
 
   return (
-    <Wrapper onClick={goToBuild}>
-      <div className="build-summary-header">
-        <div className="build-summary-name">
-          { buildSummary.name }
-        </div>
+    <div onClick={goToBuild} 
+      className="bg-dark2 p-2 hover:cursor-pointer hover:border-accent2 border border-border rounded flex flex-col transition">
+      <div className="font-bold">
+        { buildSummary.name }
       </div>
-      <div className="build-summary-card-main">
-        <div className="class-subclass-icon">
-          <img src={`/img/classicos/${buildSummary.primaryIconSet.split('-')[0]}.png`}
-            alt="Guardian Class/Subclass Icon"
-            className={`img-fluid class-icon class-icon-${buildSummary.primaryIconSet.split('-')[0]}`}
-          />
-          {buildSummary.primaryIconSet.split('-').length > 2 ? (
-            <img
-              alt="Guardian Class/Subclass Icon"
-              src={`/img/subbgs/${buildSummary.primaryIconSet.split('-')[1]}-${buildSummary.primaryIconSet.split('-')[2]}.png`}
-              className="img-fluid subclass-icon"/>
-          ) : (
-            <img
-              alt="Guardian Class/Subclass Icon"
-              src={`/img/subbgs/${buildSummary.primaryIconSet.split('-')[1]}.png`}
-              className="img-fluid subclass-icon"/>
-          )}
-        </div>
-        {highlight1IconUrl && (
-          <img alt="Build Higlighted Item 1" src={highlight1IconUrl} className="img-fluid" />
-        )}
-        {highlight2IconUrl && (
-          <img alt="Build Higlighted Item 2" src={highlight2IconUrl} className="img-fluid" />
-        )}
-        {highlight3IconUrl && (
-          <img alt="Build Higlighted Item 3" src={highlight3IconUrl} className="img-fluid" />
-        )}
+      <div className="flex gap-2 mb-2 flex-1">
+        <BuildSummaryClassIcon iconSet={buildSummary.primaryIconSet} />
+        <BuildSummaryImage src={highlight1IconUrl} alt="item 1" />
+        <BuildSummaryImage src={highlight2IconUrl} alt="item 2" />
+        <BuildSummaryImage src={highlight3IconUrl} alt="item 3" />
       </div>
       <div className="build-summary-footer">
         <div>
@@ -170,8 +84,59 @@ function BuildSummaryCard(props: Props) {
           </div>
         )}
       </div>
-    </Wrapper>
+    </div>
   )
 }
 
 export default BuildSummaryCard
+
+type BuildSummaryImageProps = {
+  src?: string
+  alt: string
+}
+
+function BuildSummaryImage({ src, alt }: BuildSummaryImageProps) {  
+  if(src) {
+    return (
+      <div className="items-center max-w-[50px]">
+        <img src={src} 
+          alt={alt} 
+          className="rounded" 
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src="/img/img-not-found.jpg";
+          }}
+          />
+      </div>
+    )
+  }
+  return <></>
+}
+
+type BuildSummaryClassIconProps = {
+  iconSet: string
+}
+
+function BuildSummaryClassIcon({ iconSet }: BuildSummaryClassIconProps) {
+  return (
+    <div className="max-w-[50px]">
+      <div className="relative flex content-center items-center">
+        <img src={`/img/classicos/${iconSet.split('-')[0]}.png`}
+          alt="Guardian Class/Subclass Icon"
+          className={`img-fluid absolute p-1 class-icon-${iconSet.split('-')[0]}`}
+        />
+        {iconSet.split('-').length > 2 ? (
+          <img
+            alt="Guardian Class/Subclass Icon"
+            src={`/img/subbgs/${iconSet.split('-')[1]}-${iconSet.split('-')[2]}.png`}
+            className="img-fluid subclass-icon"/>
+        ) : (
+          <img
+            alt="Guardian Class/Subclass Icon"
+            src={`/img/subbgs/${iconSet.split('-')[1]}.png`}
+            className="img-fluid subclass-icon"/>
+        )}
+      </div>
+    </div>
+  )
+}

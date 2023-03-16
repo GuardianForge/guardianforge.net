@@ -1,14 +1,14 @@
-import React from 'react';
-import { Button, ButtonProps } from 'react-bootstrap'
-import styled from 'styled-components';
-import colors from '../../colors'
+import React, { ButtonHTMLAttributes } from 'react';
 
-const Wrapper = styled(Button)`
-  background-color: ${colors.theme2.accent1};
-`
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
-function ForgeButton(props: ButtonProps) {
-  return <Wrapper {...props}>{ props.children }</Wrapper>
+}
+
+function ForgeButton(props: Props) {
+  return <button {...props} 
+    className={`p-2 border border-accent2 bg-buttonBg hover:border-accent1 transition rounded`}>
+    { props.children }
+  </button>
 }
 
 export default ForgeButton;
