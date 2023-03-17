@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import colors from '../../colors';
 
 const Horizontal = styled.div`
-  border-top: 2px solid ${colors.theme2.dark1}
+  border-top: 2px solid ${colors.theme2.dark1};
 `
 
 const Vertical = styled.div`
-  border-left: 2px solid ${colors.theme2.dark1}
+  border-left: 2px solid ${colors.theme2.dark1};
 `
 
 type Props = {

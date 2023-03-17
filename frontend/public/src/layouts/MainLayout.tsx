@@ -2,27 +2,9 @@ import { useEffect, useContext, ReactNode } from 'react'
 import styled from 'styled-components'
 
 import MainNav from '../components/nav/MainNav'
-import { Footer, AppTypeEnum } from 'shared'
 import { GlobalContext } from '../contexts/GlobalContext'
 import AlertLayer from '../components/alerting/AlertLayer'
 import { Alert } from 'react-bootstrap'
-import { createGlobalStyle } from 'styled-components'
-import { Link } from 'react-router-dom'
-
-const GlobalStyle = createGlobalStyle`
-  body {
-    background-color: #14151a !important;
-  }
-`
-
-const Main = styled.div`
-  max-width: 960px !important;
-  min-height: calc(100vh - 160px);
-
-  h1 {
-    margin-top: 20px !important;
-  }
-`
 
 const Wrapper = styled.div`
   #app {
@@ -70,9 +52,8 @@ function MainLayout(props: Props) {
 
   return (
     <Wrapper>
-      <GlobalStyle />
       <MainNav />
-      <div className="container max-w-[960px] mx-auto">
+      <div className="container max-w-[960px] mx-auto px-2 mt-4">
         {children}
       </div>
       {/* <Footer appType={AppTypeEnum.App} linkComponent={Link} extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} /> */}

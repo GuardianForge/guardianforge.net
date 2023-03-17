@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
+  @apply text-text bg-forgebg;
+}
+
 h1 {
   font-size: 2.5rem;
 }
@@ -35,5 +41,33 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-  @apply mb-4
+  font-size: 1.1rem;
+  @apply mb-4;
+}
+
+
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: inherit;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, .30);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(126, 126, 126, 0.7);
 }

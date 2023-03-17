@@ -71,7 +71,6 @@ const defaultFiltersMap = {
 }
 
 exports.buildAvailableFilters = function () {
-  console.log(activityOptions)
   let filters = {}
   Object.keys(defaultFiltersMap).forEach(k => {
     filters[k] = defaultFiltersMap[k]
@@ -95,4 +94,47 @@ exports.buildAvailableFilters = function () {
     }
   })
   return filters
+}
+
+exports.buildAlgoliaFilters = function(inFilters) {
+  let filterMap = {}
+  // @ts-ignore TODO: fix me
+  inFilters.forEach(el => {
+    // @ts-ignore TODO: fix me
+    if(filterMap[el.fieldName]) {
+      // @ts-ignore TODO: fix me
+      filterMap[el.fieldName].values.push(el.value)
+    } else {
+      // @ts-ignore TODO: fix me
+      filterMap[el.fieldName] = {
+        values: [
+          el.value
+        ]
+      }
+    }
+  })
+
+  let filterString = ""
+  Object.keys(filterMap).forEach(key => {
+    if (filterString !== "") {
+      filterString += " AND "
+    }
+    // @ts-ignore TODO: fix me
+    filterString += "("
+    // @ts-ignore TODO: fix me
+    filterMap[key].values.forEach((value, idx) => {
+      if(typeof(value) === "number") {
+        filterString += `${key} = ${value}`
+      }
+      if(typeof(value) === "string") {
+        filterString += `${key}:${value}`
+      }
+      // @ts-ignore TODO: fix me
+      if (idx < filterMap[key].values.length - 1) {
+        filterString += " OR "
+      }
+    })
+    filterString += ")"
+  })
+  return filterString
 }

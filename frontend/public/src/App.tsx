@@ -67,7 +67,6 @@ const GlobalStyle = createGlobalStyle`
 function App() {
   return (
     <Provider>
-      <GlobalStyle />
       <ForgeRouter />
     </Provider>
   );}

@@ -63,10 +63,10 @@ function Home() {
           <img className="rounded-lg border-gray-800 shadow border" src="/img/gifs/find-builds.gif" alt="animation of finding builds" />
           <div className="col-span-2">
             <h2>Find Community Builds</h2>
-            <p className="mb-2">
+            <p>
               GuardianForge provides a simple way to find the builds you are looking for! Filter by Class, Subclass, Activity, or simply search for a specific piece of gear.
             </p>
-            <p className="mb-2">
+            <p>
               Once you find a build, you can bookmark it for later (logged in users only), share it with your friends & viewers, or create a DIM Loadout Optimizer link to make it your own!
             </p>
             <ForgeButton onClick={() => navigate("/find-builds")}><FontAwesomeIcon icon={faCube} /> Find Builds</ForgeButton>
