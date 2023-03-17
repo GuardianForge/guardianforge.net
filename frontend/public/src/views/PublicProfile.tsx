@@ -5,7 +5,6 @@ import Loading from '../components/Loading'
 import { GlobalContext } from '../contexts/GlobalContext'
 import userUtils from "../utils/userUtils"
 import { Helmet } from 'react-helmet'
-import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BuildSummaryCard from '../components/BuildSummaryCard'
 import User from '../models/User'
@@ -16,80 +15,6 @@ import { useLocation, useParams } from 'react-router-dom'
 import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import BuildSummary from '../models/BuildSummary'
 import MainLayout from '../layouts/MainLayout'
-
-const UserMenuWrapper = styled.div`
-  padding: 10px;
-  background-color: #1e1f24;
-  border-radius: 5px;
-
-	.user-info {
-		display: flex;
-    flex-direction: column;
-		padding-bottom: 10px;
-    margin-left: 5px;
-	}
-
-	.user-info-img {
-		max-width: 50px;
-		border-radius: 5px;
-		margin-right: 5px;
-	}
-
-	.user-info-name {
-		font-size: 1.5rem;
-		font-weight: bold;
-	}
-
-	.user-nav {
-		border-top: 1px solid #444;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.user-nav-link {
-		text-decoration: none;
-		color: #eee;
-		padding: 5px;
-		margin: 5px;
-    cursor: pointer;
-		&:hover {
-			color: #aaa;
-		}
-	}
-`
-
-const ForgeUserInfoWrapper = styled.div`
-  span {
-    font-style: italic;
-    font-size: 16px;
-  }
-
-  svg {
-    font-size: 20px;
-    margin-right: 5px;
-    margin-top: 5px;
-  }
-
-  a {
-    color: #ddd;
-  }
-
-  .twitter-link:hover {
-    color: #1da1f2;
-  }
-
-  .twitch-link:hover {
-    color: #9146ff;
-  }
-
-  .youtube-link:hover {
-    color: #ff0000;
-  }
-
-  .facebook-link:hover {
-    color: #1877f2;
-  }
-`
 
 const COMPSTATE = {
   LOADING: 1,
@@ -189,71 +114,72 @@ function PublicProfile() {
       <Helmet>
         <title>GuardianForge</title>
       </Helmet>
-      <div className="container pt-3">
+      <div className="container">
         {compState === COMPSTATE.LOADING && (<Loading />)}
+
         {compState === COMPSTATE.NO_DATA && (
           <div>
             Unable to load this user's Guardians. Please check the username or try again later.
           </div>
         )}
+
         {compState === COMPSTATE.DONE && (
-          <div className="row">
-            <div className="col-md-4">
-              <UserMenuWrapper>
-                <div className="user-info">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-gray-800 rounded p-4 h-fit">
+              <div>
+                <div>
                   {user && (
-                    <span className="user-info-name">
+                    <span className="text-2xl">
                       {user.bungieGlobalDisplayName}#{user.bungieGlobalDisplayNameCode}
                     </span>
                   )}
                   {forgeUser && forgeUser.user && (
-                    <ForgeUserInfoWrapper>
-                      {forgeUser.user.about && <span>"{ forgeUser.user.about }"</span>}
+                    <div>
+                      {forgeUser.user.about && <span className="italic">"{ forgeUser.user.about }"</span>}
                       {forgeUser.user.social && (
-                        <div className="socials">
+                        <div className="flex gap-2 mt-4 mb-2 text-xl">
                           {forgeUser.user.social.twitter && (
-                            <a href={forgeUser.user.social.twitter} className="twitter-link" target="_blank" rel="noreferrer">
+                            <a href={forgeUser.user.social.twitter} className="hover:text-[#1da1f2]" target="_blank" rel="noreferrer">
                               <FontAwesomeIcon icon={faTwitter} />
                             </a>
                           )}
                           {forgeUser.user.social.twitch && (
-                            <a href={forgeUser.user.social.twitch} className="twitch-link" target="_blank" rel="noreferrer">
+                            <a href={forgeUser.user.social.twitch} className="hover:text-[#9146ff]" target="_blank" rel="noreferrer">
                               <FontAwesomeIcon icon={faTwitch} />
                             </a>
                           )}
                           {forgeUser.user.social.youtube && (
-                            <a href={forgeUser.user.social.youtube} className="youtube-link" target="_blank" rel="noreferrer">
+                            <a href={forgeUser.user.social.youtube} className="hover:text-[#ff0000]" target="_blank" rel="noreferrer">
                               <FontAwesomeIcon icon={faYoutube} />
                             </a>
                           )}
                           {forgeUser.user.social.facebook && (
-                            <a href={forgeUser.user.social.facebook} className="facebook-link" target="_blank" rel="noreferrer">
+                            <a href={forgeUser.user.social.facebook} className="hover:text-[#1877f2]" target="_blank" rel="noreferrer">
                               <FontAwesomeIcon icon={faFacebook} />
                             </a>
                           )}
                         </div>
                       )}
-                    </ForgeUserInfoWrapper>
+                    </div>
                   )}
                 </div>
                 {forgeUser && forgeUser.builds && forgeUser.builds.length > 0 && (
-                  <div className="user-nav">
-                    <a className="user-nav-link" onClick={() => setAreBuildsShown(false)}>
+                  <div className="border-t border-t-gray-600 flex flex-col gap-2 pt-2 text-lg">
+                    <a className="text-gray-200 hover:text-white hover:cursor-pointer" onClick={() => setAreBuildsShown(false)}>
                       Guardians
                     </a>
-                    <a className="user-nav-link" onClick={() => setAreBuildsShown(true)}>
+                    <a className="text-gray-200 hover:text-white hover:cursor-pointer" onClick={() => setAreBuildsShown(true)}>
                       Builds
                     </a>
                   </div>
                 )}
-              </UserMenuWrapper>
+              </div>
             </div>
+
             {areBuildsShown ? (
-              <div className="col-md-8 row">
+              <div className="grid col-span-2 grid-cols-2 gap-3">
                 {forgeUser.builds && forgeUser.builds.map((bs: BuildSummary) => (
-                  <div key={bs.id} className="col-md-6">
-                    <BuildSummaryCard buildSummary={bs} isPublicUi />
-                  </div>
+                  <BuildSummaryCard key={bs.id} buildSummary={bs} isPublicUi />
                 ))}
               </div>
             ) : (
