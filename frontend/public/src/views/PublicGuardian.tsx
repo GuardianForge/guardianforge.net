@@ -369,24 +369,24 @@ function Guardian() {
             <StatBar stats={stats} highlights={highlights} onHighlightableClicked={updateHighlights} isHighlightable={isBuildModeActive} />
 
             <h4>Subclass</h4>
-            <div className="items subclass row">
+            <div className="grid grid-cols-1">
               {items.subclass && (<SubclassCard item={items.subclass} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}/>)}
             </div>
 
             <h4>Weapons</h4>
-            <div className="items weapons row">
-              {items.kinetic && (<ItemCard className="col-md-4" item={items.kinetic} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}/>)}
-              {items.energy && (<ItemCard className="col-md-4" item={items.energy} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
-              {items.power && (<ItemCard className="col-md-4" item={items.power} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+            <div className="grid grid-cols-3 gap-2">
+              {items.kinetic && (<ItemCard item={items.kinetic} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}/>)}
+              {items.energy && (<ItemCard item={items.energy} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+              {items.power && (<ItemCard item={items.power} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
             </div>
 
             <h4>Armor</h4>
-            <div className="items armor row">
-              {items.helmet && (<ItemCard className="col-md-4" item={items.helmet} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
-              {items.arms && (<ItemCard className="col-md-4" item={items.arms} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
-              {items.chest && (<ItemCard className="col-md-4" item={items.chest} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
-              {items.legs && (<ItemCard className="col-md-4" item={items.legs} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive} />)}
-              {items.classItem && (<ItemCard className="col-md-4" item={items.classItem} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+            <div className="grid grid-cols-3 gap-2">
+              {items.helmet && (<ItemCard item={items.helmet} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+              {items.arms && (<ItemCard item={items.arms} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+              {items.chest && (<ItemCard item={items.chest} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+              {items.legs && (<ItemCard item={items.legs} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive} />)}
+              {items.classItem && (<ItemCard item={items.classItem} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
             </div>
 
             <BuildAd />
