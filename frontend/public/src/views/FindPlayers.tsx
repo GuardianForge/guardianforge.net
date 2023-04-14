@@ -100,7 +100,7 @@ function FindPlayers() {
         <Helmet>
           <title>Find Players - GuardianForge</title>
         </Helmet>
-        <div className="search-wrapper">
+        <div className="search-wrapper text-black">
           <DebounceInput
             placeholder="Search by username"
             className="user-search-input"

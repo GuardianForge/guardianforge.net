@@ -18,6 +18,7 @@ import { BungieOfflineAlert } from '../models/AlertDetail'
 import User, { UserInfo } from '../models/User'
 import ActivityOption from '../models/ActivityOption'
 import MainLayout from '../layouts/MainLayout'
+import ForgeButton from '../components/forms/Button'
 
 const Wrapper = styled.div`
   .items {
@@ -256,46 +257,49 @@ function Guardian() {
         <Helmet>
           <title>GuardianForge</title>
         </Helmet>
-        {compState === COMP_STATE.LOADING && (<div style={{ marginTop: "20px" }}> <Loading/> </div>)}
+        {compState === COMP_STATE.LOADING && (<div className="mt-[20px]"> <Loading/> </div>)}
         {compState === COMP_STATE.DONE && (
           <div>
-            <div className="guardian-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div className="guardian-header flex items-center justify-between">
               <h1>{selectedUser.displayName}'s {className}</h1>
               <div className="header-buttons">
                 {!isBuildModeActive ? (
-                  <button onClick={() => setIsBuildModeActive(true)} className="btn btn-secondary">Create Build</button>
+                  <ForgeButton onClick={() => setIsBuildModeActive(true)}>Create Build</ForgeButton>
                 ) : (
-                  <div className="btn-group">
-                    <button v-if="getIsBuildModeActive" onClick={onCancelClicked} className="btn btn-secondary" disabled={isSaving}>Cancel</button>
-                    <button v-if="getIsBuildModeActive" onClick={onSaveBuildClicked} className="btn btn-secondary" disabled={isSaving}>Save Build</button>
+                  <div className="flex gap-3">
+                    <ForgeButton onClick={onCancelClicked} disabled={isSaving}>Cancel</ForgeButton>
+                    <ForgeButton onClick={onSaveBuildClicked} disabled={isSaving}>Save Build</ForgeButton>
                   </div>
                 )}
               </div>
             </div>
-            <hr />
             {isBuildModeActive && (
-              <div className="build-info row">
-                <h2 className="col-md-12">Build Info</h2>
-                <div className="col-md-6">
-                  <div className="form-group mb-3">
-                    <label htmlFor="buildName" className="form-label">Name</label>
-                    <input type="text"
-                      value={buildName}
-                      onChange={(e) => setBuildName(e.target.value)}
-                      id="buildName"
-                      className="form-control"
-                      placeholder="Give your build a name" />
+              <div className="grid grid-cols-2">
+                <h2 className="col-span-2">Build Info</h2>
+
+                <div>
+                  <div className="flex flex-col mb-2">
+                    <label className="font-bold">Name</label>
+                    <div className="bg-white p-1 border border-gray-300 shadow text-black">
+                      <input type="text"
+                        value={buildName}
+                        onChange={(e) => setBuildName(e.target.value)}
+                        id="buildName"
+                        className="w-full border-transparent focus:border-transparent focus:ring-0 outline-none"
+                        placeholder="Give your build a name" />
+                    </div>
                   </div>
-                  <div className="form-group mb-3">
-                  <label htmlFor="buildNotes" className="form-label">Notes</label>
-                    <textarea
-                      value={buildNotes}
-                      onChange={(e) => setBuildNotes(e.target.value)}
-                      id="buildNotes"
-                      className="form-control"
-                      placeholder="Add notes about how to best use the build, what synergizes together, etc."
-                      rows={5}>
-                    </textarea>
+                  <div className="flex flex-col mb-2">
+                    <label className="font-bold">Notes</label>
+                    <div className="bg-white p-1 border border-gray-300 shadow text-black">
+                      <textarea
+                        value={buildNotes}
+                        onChange={(e) => setBuildNotes(e.target.value)}
+                        id="buildNotes"
+                        className="w-full border-transparent focus:border-transparent focus:ring-0 outline-none"
+                        placeholder="Add notes about how to best use the build, what synergizes together, etc."
+                        rows={5} />
+                    </div>
                   </div>
 
                   <div className="form-group mb-3">
@@ -312,7 +316,7 @@ function Guardian() {
                   </div>
                 </div>
 
-                <div className="col-md-6">
+                <div>
                   {isUserLoggedIn && (
                     <div className="form-group mb-3">
                       <label htmlFor="buildVisibility" className="form-label">Visibility</label>
