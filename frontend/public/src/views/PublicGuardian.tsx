@@ -274,7 +274,7 @@ function Guardian() {
               </div>
             </div>
             {isBuildModeActive && (
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-2 gap-3">
                 <h2 className="col-span-2">Build Info</h2>
 
                 <div>
@@ -284,7 +284,6 @@ function Guardian() {
                       <input type="text"
                         value={buildName}
                         onChange={(e) => setBuildName(e.target.value)}
-                        id="buildName"
                         className="w-full border-transparent focus:border-transparent focus:ring-0 outline-none"
                         placeholder="Give your build a name" />
                     </div>
@@ -295,24 +294,26 @@ function Guardian() {
                       <textarea
                         value={buildNotes}
                         onChange={(e) => setBuildNotes(e.target.value)}
-                        id="buildNotes"
                         className="w-full border-transparent focus:border-transparent focus:ring-0 outline-none"
                         placeholder="Add notes about how to best use the build, what synergizes together, etc."
                         rows={5} />
                     </div>
                   </div>
 
-                  <div className="form-group mb-3">
-                    <label htmlFor="primaryActivity" className="form-label">Primary Activity</label>
+                  <div className="flex flex-col mb-2">
+                    <label className="font-bold">Primary Activity</label>
                     <ActivitySelector value={primaryActivity} onChange={onActivityChanged}/>
                   </div>
-                  <div className="form-group mb-3">
-                    <label htmlFor="inputStyle" className="form-label">Input Style</label>
-                    <select value={inputStyle} onChange={e => setInputStyle(e.target.value)} id="inputStyle" className="form-select" >
-                      <option value="0" disabled>Mouse/Keyboard or Controller</option>
-                      <option value="1">Mouse/Keyboard</option>
-                      <option value="2">Controller</option>
-                    </select>
+
+                  <div className="flex flex-col mb-2">
+                    <label className="font-bold">Input Style</label>
+                    <div className="bg-white p-1 border border-gray-300 shadow text-black">
+                      <select value={inputStyle} onChange={e => setInputStyle(e.target.value)} id="inputStyle" className="w-full" >
+                        <option value="0" disabled>Mouse/Keyboard or Controller</option>
+                        <option value="1">Mouse/Keyboard</option>
+                        <option value="2">Controller</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
@@ -346,14 +347,15 @@ function Guardian() {
                       )}
                     </div>
                   )}
-                  <div className="form-group mb-3">
-                    <label htmlFor="videoLink" className="form-label">YouTube Video</label>
-                    <input type="text"
+                  <div className="flex flex-col mb-2">
+                    <label className="font-bold">YouTube Video</label>
+                    <div className="bg-white p-1 border border-gray-300 shadow text-black">
+                      <input type="text"
                       value={videoLink}
                       onChange={e => setVideoLink(e.target.value)}
-                      id="videoLink"
-                      className="form-control"
-                      placeholder="If you have a video link, paste it here" />
+                        className="w-full border-transparent focus:border-transparent focus:ring-0 outline-none"
+                        placeholder="If you have a video link, paste it here" />
+                    </div>
                   </div>
                   {videoLink ? (
                     <div>

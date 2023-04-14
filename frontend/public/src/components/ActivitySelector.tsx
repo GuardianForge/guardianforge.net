@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import activityOptions from '../utils/activityOptions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ActivityOption from '../models/ActivityOption'
-import ForgeModal from './Modal'
+import ForgeModal from './ui/Modal2'
 import ForgeButton from './forms/Button'
 import colors from '../colors'
 import { Button } from 'react-bootstrap'
@@ -122,7 +122,7 @@ function ActivitySelector(props: Props) {
         <span><FontAwesomeIcon icon={faCaretDown} /></span>
       </ForgeButton>
       <ForgeModal
-        scrollable
+        onClose={() => setAreOptionsOpen(false)}
         show={areOptionsOpen}
         title="Select Activity"
         footer={<ForgeButton onClick={() => setAreOptionsOpen(false)}>Close</ForgeButton>}>

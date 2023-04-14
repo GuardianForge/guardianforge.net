@@ -43,7 +43,7 @@ function ForgeModal(props: Props) {
 
   return (
   <Wrapper
-    className={className}
+    className={`${className}`}
     show={show}
     onHide={onHide}
     scrollable={scrollable ? scrollable : true}
