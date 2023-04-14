@@ -13,6 +13,12 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
+  border: none !important;
+
+  &:disabled {
+    border: none !important;
+  }
+
   &:hover {
     color: inherit !important;
   }
@@ -87,7 +93,7 @@ function BookmarkButton(props: Props) {
             overlay={<Tooltip>Login to bookmark this build.</Tooltip>}>
             <div style={{cursor: "not-allowed"}}>
               <button type="button"
-                className="btn"
+                className="btn border-none flex items-center gap-1"
                 disabled>
                 <FontAwesomeIcon icon={farBookmark} />
                 <span className="d-none d-md-inline">Add to Bookmarks</span>

@@ -64,13 +64,11 @@ function UserBuilds() {
         </Helmet>
         {compState === State.LOADING && <Loading />}
         {compState === State.DONE && (
-          <Row>
-            {builds.map(bs => (
-              <div key={bs.id} className="col-md-6 col-lg-4">
-                <BuildSummaryCard buildSummary={bs} />
-              </div>
+          <div className="grid md:grid-cols-3 gap-2 grid-cols-1">
+            {builds.map((bs: BuildSummary) => (
+              <BuildSummaryCard key={bs.id} buildSummary={bs}/>
             ))}
-          </Row>
+          </div>
         )}
       </Wrapper>
     </AppLayout>

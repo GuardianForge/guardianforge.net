@@ -7,6 +7,7 @@ import { BuildItemPlug } from '../models/Build'
 import { Item, SocketItem } from '@guardianforge/destiny-data-utils'
 import colors from '../colors'
 import Highlightable from './Highlightable'
+import Image from './ui/Image'
 
 const Wrapper = styled.div`
   display: flex;
@@ -114,7 +115,8 @@ function Plug(props: Props) {
           placement="bottom"
           delay={{ show: 250, hide: 400 }}
           overlay={<Tooltip>{ plugName }</Tooltip>}>
-          <img src={fixedIconUrl ? fixedIconUrl : iconUrl} className={`socket-icon ${plugType === "perk" ? "perk" : "mod"}`} />
+          <Image src={fixedIconUrl ? fixedIconUrl : iconUrl} 
+            className={`socket-icon ${plugType === "perk" ? "perk" : "mod"}`} />
         </OverlayTrigger>
       </Highlightable>
     </Wrapper>

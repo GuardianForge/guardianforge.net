@@ -353,9 +353,10 @@ function BuildMetaPanel(props: Props) {
   return (
     <Wrapper className="row">
       <div className="share-bar col-md-12">
-        <div className="btn-group share-bar-buttons">
-          <div className="share-bar-buttons-left">
-            <button type="button" className="btn" onClick={copyToClipboard}>
+
+        <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col md:flex-row flex-1 items-center">
+            <button type="button" className="btn w-" onClick={copyToClipboard}>
               {isCopied ? (
                 <span>👍</span>
               ) : (
@@ -363,17 +364,23 @@ function BuildMetaPanel(props: Props) {
               )}
               Copy Link
             </button>
-            <a className="btn btn-twitter" href={twitterLink} target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faTwitter} /> Share</a>
 
-            <Button onClick={copyDIMLink} className="dim-btn">
+            <a className="btn btn-twitter" href={twitterLink} target="_blank" rel="noreferrer">
+              <FontAwesomeIcon icon={faTwitter} /> Share
+            </a>
+
+            <Button onClick={copyDIMLink} className="dim-btn flex items-center gap-1">
               <img src="/img/dim-logo.svg" className="dim-logo" alt="DIM Logo" /> <span>DIM Link</span>
             </Button>
+
             <BookmarkButton buildId={buildId} buildData={buildData} />
+
             {isOwner && !isEditing && (
               <button type="button" className="btn" onClick={() => editBuild()}>
                 <FontAwesomeIcon icon={faEdit} /> Edit
               </button>
             )}
+
             {isOwner && isEditing && (
               <>
                 <button type="button" className="btn" onClick={() => updateBuild()}>
@@ -384,16 +391,21 @@ function BuildMetaPanel(props: Props) {
                 </button>
               </>
             )}
+
             {isOwner && (
               <button type="button" className="btn" onClick={() => setIsArchiveModalDisplayed(true)}>
                 <FontAwesomeIcon icon={faBox} /> Archive
               </button>
             )}
+
           </div>
           <div className="share-bar-buttons-right">
             <UpvoteButton buildId={buildId} buildData={buildData} isBuildArchived={isBuildArchived} />
           </div>
         </div>
+
+
+
       </div>
       <div className={`mt-1 col-md-${12 / columns}`}>
         {displayNotes && !isEditing && (
@@ -533,28 +545,6 @@ function BuildMetaPanel(props: Props) {
         <p>Direct links & bookmarks will still be valid. </p>
         <p><b>This operation CANNOT be undone.</b></p>
       </ForgeModal>
-
-      {/* <Modal className="" show>
-        <Modal.Header closeButton>
-          <Modal.Title>Archive Build</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <p>
-            Archiving a build will do the following;
-          </p>
-          <ul>
-            <li>Remove from "My Builds"</li>
-            <li>Remove from search & other public build lists</li>
-            <li>Remove upvote & ownership information</li>
-          </ul>
-          <p>Direct links & bookmarks will still be valid. <b>This operation CANNOT be undone.</b></p>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="primary">Submit</Button>
-        </Modal.Footer>
-      </Modal> */}
 
       <ForgeModal show={isNotesDialogDisplayed} title="Build Notes" size="lg" scrollable footer={<ForgeButton onClick={() => setIsNotesDialogDisplayed(false)}>Close</ForgeButton>}>
         <>

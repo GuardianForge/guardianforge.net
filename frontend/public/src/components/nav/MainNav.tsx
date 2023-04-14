@@ -20,8 +20,19 @@ type MobileMenuProps = {
 }
 
 function MobileMenu({ open, onClose, loginUrl }: MobileMenuProps) {
+
+  useEffect(() => {
+    function preventScroll(e: any) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+
+    let el = document.getElementById("mobile_menu")
+    el?.addEventListener("wheel", preventScroll, { passive: false })
+  }, [open])
+
   return (
-    <div className={`absolute top-0 h-screen w-full bg-forgebg opacity-95 transition z-50 md:hidden overscroll-none ${open ? "visible" : "hidden"}`}>
+    <div id="mobile_menu" className={`absolute top-0 h-screen w-full bg-forgebg opacity-95 transition z-50 md:hidden overscroll-none ${open ? "visible" : "hidden"}`}>
       <div className="flex items-center justify-between p-2 border-b-gray-800 border-b">
         <Link className="flex items-center text-xl mr-4 text-white hover:text-white" to="/">
           <img src={SiteLogo} alt="GuardianForge Logo" className="h-[40px] w-[40px] mr-2" /> GuardianForge

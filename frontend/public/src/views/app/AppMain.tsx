@@ -99,20 +99,14 @@ function AppIndex() {
               </Col>
               {/* <Col>Latest News (latest blog post)</Col> */}
             </Row>
-            <Row>
-              <Col md="12">
-                <h3>Latest Builds</h3>
-              </Col>
-              <Col md="12">
-                <Row>
-                  {latestBuilds.map((bs: BuildSummary) => (
-                    <Col md="4" key={bs.id}>
-                      <BuildSummaryCard key={bs.id} buildSummary={bs} />
-                    </Col>
-                  ))}
-                </Row>
-              </Col>
-            </Row>
+            <div className="my-8 mx-4">
+              <h2>Latest Builds</h2>
+              <div className="grid md:grid-cols-3 gap-2 grid-cols-1">
+                {latestBuilds.map((bs: BuildSummary) => (
+                  <BuildSummaryCard key={bs.id} buildSummary={bs} isPublicUi/>
+                ))}
+              </div>
+            </div>
           </>
         }
       </Container>

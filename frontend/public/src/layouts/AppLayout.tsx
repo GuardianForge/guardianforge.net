@@ -480,7 +480,7 @@ function AppLayout(props: Props) {
       <Sidebar className="d-none d-xl-flex">
         <div className="nav-header">
           <div className="branding">
-            <Link to="/app">
+            <Link to="/app" className="flex items-center">
               <img className="logo" alt="GuardianForge Logo" height="40" width="40" src={SiteLogo} />GuardianForge
             </Link>
           </div>

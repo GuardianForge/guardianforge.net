@@ -125,7 +125,7 @@ function UpvoteButton(props: Props) {
               overlay={<Tooltip>Login to upvote this build.</Tooltip>}>
               <div style={{cursor: "not-allowed"}}>
                 <button type="button"
-                  className="btn"
+                  className="btn border-none"
                   disabled>
                   <UpvoteIcon filled />
                   { upvoteCount }

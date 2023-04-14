@@ -2,6 +2,7 @@ import React, { MouseEventHandler } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import styled from 'styled-components';
 import colors from '../colors';
+import Image from './ui/Image';
 
 const Wrapper = styled.div`
 
@@ -101,7 +102,7 @@ function V2SuperTree(props: Props) {
                 placement="bottom"
                 delay={{ show: 250, hide: 400 }}
                 overlay={<Tooltip>{ p.name }</Tooltip>}>
-                <img src={p.icon.startsWith("http") ? p.icon : `https://www.bungie.net${p.icon}`} />
+                <Image className="rounded-full" src={p.icon.startsWith("http") ? p.icon : `https://www.bungie.net${p.icon}`} />
               </OverlayTrigger>
             </div>
           </div>

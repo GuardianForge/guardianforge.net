@@ -17,7 +17,7 @@ type Props = {
 
 function BuildsSearchBar({ value, onKeyPress, onFilterAdded, filters, onChange, onSearch, onCopyUrl, onRemoveFilter }: Props) {
   return (
-    <div className="text-white bg-gray-800 rounded shadow p-4">
+    <div className="text-white bg-gray-800 rounded shadow pl-4 pr-2 py-2">
       <div className="flex justify-between">
         <div className="flex flex-1 items-center">
           <FontAwesomeIcon icon={faSearch} className="text-gray-600 mr-2" />

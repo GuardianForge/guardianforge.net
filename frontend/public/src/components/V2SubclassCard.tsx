@@ -8,6 +8,7 @@ import colors from '../colors';
 import { BuildItem } from '../models/Build';
 import Highlightable from './Highlightable';
 import ForgeModal from './Modal';
+import Image from './ui/Image';
 import V2SuperTree from './V2SuperTree';
 
 
@@ -262,7 +263,7 @@ function V2SubclassCard(props: Props) {
                     isHighlightable={isHighlightModeOn}
                     onClick={onHighlightableClickedHandler}
                     className="highlightable-wrapper">
-                    <img src={`https://www.bungie.net${grenade.icon}`} />
+                    <Image src={`https://www.bungie.net${grenade.icon}`} />
                   </Highlightable>
                   <span className="perk-title">{grenade.name}</span>
                 </div>
@@ -275,7 +276,7 @@ function V2SubclassCard(props: Props) {
                   isHighlightable={isHighlightModeOn}
                   onClick={onHighlightableClickedHandler}
                   className="highlightable-wrapper">
-                  <img src={`https://www.bungie.net${specialty.icon}`} />
+                  <Image src={`https://www.bungie.net${specialty.icon}`} />
                 </Highlightable>
                   {/* <img src={`https://www.bungie.net${specialty.icon}`} /> */}
                   <span className="perk-title">{specialty.name}</span>
@@ -289,7 +290,7 @@ function V2SubclassCard(props: Props) {
                     isHighlightable={isHighlightModeOn}
                     onClick={onHighlightableClickedHandler}
                     className="highlightable-wrapper">
-                    <img src={`https://www.bungie.net${movement.icon}`} />
+                    <Image src={`https://www.bungie.net${movement.icon}`} />
                   </Highlightable>
                   <span className="perk-title">{movement.name}</span>
                 </div>

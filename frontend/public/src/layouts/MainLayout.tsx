@@ -5,6 +5,7 @@ import MainNav from '../components/nav/MainNav'
 import { GlobalContext } from '../contexts/GlobalContext'
 import AlertLayer from '../components/alerting/AlertLayer'
 import { Alert } from 'react-bootstrap'
+import Footer from '../components/ui/Footer'
 
 const Wrapper = styled.div`
   #app {
@@ -56,7 +57,7 @@ function MainLayout(props: Props) {
       <div className="container max-w-[960px] mx-auto px-2 mt-4">
         {children}
       </div>
-      {/* <Footer appType={AppTypeEnum.App} linkComponent={Link} extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} /> */}
+      <Footer extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} />
 
       {bannerMessage && (
         <div style={{

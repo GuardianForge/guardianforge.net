@@ -238,7 +238,7 @@ function UserMenu(props: Props) {
     return (
       <Wrapper className="d-flex">
         <Dropdown align="end">
-          <Dropdown.Toggle className="user-badge">
+          <Dropdown.Toggle className="user-badge flex items-center">
             {userData && userData.bungieNetUser && (
               <>
                 <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} alt="User Profile Img" />

@@ -12,6 +12,7 @@ import Loading from '../../components/Loading'
 import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import AppLayout from '../../layouts/AppLayout'
 import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
+import ForgeButton from '../../components/forms/Button'
 
 function Profile() {
   const { isClientLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
@@ -230,9 +231,9 @@ function Profile() {
         </Row>
         <Row>
           <Col lg="8" md="12">
-            <Button onClick={() => saveProfile()} disabled={isLoading}>
+            <ForgeButton onClick={() => saveProfile()} disabled={isLoading}>
               Save
-            </Button>
+            </ForgeButton>
           </Col>
         </Row>
 

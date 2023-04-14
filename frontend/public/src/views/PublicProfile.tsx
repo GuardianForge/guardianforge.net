@@ -124,66 +124,65 @@ function PublicProfile() {
         )}
 
         {compState === COMPSTATE.DONE && (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
             <div className="bg-gray-800 rounded p-4 h-fit">
               <div>
-                <div>
-                  {user && (
-                    <span className="text-2xl">
-                      {user.bungieGlobalDisplayName}#{user.bungieGlobalDisplayNameCode}
-                    </span>
-                  )}
-                  {forgeUser && forgeUser.user && (
-                    <div>
-                      {forgeUser.user.about && <span className="italic">"{ forgeUser.user.about }"</span>}
-                      {forgeUser.user.social && (
-                        <div className="flex gap-2 mt-4 mb-2 text-xl">
-                          {forgeUser.user.social.twitter && (
-                            <a href={forgeUser.user.social.twitter} className="hover:text-[#1da1f2]" target="_blank" rel="noreferrer">
-                              <FontAwesomeIcon icon={faTwitter} />
-                            </a>
-                          )}
-                          {forgeUser.user.social.twitch && (
-                            <a href={forgeUser.user.social.twitch} className="hover:text-[#9146ff]" target="_blank" rel="noreferrer">
-                              <FontAwesomeIcon icon={faTwitch} />
-                            </a>
-                          )}
-                          {forgeUser.user.social.youtube && (
-                            <a href={forgeUser.user.social.youtube} className="hover:text-[#ff0000]" target="_blank" rel="noreferrer">
-                              <FontAwesomeIcon icon={faYoutube} />
-                            </a>
-                          )}
-                          {forgeUser.user.social.facebook && (
-                            <a href={forgeUser.user.social.facebook} className="hover:text-[#1877f2]" target="_blank" rel="noreferrer">
-                              <FontAwesomeIcon icon={faFacebook} />
-                            </a>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                {forgeUser && forgeUser.builds && forgeUser.builds.length > 0 && (
-                  <div className="border-t border-t-gray-600 flex flex-col gap-2 pt-2 text-lg">
-                    <a className="text-gray-200 hover:text-white hover:cursor-pointer" onClick={() => setAreBuildsShown(false)}>
-                      Guardians
-                    </a>
-                    <a className="text-gray-200 hover:text-white hover:cursor-pointer" onClick={() => setAreBuildsShown(true)}>
-                      Builds
-                    </a>
+                {user && (
+                  <span className="text-2xl">
+                    {user.bungieGlobalDisplayName}#{user.bungieGlobalDisplayNameCode}
+                  </span>
+                )}
+                {forgeUser && forgeUser.user && (
+                  <div>
+                    {forgeUser.user.about && <span className="italic">"{ forgeUser.user.about }"</span>}
+                    {forgeUser.user.social && (
+                      <div className="flex gap-2 mt-4 mb-2 text-xl">
+                        {forgeUser.user.social.twitter && (
+                          <a href={forgeUser.user.social.twitter} className="hover:text-[#1da1f2]" target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon icon={faTwitter} />
+                          </a>
+                        )}
+                        {forgeUser.user.social.twitch && (
+                          <a href={forgeUser.user.social.twitch} className="hover:text-[#9146ff]" target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon icon={faTwitch} />
+                          </a>
+                        )}
+                        {forgeUser.user.social.youtube && (
+                          <a href={forgeUser.user.social.youtube} className="hover:text-[#ff0000]" target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon icon={faYoutube} />
+                          </a>
+                        )}
+                        {forgeUser.user.social.facebook && (
+                          <a href={forgeUser.user.social.facebook} className="hover:text-[#1877f2]" target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon icon={faFacebook} />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
+              {forgeUser && forgeUser.builds && forgeUser.builds.length > 0 && (
+                <div className="border-t border-t-gray-600 flex flex-col gap-2 pt-2 text-lg">
+                  <a className="text-gray-200 hover:text-white hover:cursor-pointer" onClick={() => setAreBuildsShown(false)}>
+                    Guardians
+                  </a>
+                  <a className="text-gray-200 hover:text-white hover:cursor-pointer" onClick={() => setAreBuildsShown(true)}>
+                    Builds
+                  </a>
+                </div>
+              )}
             </div>
 
             {areBuildsShown ? (
-              <div className="grid col-span-2 grid-cols-2 gap-3">
+              <div className="grid col-span-2 md:grid-cols-2 gap-3">
                 {forgeUser.builds && forgeUser.builds.map((bs: BuildSummary) => (
                   <BuildSummaryCard key={bs.id} buildSummary={bs} isPublicUi />
                 ))}
               </div>
             ) : (
-              <div className="col-md-8">
+              <div className="col-span-2">
                 {guardians.map((g: Guardian) => (
                   <GuardianCard key={g.characterId}
                     classType={g.classType as string}

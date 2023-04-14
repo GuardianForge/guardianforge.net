@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ItemTierData } from '@guardianforge/destiny-data-utils/dist/models/Item'
 import Highlightable from './Highlightable'
 import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import Image from './ui/Image'
 
 const Wrapper = styled(Card)`
   .card-content {
@@ -173,10 +174,10 @@ function ItemCard(props: Props) {
               isHighlightable={isHighlightable}
               highlightClass="item-icon"
               onClick={onHighlightableClicked}>
-                <img src={item.ornamentIconUrl ? item.ornamentIconUrl : item.iconUrl} className="item-icon" alt="Item Icon" />
+                <Image src={item.ornamentIconUrl ? item.ornamentIconUrl : item.iconUrl} className="item-icon" alt="Item Icon" />
             </Highlightable>
 
-            {item.affinityIcon && (<img src={item.affinityIcon} className="affinity-icon" alt="Affinity Icon" />)}
+            {item.affinityIcon && (<Image src={item.affinityIcon} className="affinity-icon" alt="Affinity Icon" />)}
 
           </div>
 

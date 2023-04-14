@@ -415,14 +415,16 @@ function Search() {
             </div>
           )}
         </div>
-        <div className="col-md-12 mt-3">
-          <div className="row">
-            {displayedBuilds.map((el: any, idx: number) => (
-              <div key={`search-${idx}`} className="col-md-4">
-                <BuildSummaryCard buildSummary={el.summary} />
-              </div>
-            ))}
-          </div>
+
+        {/* <div className="grid md:grid-cols-3 gap-2 grid-cols-1">
+          {displayedBuilds.map((bs: BuildSummary) => (
+            <BuildSummaryCard key={bs.id} buildSummary={bs}/>
+          ))}
+        </div> */}
+        <div className="grid md:grid-cols-3 gap-2 grid-cols-1 mt-3">
+          {displayedBuilds.map((el: any, idx: number) => (
+            <BuildSummaryCard key={`search-${idx}`} buildSummary={el.summary} />
+          ))}
         </div>
         {totalPages > 1 && (
           <div id="buildsPaginator" className="row mt-3">

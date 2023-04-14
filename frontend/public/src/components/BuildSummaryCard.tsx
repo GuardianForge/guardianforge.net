@@ -6,7 +6,7 @@ import UpvoteIcon from './UpvoteIcon'
 import { imageFixerMap } from "../utils/shims"
 import BuildSummary from '../models/BuildSummary'
 import { faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons'
-import { EyeSlashIcon, UserIcon } from '@heroicons/react/24/solid'
+import Image from './ui/Image'
 
 type Props = {
   buildSummary: BuildSummary
@@ -62,7 +62,7 @@ function BuildSummaryCard(props: Props) {
 
   return (
     <div onClick={goToBuild} 
-      className="bg-dark2 p-2 hover:cursor-pointer hover:border-accent2 border border-border rounded flex flex-col transition">
+      className="bg-gray-800 p-2 hover:cursor-pointer hover:border-gray-400 border border-gray-600 flex flex-col transition">
       <div className="font-bold">
         { buildSummary.name }
       </div>
@@ -72,11 +72,11 @@ function BuildSummaryCard(props: Props) {
         <BuildSummaryImage src={highlight2IconUrl} alt="item 2" />
         <BuildSummaryImage src={highlight3IconUrl} alt="item 3" />
       </div>
-      <div className="build-summary-footer">
-        <div>
+      <div className="flex">
+        <div className="flex gap-2 flex-1 items-center">
           <FontAwesomeIcon icon={faUser} /> { buildSummary.username }
+          {buildSummary.isPrivate && <FontAwesomeIcon icon={faEyeSlash} />}
         </div>
-        {buildSummary.isPrivate && <FontAwesomeIcon icon={faEyeSlash} />}
         {buildSummary.upvotes !== undefined && buildSummary.upvotes > 0 && (
           <div>
             <UpvoteIcon filled />
@@ -99,14 +99,7 @@ function BuildSummaryImage({ src, alt }: BuildSummaryImageProps) {
   if(src) {
     return (
       <div className="items-center max-w-[50px]">
-        <img src={src} 
-          alt={alt} 
-          className="rounded" 
-          onError={({ currentTarget }) => {
-            currentTarget.onerror = null; // prevents looping
-            currentTarget.src="/img/img-not-found.jpg";
-          }}
-          />
+        <Image src={src} alt={alt} className="rounded" />
       </div>
     )
   }
@@ -121,17 +114,17 @@ function BuildSummaryClassIcon({ iconSet }: BuildSummaryClassIconProps) {
   return (
     <div className="max-w-[50px]">
       <div className="relative flex content-center items-center">
-        <img src={`/img/classicos/${iconSet.split('-')[0]}.png`}
+        <Image src={`/img/classicos/${iconSet.split('-')[0]}.png`}
           alt="Guardian Class/Subclass Icon"
           className={`img-fluid absolute p-1 class-icon-${iconSet.split('-')[0]}`}
         />
         {iconSet.split('-').length > 2 ? (
-          <img
+          <Image
             alt="Guardian Class/Subclass Icon"
             src={`/img/subbgs/${iconSet.split('-')[1]}-${iconSet.split('-')[2]}.png`}
             className="img-fluid subclass-icon"/>
         ) : (
-          <img
+          <Image
             alt="Guardian Class/Subclass Icon"
             src={`/img/subbgs/${iconSet.split('-')[1]}.png`}
             className="img-fluid subclass-icon"/>

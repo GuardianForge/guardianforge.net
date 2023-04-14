@@ -119,7 +119,7 @@ function Build() {
 
           <div style={{ marginTop: "15px" }}>
             <Alert>
-              Login with your Bungie account to unlock more features! <a href={loginUrl}>Login w/Bungie</a>.
+              Login with your Bungie account to unlock more features! <a className="border-b border-b-blue-400" href={loginUrl}>Login w/Bungie</a>.
             </Alert>
           </div>
 
