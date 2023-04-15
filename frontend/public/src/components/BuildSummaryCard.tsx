@@ -61,8 +61,8 @@ function BuildSummaryCard(props: Props) {
   }
 
   return (
-    <div onClick={goToBuild} 
-      className="bg-gray-800 p-2 hover:cursor-pointer hover:border-gray-400 border border-gray-600 flex flex-col transition">
+    <div onClick={goToBuild}
+      className="bg-neutral-800 p-2 hover:cursor-pointer hover:border-neutral-400 border border-neutral-600 flex flex-col transition">
       <div className="font-bold">
         { buildSummary.name }
       </div>
@@ -95,7 +95,7 @@ type BuildSummaryImageProps = {
   alt: string
 }
 
-function BuildSummaryImage({ src, alt }: BuildSummaryImageProps) {  
+function BuildSummaryImage({ src, alt }: BuildSummaryImageProps) {
   if(src) {
     return (
       <div className="items-center max-w-[50px]">

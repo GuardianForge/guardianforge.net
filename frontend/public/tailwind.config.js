@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "forgebg": "#161D28",
+        "forgebg": "#111111",
         dark1: "#1E1D2B",
         dark2: "#252736",
         dark3: "#353648",
@@ -18,7 +18,8 @@ module.exports = {
         text: "#e5e5e5",
         text2: "#aaaaaa",
         "socket-icon-bg": "#111111",
-        highlight: "yellow"
+        highlight: "yellow",
+        d2light: "#e5d163"
       }
     },
   },

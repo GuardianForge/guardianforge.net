@@ -21,7 +21,6 @@ const GlobalStyle = createGlobalStyle`
   body {
     height: 100vh;
     margin: 0px;
-    background-color: #15141d !important;
   }
 
   #___gatsby {
@@ -65,7 +64,7 @@ const Layout = styled.div`
 `
 
 const MobileMenu = styled(Offcanvas)`
-  background-color: ${colors.theme2.bg} !important;
+  /* background-color: ${colors.theme2.bg} !important; */
 
   .logo {
     margin-right: 10px;
@@ -168,7 +167,7 @@ const MobileMenu = styled(Offcanvas)`
 
 const Sidebar = styled.div`
   width: 250px;
-  background-color: ${colors.theme2.bg};
+  /* background-color: ${colors.theme2.bg}; */
   display: flex;
   flex-direction: column;
   z-index: 200;
@@ -504,10 +503,10 @@ function AppLayout(props: Props) {
       </Sidebar>
 
       {/* Mobile Menu */}
-      <MobileMenu className="mobile-menu" show={isMenuOpen} onHide={onMenuHidden}>
+      <MobileMenu className="mobile-menu bg-neutral-900" show={isMenuOpen} onHide={onMenuHidden}>
         <Offcanvas.Header className="nav-header" closeButton closeVariant='white'>
           <Offcanvas.Title>
-            <Link to="/app" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/app" onClick={() => setIsMenuOpen(false)} className='flex items-center'>
               <img className="logo" alt="GuardianForge Logo" height="40" width="40" src={SiteLogo} />GuardianForge
             </Link>
           </Offcanvas.Title>
@@ -546,9 +545,9 @@ function AppLayout(props: Props) {
             <UserMenu />
           </div>
         </AppBar>
-        <Content>
+        <div className="px-2">
           { children }
-        </Content>
+        </div>
         <AlertLayer />
       </Main>
 

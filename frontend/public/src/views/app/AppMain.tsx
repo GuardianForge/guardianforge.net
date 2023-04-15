@@ -77,29 +77,26 @@ function AppIndex() {
 
   return (
     <AppLayout>
-      <Container>
-
+      <div className="flex flex-col">
         {compState === State.LOADING && <Loading />}
+
         {compState === State.DONE &&
           <>
-            <Row className="mb-3">
-              <Col>
-                <h3>My Guardians</h3>
-                <div>
-                  {/* TODO: Make this betterer */}
-                  {guardians.map((g: any) => (
-                    <GuardianCard key={g.characterId}
-                      classType={g.classType}
-                      raceType={g.raceType}
-                      light={g.light}
-                      emblemUrl={g.emblemBackgroundPath}
-                      onClick={() => goToGuardian(g.characterId)} />
-                  ))}
-                </div>
-              </Col>
-              {/* <Col>Latest News (latest blog post)</Col> */}
-            </Row>
-            <div className="my-8 mx-4">
+          <div className="mb-2">
+            <h3>My Guardians</h3>
+            <div className="flex flex-col gap-2">
+              {guardians.map((g: any) => (
+                <GuardianCard key={g.characterId}
+                  classType={g.classType}
+                  raceType={g.raceType}
+                  light={g.light}
+                  emblemUrl={g.emblemBackgroundPath}
+                  onClick={() => goToGuardian(g.characterId)} />
+              ))}
+              </div>
+            </div>
+            {/* <Col>Latest News (latest blog post)</Col> */}
+            <div>
               <h2>Latest Builds</h2>
               <div className="grid md:grid-cols-3 gap-2 grid-cols-1">
                 {latestBuilds.map((bs: BuildSummary) => (
@@ -109,7 +106,7 @@ function AppIndex() {
             </div>
           </>
         }
-      </Container>
+      </div>
     </AppLayout>
   )
 }

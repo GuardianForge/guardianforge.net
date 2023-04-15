@@ -4,7 +4,7 @@ import { Container, Navbar, Nav } from 'react-bootstrap'
 import colors from '../colors'
 
 const Wrapper = styled(Navbar)`
-  background-color: ${colors.theme2.bg} !important;
+  /* background-color: ${colors.theme2.bg} !important; */
   border-bottom: 1px solid ${colors.theme2.dark1};
 `
 

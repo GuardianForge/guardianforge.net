@@ -15,6 +15,11 @@ import { Col, Row } from 'react-bootstrap'
 import ForgeButton from '../../components/forms/Button'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import AppLayout from '../../layouts/AppLayout'
+import TabGroup from '../../components/ui/TabGroup'
+import TabItem from '../../components/ui/TabItem'
+import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
+import BuildSummary from '../../models/BuildSummary'
+import UserProfileInfo from '../../components/UserProfileInfo'
 
 const Wrapper = styled.div`
   .error-wrapper {
@@ -124,6 +129,13 @@ function UserProfile() {
   const [areBuildsShown, setAreBuildsShown] = useState(false)
   const [userHasNoDestinyMemberships, setUserHasNoDestinyMemberships] = useState(false)
 
+  const [displayName, setDisplayName] = useState<string>()
+  const [about, setAbout] = useState<string>()
+  const [facebookUrl, setFacebookUrl] = useState<string>()
+  const [twitterUrl, setTwitterUrl] = useState<string>()
+  const [youtubeUrl, setYoutubeUrl] = useState<string>()
+  const [twitchUrl, setTwitchUrl] = useState<string>()
+  const [tab, setTab] = useState<number>(1)
 
   useEffect(() => {
     async function init() {
@@ -173,6 +185,32 @@ function UserProfile() {
     init()
   }, [isInitDone])
 
+
+
+  useEffect(() => {
+    if(user) {
+      setDisplayName(`${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`)
+    }
+  }, [user])
+
+  useEffect(() => {
+    if(forgeUser?.user?.about) {
+      setAbout(forgeUser.user.about)
+    }
+    if(forgeUser?.user?.social?.facebook) {
+      setFacebookUrl(forgeUser.user.social.facebook)
+    }
+    if(forgeUser?.user?.social?.twitch) {
+      setTwitchUrl(forgeUser.user.social.twitch)
+    }
+    if(forgeUser?.user?.social?.twitter) {
+      setTwitterUrl(forgeUser.user.social.twitter)
+    }
+    if(forgeUser?.user?.social?.youtube) {
+      setYoutubeUrl(forgeUser.user.social.youtube)
+    }
+  }, [forgeUser])
+
   function goToGuardian(guardianId: string) {
     navigate(`/app/g/${membership.type}-${membership.id}-${guardianId}`)
   }
@@ -209,68 +247,26 @@ function UserProfile() {
               </Col>
             </Row>
           )}
+
           {compState === COMPSTATE.DONE && (
-            <div className="row">
-              <div className="col-md-4">
-                <UserMenuWrapper>
-                  <div className="user-info">
-                    {user && (
-                      <span className="user-info-name">
-                        {user.bungieGlobalDisplayName}#{user.bungieGlobalDisplayNameCode}
-                      </span>
-                    )}
-                    {forgeUser && forgeUser.user && (
-                      <ForgeUserInfoWrapper>
-                        {forgeUser.user.about && <span>"{ forgeUser.user.about }"</span>}
-                        {forgeUser.user.social && (
-                          <div className="socials">
-                            {forgeUser.user.social.twitter && (
-                              <a href={forgeUser.user.social.twitter} className="twitter-link" target="_blank">
-                                <FontAwesomeIcon icon={['fab', 'twitter']} />
-                              </a>
-                            )}
-                            {forgeUser.user.social.twitch && (
-                              <a href={forgeUser.user.social.twitch} className="twitch-link" target="_blank">
-                                <FontAwesomeIcon icon={['fab', 'twitch']} />
-                              </a>
-                            )}
-                            {forgeUser.user.social.youtube && (
-                              <a href={forgeUser.user.social.youtube} className="youtube-link" target="_blank">
-                                <FontAwesomeIcon icon={['fab', 'youtube']} />
-                              </a>
-                            )}
-                            {forgeUser.user.social.facebook && (
-                              <a href={forgeUser.user.social.facebook} className="facebook-link" target="_blank">
-                                <FontAwesomeIcon icon={['fab', 'facebook']} />
-                              </a>
-                            )}
-                          </div>
-                        )}
-                      </ForgeUserInfoWrapper>
-                    )}
-                  </div>
-                  {forgeUser && forgeUser.builds && forgeUser.builds.length > 0 && (
-                    <div className="user-nav">
-                      <a className="user-nav-link" onClick={() => setAreBuildsShown(false)}>
-                        Guardians
-                      </a>
-                      <a className="user-nav-link" onClick={() => setAreBuildsShown(true)}>
-                        Builds
-                      </a>
-                    </div>
-                  )}
-                </UserMenuWrapper>
-              </div>
-              {areBuildsShown ? (
-                <div className="col-md-8 row">
-                  {forgeUser.builds && forgeUser.builds.map(bs => (
-                    <div key={bs.id} className="col-md-6">
-                      <BuildSummaryCard buildSummary={bs} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="col-md-8">
+            <div className="flex flex-col">
+              <UserProfileInfo
+                about={about}
+                facebookUrl={facebookUrl}
+                twitterUrl={twitterUrl}
+                youtubeUrl={youtubeUrl}
+                twitchUrl={twitchUrl} />
+
+              <TabGroup>
+                <TabItem onClick={() => setTab(1)} active={tab === 1}>
+                  Guardians
+                </TabItem>
+                <TabItem onClick={() => setTab(2)} active={tab === 2}>
+                  Builds
+                </TabItem>
+              </TabGroup>
+              {tab === 1 && (
+                <div className="flex flex-col gap-2">
                   {guardians.map((g: Guardian) => (
                     <GuardianCard key={g.characterId}
                       classType={g.classType as string}
@@ -278,6 +274,15 @@ function UserProfile() {
                       light={g.light as string}
                       emblemUrl={g.emblemBackgroundPath as string}
                       onClick={() => goToGuardian(g.characterId as string)} />
+                  ))}
+                </div>
+              )}
+
+              {tab === 2 && (
+                <div className="grid md:grid-cols-3 gap-3">
+                  {!forgeUser && <div>This user has no builds.</div>}
+                  {forgeUser.builds && forgeUser.builds.map((bs: BuildSummary) => (
+                    <BuildSummaryCard key={bs.id} buildSummary={bs} isPublicUi />
                   ))}
                 </div>
               )}

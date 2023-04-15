@@ -5,7 +5,7 @@
 body {
   font-family: 'Open Sans', sans-serif;
   box-sizing: border-box;
-  @apply text-text bg-forgebg;
+  @apply text-text bg-neutral-900;
 }
 
 h1 {
