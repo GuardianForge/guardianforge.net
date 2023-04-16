@@ -10,13 +10,18 @@ import AppMain from './views/app/AppMain'
 import AppFindPlayers from './views/app/FindPlayers'
 import AppFindBuilds from './views/app/FindBuilds'
 import Bookmarks from './views/app/Bookmarks'
+import MainBookmarks from './views/Bookmarks'
 import UserProfile from './views/app/UserProfile'
+import GuardianProfileMain from './views/GuardianProfile'
 import GuardianProfile from './views/app/GuardianProfile'
 import AppBuild from './views/app/Build'
 import MyBuilds from './views/app/MyBuilds'
 import CreateBuild from './views/app/CreateBuild'
+import CreateBuildMain from './views/CreateBuild'
 import EditProfile from './views/app/EditProfile'
+import EditProfileMain from './views/EditProfile'
 import AdminTools from './views/app/admin/AdminTools'
+import AdminToolsMain from './views/AdminTools'
 import NotFound from './views/NotFound'
 import About from './views/About'
 import React, { useContext, useEffect, useState } from 'react'
@@ -54,12 +59,16 @@ function ForgeRouter() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/bookmarks" element={<MainBookmarks />} />
         <Route path="/find-builds" element={<FindBuilds />} />
         <Route path="/find-players" element={<FindPlayers />} />
+        <Route path="/edit-profile" element={<EditProfileMain />} />
+        <Route path="/create-build" element={<CreateBuildMain />} />
+        <Route path="/admin-tools" element={<AdminToolsMain />} />
         <Route path="/oauth" element={<OAuthHandler />} />
         <Route path="/build/:buildId" element={<Build />} />
         <Route path="/u/:username" element={<PublicProfile />} />
-        <Route path="/g/:guardianKey" element={<PublicGuardian />} />
+        <Route path="/g/:guardianKey" element={<GuardianProfileMain />} />
         <Route path="/app" element={<AppMain />} />
         <Route path="/app/find-players" element={<AppFindPlayers />} />
         <Route path="/app/find-builds" element={<AppFindBuilds />} />

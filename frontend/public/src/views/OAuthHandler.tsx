@@ -43,7 +43,7 @@ function OAuthHandler() {
         localStorage.removeItem("nextState")
         navigate(nextState)
       } else {
-        navigate("/app")
+        navigate("/")
       }
     }
     try {

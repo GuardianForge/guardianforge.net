@@ -106,11 +106,6 @@ function Guardian() {
     async function init() {
       const { BungieApiService, ManifestService, ForgeClient } = window.services
 
-      if(ForgeClient.isLoggedIn()) {
-        console.log("redirecting")
-        navigate(`/app/g/${guardianKey}`)
-      }
-
       // @ts-ignore TODO: check for null
       let split = guardianKey.split("-")
       let meta = {
@@ -251,6 +246,10 @@ function Guardian() {
     setPrimaryActivity(activity)
   }
 
+  function onCreateBuildClicked() {
+    navigate(`/create-build?guardianKey=${guardianKey}`)
+  }
+
   return (
     <MainLayout>
       <Wrapper className={isBuildModeActive ? "build-mode" : ""}>
@@ -264,7 +263,7 @@ function Guardian() {
               <h1>{selectedUser.displayName}'s {className}</h1>
               <div className="header-buttons">
                 {!isBuildModeActive ? (
-                  <ForgeButton onClick={() => setIsBuildModeActive(true)}>Create Build</ForgeButton>
+                  <ForgeButton onClick={onCreateBuildClicked}>Create Build</ForgeButton>
                 ) : (
                   <div className="flex gap-3">
                     <ForgeButton onClick={onCancelClicked} disabled={isSaving}>Cancel</ForgeButton>

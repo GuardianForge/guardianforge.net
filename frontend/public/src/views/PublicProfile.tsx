@@ -50,10 +50,6 @@ function PublicProfile() {
       let code = location.hash.replace("#", "")
       const { BungieApiService, ForgeApiService, ForgeClient } = window.services
 
-      if(ForgeClient.isLoggedIn()) {
-        navigate(`/app/u/${username}#${code}`)
-      }
-
       let searchRes: any;
       try {
         if(username) {

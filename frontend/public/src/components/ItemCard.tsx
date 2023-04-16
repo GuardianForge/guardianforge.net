@@ -164,7 +164,7 @@ function ItemCard(props: Props) {
     onHighlightableClicked } = props
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={`${className}`}>
       <div className="item-card">
         <div className="item-card-left">
           <div className="item-icon-wrapper">
@@ -178,7 +178,6 @@ function ItemCard(props: Props) {
             </Highlightable>
 
             {item.affinityIcon && (<Image src={item.affinityIcon} className="affinity-icon" alt="Affinity Icon" />)}
-
           </div>
 
           {(itemTierData !== undefined || power !== undefined) && (

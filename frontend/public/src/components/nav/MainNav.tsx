@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // @ts-ignore
 import SiteLogo from "../../images/site-logo.png"
 import { Link, LinkProps } from "react-router-dom"
-import { Container, Navbar, Nav } from 'react-bootstrap'
 import { faCube, faSignInAlt, faUser, faHamburger, faBars, faClose } from '@fortawesome/free-solid-svg-icons'
 import { GlobalContext } from '../../contexts/GlobalContext'
 import ForgeButton from '../forms/Button'
+import UserMenu from '../UserMenuMain'
 
 function NavLink(props: LinkProps) {
   return <Link {...props} className={`text-white md:text-gray-300 hover:text-white transition text-lg`}>
@@ -33,7 +33,7 @@ function MobileMenu({ open, onClose, loginUrl }: MobileMenuProps) {
   }, [open])
 
   function redirectToLogin() {
-    window.open(loginUrl)
+    window.open(loginUrl, "_self")
   }
 
   return (
@@ -53,6 +53,9 @@ function MobileMenu({ open, onClose, loginUrl }: MobileMenuProps) {
         <NavLink className="" to="/find-builds">
           <FontAwesomeIcon icon={faCube} /> Find Builds
         </NavLink>
+        <NavLink className="" to="/create-build">
+          <FontAwesomeIcon icon={faCube} /> Create Build
+        </NavLink>
         <ForgeButton onClick={() => redirectToLogin()}>
           <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
         </ForgeButton>
@@ -65,20 +68,24 @@ function MainNav() {
   const { isClientLoaded } = useContext(GlobalContext)
   const [loginUrl, setLoginUrl] = useState("")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     if(!isClientLoaded) return
     function init() {
       let { ForgeClient } = window.services
-      if(ForgeClient.config && ForgeClient.config.loginUrl) {
+      if(ForgeClient?.config?.loginUrl) {
         setLoginUrl(ForgeClient.config.loginUrl)
+      }
+      if(ForgeClient?.isLoggedIn()) {
+        setIsLoggedIn(true)
       }
     }
     init()
   }, [isClientLoaded])
 
   function redirectToLogin() {
-    window.open(loginUrl)
+    window.open(loginUrl, "_self")
   }
 
   return (
@@ -94,11 +101,18 @@ function MainNav() {
           <NavLink className="" to="/find-builds">
             <FontAwesomeIcon icon={faCube} /> Find Builds
           </NavLink>
+          <NavLink className="" to="/create-build">
+            <FontAwesomeIcon icon={faCube} /> Create Build
+          </NavLink>
         </div>
 
-        <ForgeButton className='hidden md:block' onClick={() => redirectToLogin()}>
-          <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
-        </ForgeButton>
+        {isLoggedIn ? (
+          <UserMenu />
+        ) : (
+          <ForgeButton className='hidden md:block' onClick={() => redirectToLogin()}>
+            <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
+          </ForgeButton>
+        )}
 
         <div className="flex md:hidden flex-1 justify-end text-xl mr-2">
           <FontAwesomeIcon className="hover:cursor-pointer" icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />

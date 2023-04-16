@@ -1,23 +1,24 @@
 import { useState, useEffect, useContext } from 'react'
-import { GlobalContext } from '../../contexts/GlobalContext'
-import Loading from '../../components/Loading'
-import SubclassCard from '../../components/SubclassCard'
-import ItemCard from '../../components/ItemCard'
+import { GlobalContext } from '../contexts/GlobalContext'
+import Loading from '../components/Loading'
+import SubclassCard from '../components/SubclassCard'
+import ItemCard from '../components/ItemCard'
 import styled from 'styled-components'
-import { classes } from '../../constants'
-import buildUtils from "../../utils/buildUtils"
+import { classes } from '../constants'
+import buildUtils from "../utils/buildUtils"
 import { Helmet } from 'react-helmet'
-import StatBar from '../../components/StatBar'
-import BuildAd from '../../components/ads/BuildAd'
+import StatBar from '../components/StatBar'
+import BuildAd from '../components/ads/BuildAd'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import User from '../../models/User'
-import { BuildItemCollection } from '../../models/Build'
-import ButtonBar from '../../components/forms/ButtonBar'
+import User from '../models/User'
+import { BuildItemCollection } from '../models/Build'
+import ButtonBar from '../components/forms/ButtonBar'
 import copy from "copy-to-clipboard";
 import { faCube, faLink, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate, useParams } from 'react-router-dom'
-import AppLayout from '../../layouts/AppLayout'
+import AppLayout from '../layouts/AppLayout'
+import MainLayout from '../layouts/MainLayout'
 
 const Wrapper = styled.div`
   .items {
@@ -148,8 +149,6 @@ function Guardian() {
 
       setCharacterData(characterData)
       setCompState(COMP_STATE.DONE)
-
-      console.log(characterData, items)
     }
     init()
   }, [isInitDone])
@@ -177,7 +176,7 @@ function Guardian() {
   }
 
   return (
-    <AppLayout>
+    <MainLayout wide>
       <Wrapper>
         <Helmet>
           <title>GuardianForge</title>
@@ -234,7 +233,7 @@ function Guardian() {
           </Container>
         )}
       </Wrapper>
-    </AppLayout>
+    </MainLayout>
   )
 }
 
