@@ -5,7 +5,7 @@ import MainNav from '../components/nav/MainNav'
 import { GlobalContext } from '../contexts/GlobalContext'
 import AlertLayer from '../components/alerting/AlertLayer'
 import { Alert } from 'react-bootstrap'
-import Footer from '../components/ui/Footer'
+import Footer from '../components/ui/Footer2'
 
 const Wrapper = styled.div`
   #app {
@@ -54,10 +54,10 @@ function MainLayout(props: Props) {
   return (
     <Wrapper>
       <MainNav />
-      <div className="container max-w-[960px] mx-auto px-2 mt-4">
+      <div className="max-w-[960px] min-h-[calc(100vh-112px)] mx-auto px-2">
         {children}
       </div>
-      <Footer extraPadding={(bannerMessage && bannerMessage !== "") ? true : false} />
+      <Footer />
 
       {bannerMessage && (
         <div style={{
