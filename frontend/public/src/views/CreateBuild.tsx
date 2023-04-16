@@ -83,7 +83,7 @@ function useQuery() {
 }
 
 function CreateBuild() {
-  const { isInitDone, setPageTitle, dispatchAlert } = useContext(GlobalContext)
+  const { isInitDone, setPageTitle, dispatchAlert, redirectToLogin } = useContext(GlobalContext)
   const query = useQuery()
   const navigate = useNavigate()
   const [_state, setState] = useState(State.LOADING)
@@ -134,11 +134,16 @@ function CreateBuild() {
   const [armorConfigValidationMessage, setArmorConfigValidationMessage] = useState<string>()
 
   useEffect(() => {
-    setPageTitle("Create Build")
+    console.log('sdlfksj')
     if(!isInitDone) return
     if(isInventoryLoaded) return
     async function init() {
       const { ForgeClient, BungieApiService, ManifestService } = window.services
+
+      if(!ForgeClient.isLoggedIn()) {
+        redirectToLogin()
+      }
+      console.log('hit!')
 
       // TODO: Pull this from ForgeClient user info
       let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(ForgeClient.userData)
@@ -502,7 +507,7 @@ function CreateBuild() {
         )}
         {(_state === State.DONE || _state === State.SAVING) && (
           <div>
-            <div className='flex flex-cols md:flex-row items-center'>
+            <div className='flex flex-col md:flex-row md:items-center border-b border-b-neutral-800 md:border-b-0 mb-2'>
               <h1 className='flex-1'>Create Build</h1>
               <ButtonBar>
                 <ForgeButton onClick={onSaveClicked} disabled={!isBuildValid || _state === State.SAVING}>

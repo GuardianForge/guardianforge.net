@@ -17,10 +17,11 @@ function NavLink(props: LinkProps) {
 type MobileMenuProps = {
   open: boolean
   onClose: Function
-  loginUrl: string
+  loginUrl: string,
+  isLoggedIn: boolean
 }
 
-function MobileMenu({ open, onClose, loginUrl }: MobileMenuProps) {
+function MobileMenu({ open, onClose, loginUrl, isLoggedIn }: MobileMenuProps) {
 
   useEffect(() => {
     function preventScroll(e: any) {
@@ -56,9 +57,11 @@ function MobileMenu({ open, onClose, loginUrl }: MobileMenuProps) {
         <NavLink className="" to="/create-build">
           <FontAwesomeIcon icon={faCube} /> Create Build
         </NavLink>
-        <ForgeButton onClick={() => redirectToLogin()}>
-          <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
-        </ForgeButton>
+        {!isLoggedIn && (
+          <ForgeButton onClick={() => redirectToLogin()}>
+            <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
+          </ForgeButton>
+        )}
       </div>
     </div>
   )
@@ -74,9 +77,11 @@ function MainNav() {
     if(!isClientLoaded) return
     function init() {
       let { ForgeClient } = window.services
+
       if(ForgeClient?.config?.loginUrl) {
         setLoginUrl(ForgeClient.config.loginUrl)
       }
+
       if(ForgeClient?.isLoggedIn()) {
         setIsLoggedIn(true)
       }
@@ -118,7 +123,11 @@ function MainNav() {
           <FontAwesomeIcon className="hover:cursor-pointer" icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />
         </div>
       </div>
-      <MobileMenu open={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} loginUrl={loginUrl} />
+      <MobileMenu
+        open={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        isLoggedIn={isLoggedIn}
+        loginUrl={loginUrl} />
     </nav>
   )
 }

@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import colors from '../colors'
 import { Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-utils'
 import ForgeButton from './forms/Button'
 import { BuildItem } from '../models/Build'
 import ItemCard from './ItemCard'
 import ItemConfigModal from './ItemConfigModal'
 import ItemSelectorModal from './ItemSelectorModal'
+import Card from './ui/Card'
 
 
-const Wrapper = styled.div`
+const Wrapper = styled(Card)`
   display: flex;
   flex-direction: column;
-  border-radius: 5px;
   margin-top: 20px;
   min-height: 100px;
 

@@ -14,20 +14,11 @@ const Wrapper = styled.div`
 
   .activity-select-activator {
     text-align: left !important;
-    background-color: ${colors.theme2.dark3};
     color: #eee;
     width: 100%;
     display: flex;
     justify-content: space-between;
     border: none !important;
-
-    &:hover {
-      background-color: ${colors.theme2.dark3} !important;
-    }
-
-    &:focus {
-      background-color: ${colors.theme2.dark3} !important;
-    }
   }
 
   .activity-selector-options-wrapper {
@@ -68,17 +59,11 @@ const Selection = styled.div`
 
 const SelectItemButton = styled(Button)`
   width: 100%;
-  background-color: ${colors.theme2.dark2} !important;
-  border: none !important;
   display: flex !important;
   align-items: center;
   justify-content: start;
   font-size: 18px !important;
   margin-bottom: 10px;
-
-  &:hover {
-    background-color: ${colors.theme2.dark3} !important;
-  }
 
   img {
     width: 35px;
@@ -114,7 +99,7 @@ function ActivitySelector(props: Props) {
 
   return (
     <Wrapper id="activitySelector" className={className}>
-      <ForgeButton className="activity-select-activator" onClick={showOptions}>
+      <ForgeButton className="activity-select-activator bg-neutral-700 hover:bg-neutral-600" onClick={showOptions}>
         <Selection>
           {value.iconUrl && <img className="activity-icon" src={value.iconUrl} alt="Activity Icon" />}
           <span>{ value.display }</span>
@@ -126,7 +111,7 @@ function ActivitySelector(props: Props) {
         title="Select Activity"
         footer={<ForgeButton onClick={() => setAreOptionsOpen(false)}>Close</ForgeButton>}>
         {options.map((el: ActivityOption, idx: number) => (
-          <SelectItemButton key={`activity-${idx}`} className="activity-option" onClick={() => onOptionClicked(el)}>
+          <SelectItemButton key={`activity-${idx}`} className="activity-option rounded-none border border-neutral-700 hover:bg-neutral-800" onClick={() => onOptionClicked(el)}>
             {el.iconUrl && <img className="activity-icon" src={el.iconUrl} />}
             { el.display }
           </SelectItemButton>

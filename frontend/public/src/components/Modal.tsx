@@ -1,23 +1,8 @@
 import React, { ReactNode } from 'react'
 import { Modal } from 'react-bootstrap';
 import styled from 'styled-components'
-import colors from '../colors'
 
 const Wrapper = styled(Modal)`
-  border: 1px solid ${colors.theme2.border};
-
-  .modal-content {
-    background-color: ${colors.theme2.dark1} !important;
-  }
-
-  .modal-header {
-    border-bottom: 1px solid ${colors.theme2.border} !important;
-  }
-
-  .modal-footer {
-    border-top: 1px solid ${colors.theme2.border} !important;
-  }
-
   .btn-close {
     color: #eee !important;
   }
@@ -43,7 +28,7 @@ function ForgeModal(props: Props) {
 
   return (
   <Wrapper
-    className={`${className}`}
+    className={`forge-modal ${className}`}
     show={show}
     onHide={onHide}
     scrollable={scrollable ? scrollable : true}

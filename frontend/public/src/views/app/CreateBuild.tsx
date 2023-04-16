@@ -476,7 +476,6 @@ function CreateBuild() {
       _highlights.push(key)
     }
     setHighlights([..._highlights])
-    console.log(highlights)
   }
 
   const inputStyleOptions: Array<ModalSelectorOption> = [

@@ -71,3 +71,21 @@ ins.adsbygoogle[data-ad-status="unfilled"] {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(126, 126, 126, 0.7);
 }
+
+/* TODO: remove this after modals are in TW */
+
+.forge-modal .modal-content {
+  @apply bg-neutral-900;
+}
+
+.forge-modal .modal-header {
+  @apply border-b border-b-neutral-800;
+}
+
+.forge-modal .modal-footer {
+  @apply border-t border-t-neutral-800;
+}
+
+.forge-modal .btn-close {
+  color: #eee !important;
+}

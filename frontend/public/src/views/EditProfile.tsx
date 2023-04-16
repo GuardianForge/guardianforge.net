@@ -9,11 +9,12 @@ import AlertDetail from '../models/AlertDetail'
 import { SubscriptionDetails } from '../models/User'
 import { State } from '../models/Enums'
 import Loading from '../components/Loading'
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import AppLayout from '../layouts/AppLayout'
 import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import ForgeButton from '../components/forms/Button'
 import MainLayout from '../layouts/MainLayout'
+import ButtonBar from '../components/forms/ButtonBar'
 
 function Profile() {
   const { isClientLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
@@ -148,95 +149,78 @@ function Profile() {
 
   return (
     <MainLayout>
-      <Container>
-        <Row>
-          <Col lg="8" md="12">
-            <Form.Group className="mb-3">
-              <Form.Label><h3>About Me</h3></Form.Label>
-              <Form.Control onChange={e => setAbout(e.target.value)} value={about} type="text" placeholder="Add a bit about yourself" />
-            </Form.Group>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col lg="8" md="12">
-            {subscriptionDetails ? (
-              <Card className="subscription-manager">
-                <h3>💎 Thanks, Oh Supporter Mine!</h3>
-                <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
-                {subscriptionDetails.endDate &&
-                  <p><b>Subscription Expires:</b> {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
-                }
-                <p><b>Auto Renew:</b> {subscriptionDetails.autoRenew ? (
-                  <span>
-                    <FontAwesomeIcon icon={faCheckCircle} style={{color: "green"}} /> Enabled
-                  </span>
-                ) : (
-                  <span>
-                    <FontAwesomeIcon icon={faTimesCircle} style={{color: "red"}} /> Disabled
-                  </span>
-                )}</p>
-                {subscriptionDetails.autoRenew ? (
-                  <Button onClick={() => setShowCancelSubscriptionModal(true)} disabled={isAutoRenewUpdating}>Disable Auto Renew</Button>
-                ) : (
-                  <Button onClick={() => reenableSubscription()} disabled={isAutoRenewUpdating}>Enable Auto Renew</Button>
-                )}
-              </Card>
-            ) : (
-              <Card>
-                <h3>💎 Eyes Up Guardian!</h3>
-                <p>Consider becoming a premium GuardianForge user to support the development of the platform!</p>
-                <SubscribeButton />
-              </Card>
-            )}
-          </Col>
-        </Row>
-        <Row>
-          <Col lg="8" md="12">
-          <Form.Label><h3>Social Media Links</h3></Form.Label>
-            <div className="row">
-              <div className="col-md-6">
-                <InputGroup className="mb-3">
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faTwitter} />
-                  </InputGroup.Text>
-                  <Form.Control onChange={e => setTwitter(e.target.value)} value={twitter} placeholder="ex: https://twitter.com/destinythegame" aria-label="Twitter" />
-                </InputGroup>
-              </div>
-              <div className="col-md-6">
-                <InputGroup className="mb-3">
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faTwitch} />
-                  </InputGroup.Text>
-                  <Form.Control onChange={e => setTwitch(e.target.value)} value={twitch} type="text" placeholder="ex: https://twitch.tv/username" />
-                </InputGroup>
-              </div>
-              <div className="col-md-6">
-                <InputGroup className="mb-3">
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faYoutube} />
-                  </InputGroup.Text>
-                  <Form.Control onChange={e => setYoutube(e.target.value)} value={youtube} type="text" placeholder="ex: https://www.youtube.com/mychannelname" />
-                </InputGroup>
-              </div>
-              <div className="col-md-6">
-                <InputGroup className="mb-3">
-                  <InputGroup.Text>
-                    <FontAwesomeIcon icon={faFacebook} />
-                  </InputGroup.Text>
-                  <Form.Control onChange={e => setFacebook(e.target.value)} value={facebook} type="text" placeholder="ex: https://www.facebook.com/mypagename" />
-                </InputGroup>
-              </div>
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col lg="8" md="12">
+      <div>
+        <div className='flex'>
+          <h1 className='flex-1'>Edit Profile</h1>
+          <ButtonBar>
             <ForgeButton onClick={() => saveProfile()} disabled={isLoading}>
-              Save
+              <FontAwesomeIcon icon={faSave} /> Save
             </ForgeButton>
-          </Col>
-        </Row>
+          </ButtonBar>
+        </div>
+        <Form.Group className="mb-4">
+          <Form.Label><h4>About Me</h4></Form.Label>
+          <Form.Control onChange={e => setAbout(e.target.value)} value={about} type="text" placeholder="Add a bit about yourself" />
+        </Form.Group>
+        <div className='mb-4'>
+          {subscriptionDetails ? (
+            <Card className="subscription-manager">
+              <h3>💎 Thanks, Oh Supporter Mine!</h3>
+              <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
+              {subscriptionDetails.endDate &&
+                <p><b>Subscription Expires:</b> {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
+              }
+              <p><b>Auto Renew:</b> {subscriptionDetails.autoRenew ? (
+                <span>
+                  <FontAwesomeIcon icon={faCheckCircle} style={{color: "green"}} /> Enabled
+                </span>
+              ) : (
+                <span>
+                  <FontAwesomeIcon icon={faTimesCircle} style={{color: "red"}} /> Disabled
+                </span>
+              )}</p>
+              {subscriptionDetails.autoRenew ? (
+                <Button onClick={() => setShowCancelSubscriptionModal(true)} disabled={isAutoRenewUpdating}>Disable Auto Renew</Button>
+              ) : (
+                <Button onClick={() => reenableSubscription()} disabled={isAutoRenewUpdating}>Enable Auto Renew</Button>
+              )}
+            </Card>
+          ) : (
+            <Card>
+              <h3>💎 Eyes Up Guardian!</h3>
+              <p>Consider becoming a premium GuardianForge user to support the development of the platform!</p>
+              <SubscribeButton />
+            </Card>
+          )}
+        </div>
+        <div className='grid md:grid-cols-2 gap-2'>
+          <h4 className="md:col-span-2">Social Media Links</h4>
+            <InputGroup className="mb-3">
+              <InputGroup.Text>
+                <FontAwesomeIcon icon={faTwitter} />
+              </InputGroup.Text>
+              <Form.Control onChange={e => setTwitter(e.target.value)} value={twitter} placeholder="ex: https://twitter.com/destinythegame" aria-label="Twitter" />
+            </InputGroup>
+
+            <InputGroup className="mb-3">
+              <InputGroup.Text>
+                <FontAwesomeIcon icon={faTwitch} />
+              </InputGroup.Text>
+              <Form.Control onChange={e => setTwitch(e.target.value)} value={twitch} type="text" placeholder="ex: https://twitch.tv/username" />
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text>
+                <FontAwesomeIcon icon={faYoutube} />
+              </InputGroup.Text>
+              <Form.Control onChange={e => setYoutube(e.target.value)} value={youtube} type="text" placeholder="ex: https://www.youtube.com/mychannelname" />
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text>
+                <FontAwesomeIcon icon={faFacebook} />
+              </InputGroup.Text>
+              <Form.Control onChange={e => setFacebook(e.target.value)} value={facebook} type="text" placeholder="ex: https://www.facebook.com/mypagename" />
+            </InputGroup>
+          </div>
 
         <ForgeModal show={showCancelSubscriptionModal} onHide={() => setShowCancelSubscriptionModal(false)} title="Cancel Subscription" closeButton>
           <h3>😢 Sad To See You Go!</h3>
@@ -244,7 +228,7 @@ function Profile() {
           {/* <Button style={{marginRight: "10px"}}>Send a Message</Button> */}
           <Button variant="danger" disabled={isAutoRenewUpdating} onClick={() => cancelSubscription()}>Disable Auto Renew</Button>
         </ForgeModal>
-      </Container>
+      </div>
 
     </MainLayout>
   )
