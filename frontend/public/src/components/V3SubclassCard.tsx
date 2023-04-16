@@ -336,7 +336,7 @@ function V3SubclassCard(props: Props) {
           </div>
 
           {configurable && (
-            <div className="icon-btns">
+            <div className="flex gap-2">
               <FontAwesomeIcon icon={faCog} onClick={onConfigureSubclassClicked} />
               <FontAwesomeIcon icon={faExchangeAlt} onClick={onChangeSubclassClicked} />
             </div>

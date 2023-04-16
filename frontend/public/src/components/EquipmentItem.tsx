@@ -12,7 +12,6 @@ import ItemSelectorModal from './ItemSelectorModal'
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: ${colors.theme2.dark2};
   border-radius: 5px;
   margin-top: 20px;
   min-height: 100px;

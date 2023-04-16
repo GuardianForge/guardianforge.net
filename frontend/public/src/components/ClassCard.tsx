@@ -8,12 +8,12 @@ const Wrapper = styled(Card)`
   .class-card-content {
     display: flex;
     align-items: center;
-    font-size: 22px;
+    font-size: 21px;
   }
 
   .ico-wrapper {
-    height: 35px;
-    width: 35px;
+    height: 29px;
+    width: 29px;
     padding: 5px;
     border-radius: 5px;
     display: flex;
@@ -47,7 +47,7 @@ function ClassCard(props: Props) {
   const { classType } = props
 
   return (
-    <Wrapper title="Class">
+    <Wrapper>
       {classType === Enums.ClassEnum.Titan && (
         <div className="class-card-content">
           <div className="ico-wrapper ico-wrapper-0">

@@ -30,6 +30,7 @@ import AlertDetail, { BungieOfflineAlert } from '../models/AlertDetail'
 import { useLocation, useNavigate } from 'react-router-dom'
 import AppLayout from '../layouts/AppLayout'
 import MainLayout from '../layouts/MainLayout'
+import Card from '../components/ui/Card'
 
 const Wrapper = styled.div`
   padding-bottom: 20px;
@@ -500,33 +501,33 @@ function CreateBuild() {
           <Loading />
         )}
         {(_state === State.DONE || _state === State.SAVING) && (
-          <Container fluid>
-            <Row>
-              <Col>
-                <ButtonBar>
-                  <Button onClick={onSaveClicked} disabled={!isBuildValid || _state === State.SAVING}>
-                    <FontAwesomeIcon icon={faSave} />Save
-                  </Button>
-                  <Button onClick={() => setIsClassSelectModalOpen(true)} disabled={_state === State.SAVING}>
-                    <FontAwesomeIcon icon={faExchangeAlt} /> Change Class
-                  </Button>
-                  {isHighlightModeOn ? (
-                    <Button onClick={() => setIsHighlightModeOn(false)}>
-                      <FontAwesomeIcon icon={faBan} /> Exit Highlight Mode
-                    </Button>
-                  ) : (
-                    <Button onClick={() => setIsHighlightModeOn(true)}>
-                      <FontAwesomeIcon icon={faMarker} /> Highlight Mode
-                    </Button>
-                  )}
-                  {/* <Button>Optimize</Button> */}
-                </ButtonBar>
-              </Col>
-            </Row>
-            <Row className="d-xl-none d-block">
-              <Col md="12">
+          <div>
+            <div className='flex flex-cols md:flex-row items-center'>
+              <h1 className='flex-1'>Create Build</h1>
+              <ButtonBar>
+                <ForgeButton onClick={onSaveClicked} disabled={!isBuildValid || _state === State.SAVING}>
+                  <FontAwesomeIcon icon={faSave} />Save
+                </ForgeButton>
+                <ForgeButton onClick={() => setIsClassSelectModalOpen(true)} disabled={_state === State.SAVING}>
+                  <FontAwesomeIcon icon={faExchangeAlt} /> Change Class
+                </ForgeButton>
+                {isHighlightModeOn ? (
+                  <ForgeButton onClick={() => setIsHighlightModeOn(false)}>
+                    <FontAwesomeIcon icon={faBan} /> Exit Highlight Mode
+                  </ForgeButton>
+                ) : (
+                  <ForgeButton onClick={() => setIsHighlightModeOn(true)}>
+                    <FontAwesomeIcon icon={faMarker} /> Highlight Mode
+                  </ForgeButton>
+                )}
+              </ButtonBar>
+            </div>
+
+            <div className='grid md:grid-cols-3 xl:grid-cols-4 gap-2'>
+              {/* Build info block (mobile) */}
+              <div className='block xl:hidden col-span-3'>
                 <h4>Build Info</h4>
-                <div className="build-info-card mb-3">
+                <Card className="mb-4">
                   <Row>
                     <Col md="4" sm="6">
                       <span>Name</span>
@@ -590,130 +591,13 @@ function CreateBuild() {
                       <YouTubeEmbed youtubeUrl={videoLink} showPlaceholder />
                     </Col>
                   </Row>
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col lg="12" xl="9">
-                <Row className="mb-3">
-                  <Col md="12" lg="3">
-                    <ClassCard classType={selectedClass} />
-                  </Col>
-                  <Col md="12" lg="9">
-                    <StatBar stats={stats} highlights={highlights} isHighlightable={isHighlightModeOn} onHighlightableClicked={updateHighlights} />
-                  </Col>
-                  <Col md="12">
-                    <h4>Subclass</h4>
-                  </Col>
-                  <Col md="12">
-                    <Subclass buildItem={subclass}
-                      onSubclassUpdated={onItemUpdated}
-                      selectedClass={selectedClass}
-                      configurable={isOwner}
-                      highlights={highlights}
-                      isHighlightModeOn={isHighlightModeOn}
-                      onHighlightableClicked={updateHighlights} />
-                  </Col>
-                </Row>
+                </Card>
+              </div>
 
-                <Row>
-                  <Col md="12">
-                    <h4>Weapons</h4>
-                    {weaponConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{weaponConfigValidationMessage}</span>}
-                  </Col>
-                  <Col lg="4" md="6" sm="6">
-                    <EquipmentItem buildItem={kinetic}
-                      slot={Enums.BucketTypeEnum.Kinetic}
-                      classType={selectedClass}
-                      onItemUpdated={onItemUpdated}
-                      highlights={highlights}
-                      configurable={isOwner}
-                      isHighlightModeOn={isHighlightModeOn}
-                      onHighlightableClicked={updateHighlights} />
-                  </Col>
-                  <Col lg="4"  md="6" sm="6">
-                    <EquipmentItem buildItem={energy}
-                      slot={Enums.BucketTypeEnum.Energy}
-                      classType={selectedClass}
-                      onItemUpdated={onItemUpdated}
-                      highlights={highlights}
-                      onHighlightableClicked={updateHighlights}
-                      configurable={isOwner}
-                      isHighlightModeOn={isHighlightModeOn} />
-                  </Col>
-                  <Col lg="4" md="6" sm="6">
-                    <EquipmentItem buildItem={power}
-                      slot={Enums.BucketTypeEnum.Power}
-                      classType={selectedClass}
-                      onItemUpdated={onItemUpdated}
-                      highlights={highlights}
-                      onHighlightableClicked={updateHighlights}
-                      configurable={isOwner}
-                      isHighlightModeOn={isHighlightModeOn} />
-                  </Col>
-                </Row>
 
-                <div className="row">
-                  <div className="col-md-12 mt-3">
-                    <h4>Armor</h4>
-                    {armorConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{armorConfigValidationMessage}</span>}
-                  </div>
-                  <Col lg="4" md="6" sm="6">
-                    <EquipmentItem buildItem={helmet}
-                      slot={Enums.BucketTypeEnum.Helmet}
-                      classType={selectedClass}
-                      onItemUpdated={onItemUpdated}
-                      highlights={highlights}
-                      onHighlightableClicked={updateHighlights}
-                      configurable={isOwner}
-                      isHighlightModeOn={isHighlightModeOn} />
-                  </Col>
-                  <Col lg="4" md="6" sm="6">
-                    <EquipmentItem buildItem={arms}
-                      slot={Enums.BucketTypeEnum.Arms}
-                      classType={selectedClass}
-                      onItemUpdated={onItemUpdated}
-                      highlights={highlights}
-                      onHighlightableClicked={updateHighlights}
-                      configurable={isOwner}
-                      isHighlightModeOn={isHighlightModeOn} />
-                  </Col>
-                  <Col lg="4" md="6" sm="6">
-                    <EquipmentItem buildItem={chest}
-                      slot={Enums.BucketTypeEnum.Chest}
-                      classType={selectedClass}
-                      onItemUpdated={onItemUpdated}
-                      highlights={highlights}
-                      onHighlightableClicked={updateHighlights}
-                      configurable={isOwner}
-                      isHighlightModeOn={isHighlightModeOn} />
-                  </Col>
-                  <Col lg="4" md="6" sm="6">
-                    <EquipmentItem buildItem={legs}
-                      slot={Enums.BucketTypeEnum.Legs}
-                      classType={selectedClass}
-                      onItemUpdated={onItemUpdated}
-                      highlights={highlights}
-                      onHighlightableClicked={updateHighlights}
-                      configurable={isOwner}
-                      isHighlightModeOn={isHighlightModeOn} />
-                  </Col>
-                  <Col lg="4" md="6" sm="6">
-                    <EquipmentItem buildItem={classItem}
-                      slot={Enums.BucketTypeEnum.ClassItem}
-                      classType={selectedClass}
-                      onItemUpdated={onItemUpdated}
-                      highlights={highlights}
-                      onHighlightableClicked={updateHighlights}
-                      configurable={isOwner}
-                      isHighlightModeOn={isHighlightModeOn} />
-                  </Col>
-                </div>
-              </Col>
-
-              <Col xl="3" className="d-none d-xl-block">
+              <div className="hidden xl:block">
                 <h4>Build Info</h4>
-                <div className="build-info-card mb-3">
+                <Card className="mb-2">
                   <span>Name</span>
                   <Input
                     prefixIcon={faCube}
@@ -762,9 +646,7 @@ function CreateBuild() {
                       </label>
                     )}
                   </div>
-                </div>
-                <h4>Video Review</h4>
-                <div className="build-info-card">
+                  <span>Video Review</span>
                   <Input
                     prefixIcon={faYoutube}
                     placeholder="Add a YouTube link"
@@ -772,11 +654,122 @@ function CreateBuild() {
                     className="mb-3"
                     onChange={(e: any) => setVideoLink(e.target.value)} />
                   <YouTubeEmbed youtubeUrl={videoLink} showPlaceholder />
+                </Card>
+              </div>
+
+              <div className='col-span-3 grid md:grid-cols-3 gap-2'>
+                <div>
+                  <h4>Class</h4>
+                  <ClassCard classType={selectedClass} />
                 </div>
-              </Col>
-            </Row>
+
+                <div className='md:col-span-2'>
+                  <h4>Stats</h4>
+                  <StatBar stats={stats} highlights={highlights} isHighlightable={isHighlightModeOn} onHighlightableClicked={updateHighlights} />
+                </div>
+
+                <div className='md:col-span-3'>
+                  <h4>Subclass</h4>
+                  <Subclass
+                    className='mb-2'
+                    buildItem={subclass}
+                    onSubclassUpdated={onItemUpdated}
+                    selectedClass={selectedClass}
+                    configurable={isOwner}
+                    highlights={highlights}
+                    isHighlightModeOn={isHighlightModeOn}
+                    onHighlightableClicked={updateHighlights} />
+                </div>
+
+                <div className='md:col-span-3 flex flex-col'>
+                  <h4>Weapons</h4>
+                  {weaponConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{weaponConfigValidationMessage}</span>}
+                </div>
+
+                <EquipmentItem buildItem={kinetic}
+                  slot={Enums.BucketTypeEnum.Kinetic}
+                  classType={selectedClass}
+                  onItemUpdated={onItemUpdated}
+                  highlights={highlights}
+                  configurable={isOwner}
+                  isHighlightModeOn={isHighlightModeOn}
+                  onHighlightableClicked={updateHighlights} />
+
+                <EquipmentItem buildItem={energy}
+                  slot={Enums.BucketTypeEnum.Energy}
+                  classType={selectedClass}
+                  onItemUpdated={onItemUpdated}
+                  highlights={highlights}
+                  onHighlightableClicked={updateHighlights}
+                  configurable={isOwner}
+                  isHighlightModeOn={isHighlightModeOn} />
+
+                <EquipmentItem buildItem={power}
+                  slot={Enums.BucketTypeEnum.Power}
+                  classType={selectedClass}
+                  onItemUpdated={onItemUpdated}
+                  highlights={highlights}
+                  onHighlightableClicked={updateHighlights}
+                  configurable={isOwner}
+                  isHighlightModeOn={isHighlightModeOn} />
+
+                <div className="md:col-span-3 flex flex-col">
+                  <h4>Armor</h4>
+                  {armorConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{armorConfigValidationMessage}</span>}
+                </div>
+
+                <EquipmentItem buildItem={helmet}
+                  slot={Enums.BucketTypeEnum.Helmet}
+                  classType={selectedClass}
+                  onItemUpdated={onItemUpdated}
+                  highlights={highlights}
+                  onHighlightableClicked={updateHighlights}
+                  configurable={isOwner}
+                  isHighlightModeOn={isHighlightModeOn} />
+
+                <EquipmentItem buildItem={arms}
+                  slot={Enums.BucketTypeEnum.Arms}
+                  classType={selectedClass}
+                  onItemUpdated={onItemUpdated}
+                  highlights={highlights}
+                  onHighlightableClicked={updateHighlights}
+                  configurable={isOwner}
+                  isHighlightModeOn={isHighlightModeOn} />
+
+                <EquipmentItem buildItem={chest}
+                  slot={Enums.BucketTypeEnum.Chest}
+                  classType={selectedClass}
+                  onItemUpdated={onItemUpdated}
+                  highlights={highlights}
+                  onHighlightableClicked={updateHighlights}
+                  configurable={isOwner}
+                  isHighlightModeOn={isHighlightModeOn} />
+
+                <EquipmentItem buildItem={legs}
+                  slot={Enums.BucketTypeEnum.Legs}
+                  classType={selectedClass}
+                  onItemUpdated={onItemUpdated}
+                  highlights={highlights}
+                  onHighlightableClicked={updateHighlights}
+                  configurable={isOwner}
+                  isHighlightModeOn={isHighlightModeOn} />
+
+                <EquipmentItem buildItem={classItem}
+                  slot={Enums.BucketTypeEnum.ClassItem}
+                  classType={selectedClass}
+                  onItemUpdated={onItemUpdated}
+                  highlights={highlights}
+                  onHighlightableClicked={updateHighlights}
+                  configurable={isOwner}
+                  isHighlightModeOn={isHighlightModeOn} />
+              </div>
+
+
+            </div>
+
             <BuildAd />
-          </Container>
+
+          </div>
         )}
 
       <ForgeModal

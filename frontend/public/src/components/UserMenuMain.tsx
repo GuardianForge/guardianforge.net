@@ -205,6 +205,12 @@ function UserMenu(props: Props) {
               <Link className="text-white hover:text-white" to="/edit-profile">Edit Profile</Link>
             </Dropdown.Item>
             <Dropdown.Item className='hover:bg-neutral-600'>
+              <Link className="text-white hover:text-white" to="/my-builds">My Builds</Link>
+            </Dropdown.Item>
+            <Dropdown.Item className='hover:bg-neutral-600'>
+              <Link className="text-white hover:text-white" to="/my-bookmarks">My Bookmarks</Link>
+            </Dropdown.Item>
+            <Dropdown.Item className='hover:bg-neutral-600'>
               <a className="text-white hover:text-white" href="#" onClick={logout}>Log Out</a>
             </Dropdown.Item>
             {isAdmin && (

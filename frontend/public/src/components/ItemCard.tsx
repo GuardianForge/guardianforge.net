@@ -188,7 +188,7 @@ function ItemCard(props: Props) {
           )}
 
           {configurable && (
-            <div className="item-buttons">
+            <div className="flex flex-1 gap-2 items-end">
               <FontAwesomeIcon onClick={() => onConfigureItemClicked ? onConfigureItemClicked() : null} icon={faCog} />
               <FontAwesomeIcon onClick={() => onSwapItemClicked ? onSwapItemClicked() : null} icon={faExchangeAlt} />
             </div>

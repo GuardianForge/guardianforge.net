@@ -8,6 +8,7 @@ import { Button, Col, Container, Row } from 'react-bootstrap'
 import V3SubclassCard from './V3SubclassCard'
 import V2SubclassCard from './V2SubclassCard'
 import { BuildItem } from '../models/Build'
+import Card from './ui/Card'
 
 const Wrapper = styled.div`
   display: flex;
@@ -75,10 +76,11 @@ type Props = {
   onCardPlugClicked?: Function
   isHighlightModeOn?: boolean
   onHighlightableClicked?: Function
+  className?: string
 }
 
 function Subclass(props: Props) {
-  const { onSubclassUpdated, selectedClass, buildItem, configurable, highlights, onCardPlugClicked, isHighlightModeOn, onHighlightableClicked } = props
+  const { onSubclassUpdated, selectedClass, buildItem, configurable, highlights, onCardPlugClicked, isHighlightModeOn, onHighlightableClicked, className } = props
   const [availableSubclasses, setAvailableSubclass] = useState<Array<Item>>([])
   const [selectedSubclass, setSelectedSubclass] = useState<Item>()
   const [isSelectingSubclass, setIsSelectingSubclass] = useState(false)
@@ -128,7 +130,7 @@ function Subclass(props: Props) {
   )
 
   return (
-    <Wrapper>
+    <Card className={className}>
       {(buildItem || selectedSubclass) && (
         <div className="selected-subclass">
           {isV3Subclass ? (
@@ -176,7 +178,7 @@ function Subclass(props: Props) {
           </Row>
         </Container>
       </ForgeModal>
-    </Wrapper>
+    </Card>
   )
 }
 export default Subclass

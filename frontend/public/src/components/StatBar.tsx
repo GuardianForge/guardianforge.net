@@ -16,8 +16,7 @@ function StatBar(props: Props) {
 
   return (
     <div>
-      <h4>Stats</h4>
-      <Card className='grid grid-cols-3 md:flex gap-2 mb-2'>
+      <Card className='grid grid-cols-3 md:flex gap-2'>
       {stats.mobility && (
         <Stat
           iconUrl="/img/stats/mob.png"

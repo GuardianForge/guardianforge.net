@@ -75,37 +75,38 @@ type Props = {
 
 function TextArea(props: Props) {
   const { className, value, onChange, prefixIcon, placeholder, right, gutter, rows } = props
-  // const [value, setValue] = useState<string>("")
 
   function onChangeHandler(e: any) {
-    // setValue(e.target.value)
     if(onChange) {
       onChange(e)
     }
   }
 
   return (
-    <Wrapper className={className}>
-      <div className="main">
-        <div className="left">
-          {prefixIcon && <FontAwesomeIcon icon={prefixIcon} />}
+    <div className={`bg-neutral-700 p-2 shadow rounded-sm ${className}`}>
+      <div className="flex justify-between bg-transparent items-center">
+        <div className="flex items-start gap-1 flex-1">
+          {prefixIcon && <FontAwesomeIcon className='text-neutral-500 mt-1' icon={prefixIcon} />}
           <textarea placeholder={placeholder ? placeholder : ""}
+            className='bg-transparent flex-1'
             rows={rows ? rows : 3}
             value={value}
             onChange={onChangeHandler} />
         </div>
+
         {right && (
           <div className="right">
             { right }
           </div>
         )}
+
         </div>
         {gutter && (
           <div className="gutter">
             { gutter }
           </div>
         )}
-    </Wrapper>
+    </div>
   )
 }
 
