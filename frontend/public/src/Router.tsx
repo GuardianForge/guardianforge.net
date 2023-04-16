@@ -75,7 +75,7 @@ function ForgeRouter() {
         <Route path="/g/:guardianKey" element={<GuardianProfileMain />} />
 
 
-        <Route path="/app" element={<AppMain />} />
+        {/* <Route path="/app" element={<AppMain />} />
         <Route path="/app/find-players" element={<AppFindPlayers />} />
         <Route path="/app/find-builds" element={<AppFindBuilds />} />
         <Route path="/app/bookmarks" element={<Bookmarks />} />
@@ -85,7 +85,7 @@ function ForgeRouter() {
         <Route path="/app/g/:guardianKey" element={<GuardianProfile />} />
         <Route path="/app/build/:buildId" element={<AppBuild />} />
         <Route path="/app/edit-profile" element={<EditProfile />} />
-        <Route path="/app/admin/admin-tools" element={<AdminTools />} />
+        <Route path="/app/admin/admin-tools" element={<AdminTools />} /> */}
 
         {/* Redirects */}
         <Route path="/blog" element={<Redirect to="/blog/index.html" />} />
