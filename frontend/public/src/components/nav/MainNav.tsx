@@ -6,9 +6,10 @@ import { Link, LinkProps } from "react-router-dom"
 import { Container, Navbar, Nav } from 'react-bootstrap'
 import { faCube, faSignInAlt, faUser, faHamburger, faBars, faClose } from '@fortawesome/free-solid-svg-icons'
 import { GlobalContext } from '../../contexts/GlobalContext'
+import ForgeButton from '../forms/Button'
 
 function NavLink(props: LinkProps) {
-  return <Link {...props} className={`text-white md:text-gray-400 hover:text-white transition text-lg md:text-inherit`}>
+  return <Link {...props} className={`text-white md:text-gray-300 hover:text-white transition text-lg`}>
     { props.children }
   </Link>
 }
@@ -31,6 +32,10 @@ function MobileMenu({ open, onClose, loginUrl }: MobileMenuProps) {
     el?.addEventListener("wheel", preventScroll, { passive: false })
   }, [open])
 
+  function redirectToLogin() {
+    window.open(loginUrl)
+  }
+
   return (
     <div id="mobile_menu" className={`absolute top-0 h-screen w-full bg-forgebg opacity-95 transition z-50 md:hidden overscroll-none ${open ? "visible" : "hidden"}`}>
       <div className="flex items-center justify-between p-2 border-b-gray-800 border-b">
@@ -48,9 +53,9 @@ function MobileMenu({ open, onClose, loginUrl }: MobileMenuProps) {
         <NavLink className="" to="/find-builds">
           <FontAwesomeIcon icon={faCube} /> Find Builds
         </NavLink>
-        <a className="text-white hover:text-white text-lg" href={loginUrl}>
+        <ForgeButton onClick={() => redirectToLogin()}>
           <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
-        </a>
+        </ForgeButton>
       </div>
     </div>
   )
@@ -72,6 +77,10 @@ function MainNav() {
     init()
   }, [isClientLoaded])
 
+  function redirectToLogin() {
+    window.open(loginUrl)
+  }
+
   return (
     <nav>
       <div className="flex items-center p-2">
@@ -86,9 +95,10 @@ function MainNav() {
             <FontAwesomeIcon icon={faCube} /> Find Builds
           </NavLink>
         </div>
-        <a className="text-gray-400 hover:text-white transition hidden md:block" href={loginUrl}>
+
+        <ForgeButton className='hidden md:block' onClick={() => redirectToLogin()}>
           <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
-        </a>
+        </ForgeButton>
 
         <div className="flex md:hidden flex-1 justify-end text-xl mr-2">
           <FontAwesomeIcon className="hover:cursor-pointer" icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />
