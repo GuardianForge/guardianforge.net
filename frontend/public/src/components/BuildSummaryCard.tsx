@@ -53,11 +53,7 @@ function BuildSummaryCard(props: Props) {
   }, [])
 
   function goToBuild() {
-    if(isPublicUi) {
-      navigate(`/build/${buildSummary.id}`)
-    } else {
-      navigate(`/app/build/${buildSummary.id}`)
-    }
+    navigate(`/build/${buildSummary.id}`)
   }
 
   return (
