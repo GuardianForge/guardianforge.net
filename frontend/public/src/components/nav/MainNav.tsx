@@ -89,8 +89,8 @@ function MainNav() {
   }
 
   return (
-    <nav>
-      <div className="flex items-center p-2">
+    <nav className=''>
+      <div className="flex items-center p-2 border-b border-b-neutral-800 mb-2">
         <Link className="flex items-center text-xl mr-4 text-white hover:text-white" to="/">
           <img src={SiteLogo} alt="GuardianForge Logo" className="h-[40px] w-[40px] mr-2" /> GuardianForge
         </Link>

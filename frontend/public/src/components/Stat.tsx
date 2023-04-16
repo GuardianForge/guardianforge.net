@@ -10,13 +10,6 @@ const Wrapper = styled.div`
   align-items: center;
   padding-right: 15px;
 
-  img {
-    max-width: 45px;
-    /* padding: 0px 5px; */
-    border-radius: 5px;
-    margin-right: 5px;
-  }
-
   span {
     font-size: 1.3rem;
   }
@@ -65,7 +58,7 @@ function Stat(props: Props) {
           placement="bottom"
           delay={{ show: 250, hide: 400 }}
           overlay={<Tooltip>{name.charAt(0).toUpperCase() + name.slice(1)}</Tooltip>}>
-              <img src={fixedIcon ? fixedIcon : iconUrl} className="stat-icon" />
+            <img src={fixedIcon ? fixedIcon : iconUrl} className="stat-icon max-w-[30px] mr-2" alt="stat icon" />
         </OverlayTrigger>
       </Highlightable>
       <span>{value}</span>

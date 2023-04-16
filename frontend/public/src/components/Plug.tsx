@@ -106,7 +106,8 @@ function Plug(props: Props) {
 
   return (
     <Wrapper>
-      <Highlightable highlightKey={`${plugType}-${itemInstanceId}-${socketIndex}-${plugHash}`}
+      <Highlightable
+        highlightKey={`${plugType}-${itemInstanceId}-${socketIndex}-${plugHash}`}
         isHighlightable={isHighlightable && !isEmpty}
         highlights={highlights}
         highlightClass="socket-icon"
@@ -115,7 +116,7 @@ function Plug(props: Props) {
           placement="bottom"
           delay={{ show: 250, hide: 400 }}
           overlay={<Tooltip>{ plugName }</Tooltip>}>
-          <Image src={fixedIconUrl ? fixedIconUrl : iconUrl} 
+          <Image src={fixedIconUrl ? fixedIconUrl : iconUrl}
             className={`socket-icon ${plugType === "perk" ? "perk" : "mod"}`} />
         </OverlayTrigger>
       </Highlightable>

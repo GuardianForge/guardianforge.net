@@ -18,9 +18,17 @@ function SubclassCard(props: Props) {
   return (
     <Card className={className}>
       {item.isLightSubclass ? (
-        <V2SubclassCard buildItem={item} highlights={highlights} isHighlightModeOn={isHighlightable} onHighlightableClicked={onHighlightableClicked} />
+        <V2SubclassCard
+          buildItem={item}
+          highlights={highlights}
+          isHighlightModeOn={isHighlightable}
+          onHighlightableClicked={onHighlightableClicked} />
       ) : (
-        <V3SubclassCard buildItem={item} highlights={highlights} isHighlightModeOn={isHighlightable} onHighlightableClicked={onHighlightableClicked} />
+        <V3SubclassCard
+          buildItem={item}
+          highlights={highlights}
+          isHighlightModeOn={isHighlightable}
+          onHighlightableClicked={onHighlightableClicked} />
       )}
     </Card>
   )

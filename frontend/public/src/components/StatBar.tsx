@@ -1,42 +1,7 @@
 import React from 'react'
-import styled from 'styled-components'
 import { BuildStatCollection } from '../models/Build'
 import Stat from './Stat'
 import Card from './ui/Card'
-
-const Wrapper = styled(Card)`
-  .card-content {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  @media (max-width: 576px) {
-    .card-content {
-      display: grid !important;
-      grid-template-columns: repeat(3, 1fr);
-    }
-    margin: 0 auto;
-
-    img {
-      margin: 3px;
-    }
-  }
-
-  img {
-    max-width: 45px;
-    padding: 0px 5px;
-    border-radius: 5px;
-    margin-right: 5px;
-  }
-
-  span {
-    font-size: 1.3rem;
-  }
-
-  &:last-child {
-    border-right: 0px !important;
-  }
-`
 
 type Props = {
   stats: BuildStatCollection
@@ -50,7 +15,9 @@ function StatBar(props: Props) {
   const { stats, highlights, onStatClicked, isHighlightable, onHighlightableClicked } = props
 
   return (
-    <Wrapper title="Stats">
+    <div>
+      <h4>Stats</h4>
+      <Card className='grid grid-cols-3 md:flex gap-2 mb-2'>
       {stats.mobility && (
         <Stat
           iconUrl="/img/stats/mob.png"
@@ -116,7 +83,9 @@ function StatBar(props: Props) {
           onHighlightableClicked={onHighlightableClicked}
           isHighlightable={isHighlightable} />
       )}
-    </Wrapper>
+
+      </Card>
+    </div>
   )
 }
 

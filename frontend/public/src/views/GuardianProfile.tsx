@@ -19,6 +19,8 @@ import { faCube, faLink, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import AppLayout from '../layouts/AppLayout'
 import MainLayout from '../layouts/MainLayout'
+import ForgeButton from '../components/forms/Button'
+import AlertDetail from '../models/AlertDetail'
 
 const Wrapper = styled.div`
   .items {
@@ -76,7 +78,7 @@ function Guardian() {
   const { guardianKey } = useParams()
   const navigate = useNavigate()
 
-  const { isInitDone, isClientLoaded, setPageTitle } = useContext(GlobalContext)
+  const { isInitDone, isClientLoaded, dispatchAlert } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
   const [highlights, setHighlights] = useState([])
   const [items, setItems] = useState<BuildItemCollection>({})
@@ -89,6 +91,7 @@ function Guardian() {
   const [isPrivate, setIsPrivate] = useState(false)
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const [guardianName, setGuardianName] = useState<string>()
 
   useEffect(() => {
     if(!isInitDone) {
@@ -134,7 +137,7 @@ function Guardian() {
       let className = classes[characterData.character.classType]
       setClassName(className)
 
-      setPageTitle(`${selectedUser.displayName}'s ${className}`)
+      setGuardianName(`${selectedUser.displayName}'s ${className}`)
 
       let stats = buildUtils.lookupCharacterStats(characterData, ManifestService)
       setStats(stats)
@@ -167,8 +170,8 @@ function Guardian() {
 
   function copyToClipboard() {
     copy(`${window.location.origin}/g/${guardianKey}`)
-    setIsCopied(true)
-    setTimeout(() => setIsCopied(false), 3000)
+    let a = new AlertDetail("Link copied to clipboard.", "Link Copied")
+    dispatchAlert(a)
   }
 
   function onCreateBuildClicked() {
@@ -177,62 +180,52 @@ function Guardian() {
 
   return (
     <MainLayout wide>
-      <Wrapper>
+      <div>
         <Helmet>
           <title>GuardianForge</title>
         </Helmet>
         {compState === COMP_STATE.LOADING && (<div style={{ marginTop: "20px" }}> <Loading/> </div>)}
         {compState === COMP_STATE.DONE && (
-          <Container>
-            <Row>
-              <Col>
-                <ButtonBar>
-                  <Button onClick={copyToClipboard}>
-                    {isCopied ? (
-                      <FontAwesomeIcon icon={faThumbsUp} />
-                    ) : (
-                      <FontAwesomeIcon icon={faLink} />
-                    )}
-                    Copy Link
-                  </Button>
-                  <Button onClick={onCreateBuildClicked}>
-                    <FontAwesomeIcon icon={faCube} /> Create Build
-                  </Button>
-                </ButtonBar>
-              </Col>
-            </Row>
-            <Row>
-              <Col md="12">
-                <BuildAd />
-                <StatBar stats={stats} highlights={highlights}/>
+          <div>
+            <div className='flex flex-col md:flex-row gap-2'>
+              <h1 className='flex-1'>{ guardianName }</h1>
+              <ButtonBar>
+                <ForgeButton onClick={copyToClipboard}>
+                  <FontAwesomeIcon icon={faLink} /> Copy Link
+                </ForgeButton>
+                <ForgeButton onClick={onCreateBuildClicked}>
+                  <FontAwesomeIcon icon={faCube} /> Create Build
+                </ForgeButton>
+              </ButtonBar>
+            </div>
+            <BuildAd />
+            <StatBar stats={stats} highlights={highlights}/>
 
-                <h4>Subclass</h4>
-                <div className="items subclass row">
-                  {items.subclass && (<SubclassCard item={items.subclass} highlights={highlights}/>)}
-                </div>
+            <h4>Subclass</h4>
+            <div className="mb-2">
+              {items.subclass && (<SubclassCard item={items.subclass} highlights={highlights}/>)}
+            </div>
 
-                <h4>Weapons</h4>
-                <div className="items weapons row">
-                  {items.kinetic && (<ItemCard className="col-xxl-4 col-xl-6" item={items.kinetic} highlights={highlights} />)}
-                  {items.energy && (<ItemCard className="col-xxl-4 col-xl-6" item={items.energy} highlights={highlights}  />)}
-                  {items.power && (<ItemCard className="col-xxl-4 col-xl-6" item={items.power} highlights={highlights}  />)}
-                </div>
+            <h4>Weapons</h4>
+            <div className="grid md:grid-cols-3 gap-2 mb-2">
+              {items.kinetic && (<ItemCard item={items.kinetic} highlights={highlights} />)}
+              {items.energy && (<ItemCard item={items.energy} highlights={highlights}  />)}
+              {items.power && (<ItemCard item={items.power} highlights={highlights}  />)}
+            </div>
 
-                <h4>Armor</h4>
-                <div className="items armor row">
-                  {items.helmet && (<ItemCard className="col-xxl-4 col-xl-6" item={items.helmet} highlights={highlights}  />)}
-                  {items.arms && (<ItemCard className="col-xxl-4 col-xl-6" item={items.arms} highlights={highlights}  />)}
-                  {items.chest && (<ItemCard className="col-xxl-4 col-xl-6" item={items.chest} highlights={highlights}  />)}
-                  {items.legs && (<ItemCard className="col-xxl-4 col-xl-6" item={items.legs} highlights={highlights}  />)}
-                  {items.classItem && (<ItemCard className="col-xxl-4 col-xl-6" item={items.classItem} highlights={highlights}  />)}
-                </div>
+            <h4>Armor</h4>
+            <div className="grid md:grid-cols-3 gap-2 mb-2">
+              {items.helmet && (<ItemCard item={items.helmet} highlights={highlights}  />)}
+              {items.arms && (<ItemCard item={items.arms} highlights={highlights}  />)}
+              {items.chest && (<ItemCard item={items.chest} highlights={highlights}  />)}
+              {items.legs && (<ItemCard item={items.legs} highlights={highlights}  />)}
+              {items.classItem && (<ItemCard item={items.classItem} highlights={highlights}  />)}
+            </div>
 
-                <BuildAd />
-              </Col>
-            </Row>
-          </Container>
+            <BuildAd />
+          </div>
         )}
-      </Wrapper>
+      </div>
     </MainLayout>
   )
 }
