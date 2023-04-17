@@ -67,7 +67,7 @@ function MobileMenu({ open, onClose, loginUrl, isLoggedIn, onSearchClicked }: Mo
           <FontAwesomeIcon icon={faCube} /> Create Build
         </NavLink>
         {!isLoggedIn && (
-          <ForgeButton onClick={() => redirectToLogin()}>
+          <ForgeButton className='mr-3' onClick={() => redirectToLogin()}>
             <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
           </ForgeButton>
         )}
