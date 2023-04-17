@@ -12,6 +12,7 @@ import { Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
+import UpvoteButton from '../components/UpvoteButton'
 
 const COMP_STATE = {
   LOADING: 0,
@@ -113,8 +114,9 @@ function Build() {
               </Alert>
             </div>
           )}
-
-          <h1 className='flex justify-start'>{ buildName }</h1>
+          <div className='flex items-center justify-between'>
+            <h1 className='text-2xl'>{ buildName }</h1>
+          </div>
           <BuildMetaPanel
             buildId={buildId as string}
             buildData={buildData}

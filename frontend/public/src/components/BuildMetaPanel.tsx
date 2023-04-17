@@ -200,7 +200,6 @@ function BuildMetaPanel(props: Props) {
             if(guardianOfForgeUser && guardianOfForgeUser.user.social) {
               guardianOfUser.social = guardianOfForgeUser.user.social
             }
-            console.log(guardianOfUser)
             setGuardianOf(guardianOfUser)
           }
         }
@@ -394,8 +393,11 @@ function BuildMetaPanel(props: Props) {
           )}
         </div>
 
-        <div className="flex items-center">
-          <UpvoteButton buildId={buildId} buildData={buildData} isBuildArchived={isBuildArchived} />
+        <div className="flex items-center justify-center text-lg">
+          <UpvoteButton
+            buildId={buildId}
+            buildData={buildData}
+            isBuildArchived={isBuildArchived} />
         </div>
       </div>
       {/* /Buttons */}

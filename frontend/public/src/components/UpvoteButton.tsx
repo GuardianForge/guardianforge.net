@@ -5,29 +5,17 @@ import buildUtils from '../utils/buildUtils'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Build from '../models/Build'
-import styled from 'styled-components'
-import colors from '../colors'
-
-const Wrapper = styled.div`
-  button {
-    color: ${colors.theme2.text} !important;
-  }
-  svg {
-    margin-right: 5px;
-  }
-`
 
 type Props = {
   buildId: string
   buildData: Build
   isBuildArchived: boolean
+  className?: string
 }
 
-function UpvoteButton(props: Props) {
-  const { buildId, buildData, isBuildArchived } = props
-  const { isInitDone } = useContext(GlobalContext)
+function UpvoteButton({ buildId, buildData, isBuildArchived, className }: Props) {
+  const { isInitDone, redirectToLogin, isLoggedIn } = useContext(GlobalContext)
   const [isUpvoted, setIsUpvoted] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [upvoteCount, setUpvoteCount] = useState(0)
   const [isUpvoting, setIsUpvoting] = useState(false)
   const [isArchived, setIsArchived] = useState(false)
@@ -44,9 +32,6 @@ function UpvoteButton(props: Props) {
         setUpvoteCount(Number(upvoteCount))
       }
 
-      if(ForgeClient.isLoggedIn()) {
-        setIsLoggedIn(true)
-      }
       if(ForgeClient.userUpvotes && ForgeClient.userUpvotes[buildId]) {
         setIsUpvoted(true)
       }
@@ -96,47 +81,36 @@ function UpvoteButton(props: Props) {
     }
   }
 
-  return (
-    <Wrapper>
-      {isArchived ? (
-        <OverlayTrigger
-          placement="bottom"
-          delay={{ show: 250, hide: 400 }}
-          overlay={<Tooltip>This build is private or has been archived. Upvoting has been disabled.</Tooltip>}>
-          <div style={{cursor: "not-allowed"}}>
-            <button type="button"
-              className="btn"
-              disabled>
-              <FontAwesomeIcon icon="ban" />
-            </button>
-          </div>
-        </OverlayTrigger>
-      ) : (
-        <>
-          {isArchived === false && isLoggedIn ? (
-            <button type="button" style={{ color: isUpvoted ? "orange" : "" }} className="btn" onClick={upvoteBuild}>
-              <UpvoteIcon filled={isUpvoted} />
-              { upvoteCount }
-            </button>
-          ) : (
-            <OverlayTrigger
-              placement="bottom"
-              delay={{ show: 250, hide: 400 }}
-              overlay={<Tooltip>Login to upvote this build.</Tooltip>}>
-              <div style={{cursor: "not-allowed"}}>
-                <button type="button"
-                  className="btn border-none"
-                  disabled>
-                  <UpvoteIcon filled />
-                  { upvoteCount }
-                </button>
-              </div>
-            </OverlayTrigger>
-          )}
-        </>
-      )}
-    </Wrapper>
-  )
+  function onClick() {
+    if(isLoggedIn) {
+      upvoteBuild()
+    } else {
+      redirectToLogin()
+    }
+  }
+
+  if(isArchived) {
+    return (
+      <OverlayTrigger
+        placement="bottom"
+        delay={{ show: 250, hide: 400 }}
+        overlay={<Tooltip>This build is private or has been archived. Upvoting has been disabled.</Tooltip>}>
+        <div className={`hover:cursor-not-allowed ${className}`}>
+          <button disabled>
+            <FontAwesomeIcon icon="ban" />
+          </button>
+        </div>
+      </OverlayTrigger>
+    )
+  } else {
+    return (
+      <button className={`${isUpvoted ? 'text-orange-600' : ''} ${className}`} onClick={onClick}>
+        <UpvoteIcon className='mr-1' filled={isUpvoted} />
+        { isUpvoted }
+        { upvoteCount }
+      </button>
+    )
+  }
 }
 
 export default UpvoteButton

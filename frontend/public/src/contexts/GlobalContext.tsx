@@ -27,6 +27,7 @@ interface IGlobalContext {
   redirectToLogin: Function
   bannerMessage?: string
   setBannerMessage: Function
+  isLoggedIn?: boolean
 }
 
 function noop() {
@@ -60,6 +61,7 @@ export const Provider = (props: Props) => {
   const [pageTitle, setPageTitle] = useState("")
   const [areAdsDisabled, setAreAdsDisabled] = useState(false)
   const [bannerMessage, setBannerMessage] = useState<string>("")
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     let el1 = document.getElementById('___gatsby')
@@ -90,6 +92,7 @@ export const Provider = (props: Props) => {
     await ForgeClient.init()
     setIsClientLoaded(true)
     if(ForgeClient.isLoggedIn()) {
+      setIsLoggedIn(true)
       await ForgeClient.fetchUserData()
       if(ForgeClient.isPremiumUser()) {
         setAreAdsDisabled(true)
@@ -138,7 +141,7 @@ export const Provider = (props: Props) => {
       let res = await fetch("/config.json")
       const config = await res.json()
 
-      posthog.init(config.posthogId, { 
+      posthog.init(config.posthogId, {
         api_host: 'https://app.posthog.com',
         capture_pageview: false,
         autocapture: false
@@ -237,6 +240,7 @@ export const Provider = (props: Props) => {
     redirectToLogin,
     bannerMessage,
     setBannerMessage,
+    isLoggedIn,
     initApp: init
   }
 

@@ -28,6 +28,7 @@ const SEARCH_STATE = {
 
 const pageSize = 18
 const maxPageIterationsToDisplay = 2
+const maxPageIterationsOnMobile = 1
 
 type Props = {
   show: boolean
@@ -97,9 +98,9 @@ function SearchModal({ show, onHide }: Props) {
           inFilters = filters
         }
         let filterString = searchUtils.buildAlgoliaFilters(inFilters)
-    
+
         let results = await AlgoliaService.search(inSearchInput, filterString)
-    
+
         let queryMap: any = {}
         if(inSearchInput !== "") {
           queryMap["searchInput"] = encodeURIComponent(inSearchInput)
@@ -108,7 +109,7 @@ function SearchModal({ show, onHide }: Props) {
           // @ts-ignore TODO: fix me
           queryMap["filters"] = inFilters.map(el => el.id).join(",")
         }
-    
+
         // TODO: urlencode the # in usernames, store that instead but handle just in case
         // if(Object.keys(queryMap).length > 0) {
         //   let queryStringArr: string[] = []
@@ -118,7 +119,7 @@ function SearchModal({ show, onHide }: Props) {
         // } else {
         //   window.history.replaceState(null, '', window.location.pathname)
         // }
-    
+
         if(results && results.hits !== undefined) {
           let hits = results.hits
           // @ts-ignore TODO: fix me
@@ -301,7 +302,7 @@ function SearchModal({ show, onHide }: Props) {
 
               {searchUsersState === SEARCH_STATE.HAS_RESULTS && (
                 <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-                  {userSearchResults.map((user, idx) => 
+                  {userSearchResults.map((user, idx) =>
                     <PlayerSearchResultCard onCardClicked={onHide} key={`search-${idx}`} user={user} />)
                   }
                 </div>
@@ -323,10 +324,19 @@ function SearchModal({ show, onHide }: Props) {
                   {totalBuildsPages > 1 && (
                     <div className="md:col-span-2 lg:col-span-3">
                       <Paginator
+                        className='hidden md:flex'
                         totalPages={totalBuildsPages}
                         page={buildsPage}
                         maxPageIterationsToDisplay={maxPageIterationsToDisplay}
                         onPageNavigate={goToPage}
+                      />
+                      <Paginator
+                        className='flex md:hidden'
+                        totalPages={totalBuildsPages}
+                        page={buildsPage}
+                        maxPageIterationsToDisplay={maxPageIterationsOnMobile}
+                        onPageNavigate={goToPage}
+                        compact
                       />
                     </div>
                   )}
