@@ -20,7 +20,7 @@ interface NavLinkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 function NavLinkButton(props: NavLinkButtonProps) {
-  return <button {...props} className={`text-white md:text-gray-300 hover:text-white transition text-lg`}>
+  return <button {...props} className={`text-white md:text-gray-300 hover:text-white transition text-lg ${props.className}`}>
     { props.children }
   </button>
 }
@@ -60,7 +60,7 @@ function MobileMenu({ open, onClose, loginUrl, isLoggedIn, onSearchClicked }: Mo
         </div>
       </div>
       <div className="flex flex-col gap-4 pl-4 mt-4">
-        <NavLinkButton onClick={() => onSearchClicked()}>
+        <NavLinkButton className='flex items-center gap-1' onClick={() => onSearchClicked()}>
           <FontAwesomeIcon icon={faSearch} /> Search
         </NavLinkButton>
         <NavLink className="" to="/create-build">
@@ -137,9 +137,9 @@ function MainNav() {
           <FontAwesomeIcon className="hover:cursor-pointer" icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />
         </div>
       </div>
-      
-      <SearchModal 
-        show={isSearchModalOpen} 
+
+      <SearchModal
+        show={isSearchModalOpen}
         onHide={() => setIsSearchModalOpen(false)} />
 
       <MobileMenu
