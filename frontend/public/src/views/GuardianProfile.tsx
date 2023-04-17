@@ -187,7 +187,7 @@ function Guardian() {
         {compState === COMP_STATE.LOADING && (<div style={{ marginTop: "20px" }}> <Loading/> </div>)}
         {compState === COMP_STATE.DONE && (
           <div>
-            <div className='flex flex-col md:flex-row gap-2'>
+            <div className='flex flex-col md:flex-row gap-2 border-b border-b-neutral-800 md:border-none mb-2'>
               <h1 className='flex-1'>{ guardianName }</h1>
               <ButtonBar>
                 <ForgeButton onClick={copyToClipboard}>
@@ -199,7 +199,9 @@ function Guardian() {
               </ButtonBar>
             </div>
             <BuildAd />
-            <StatBar stats={stats} highlights={highlights}/>
+
+            <h4>Stats</h4>
+            <StatBar className="mb-2" stats={stats} highlights={highlights}/>
 
             <h4>Subclass</h4>
             <div className="mb-2">

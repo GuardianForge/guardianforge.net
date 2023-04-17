@@ -10,35 +10,6 @@ import V2SubclassCard from './V2SubclassCard'
 import { BuildItem } from '../models/Build'
 import Card from './ui/Card'
 
-const Wrapper = styled.div`
-  display: flex;
-  /* justify-content: center;
-  align-items: center; */
-  flex-direction: column;
-  padding: 10px;
-  background-color: ${colors.theme2.dark2};
-  border-radius: 5px;
-  min-height: 200px;
-
-  .selected-subclass {
-    flex: 1;
-  }
-
-  .icon-btns {
-    display: flex;
-
-    svg {
-      height: 20px;
-      width: 20px;
-      margin-right: 10px;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  }
-`
-
 const SelectSubclassButtonWrapper = styled.div`
   display: flex;
   flex: 1;
@@ -129,10 +100,11 @@ function Subclass(props: Props) {
     <ForgeButton onClick={() => setIsSelectingSubclass(false)}>Close</ForgeButton>
   )
 
+
   return (
-    <Card className={className}>
+    <Card className={`min-h-[150px] flex items-center justify-center ${className}`}>
       {(buildItem || selectedSubclass) && (
-        <div className="selected-subclass">
+        <div className="selected-subclass w-full">
           {isV3Subclass ? (
             <V3SubclassCard
               buildItem={buildItem}

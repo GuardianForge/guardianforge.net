@@ -38,6 +38,7 @@ function Build() {
   const [buildData, setBuildData] = useState<any>({})
   const [buildName, setBuildName] = useState("")
   const [highlights, setHighlights] = useState([])
+  const [displayLoginAlert, setDisplayLoginAlert] = useState(false)
 
   useEffect(() => {
     if(!isConfigLoaded) {
@@ -46,8 +47,8 @@ function Build() {
     async function init() {
       const { ForgeApiService, ForgeClient } = window.services
 
-      if(ForgeClient.isLoggedIn()) {
-        navigate(`/app/build/${buildId}`)
+      if(!ForgeClient.isLoggedIn()) {
+        setDisplayLoginAlert(true)
       }
 
       if(ForgeClient.config && ForgeClient.config.loginUrl) {
@@ -109,50 +110,50 @@ function Build() {
         <Helmet>
           <title>GuardianForge</title>
         </Helmet>
-        {compState === COMP_STATE.LOADING && (
-          <div className="row mt-3">
-            <Loading />
-          </div>
-        )}
+        {compState === COMP_STATE.LOADING && <Loading />}
         {compState === COMP_STATE.DONE && (
-          <div id="build">
+          <div id="build" className="flex flex-col gap-2 mb-2">
 
-          <div style={{ marginTop: "15px" }}>
-            <Alert>
-              Login with your Bungie account to unlock more features! <a className="border-b border-b-blue-400" href={loginUrl}>Login w/Bungie</a>.
-            </Alert>
-          </div>
+            {displayLoginAlert && (
+              <div style={{ marginTop: "15px" }}>
+                <Alert>
+                  Login with your Bungie account to unlock more features! <a className="border-b border-b-blue-400" href={loginUrl}>Login w/Bungie</a>.
+                </Alert>
+              </div>
+            )}
 
             <h1>{ buildName }</h1>
             <BuildMetaPanel
               buildId={buildId as string}
               buildData={buildData}
               onBuildUpdated={onBuildUpdated}
-              onBuildUpdateFailed={onBuildUpdateFailed} />
+              onBuildUpdateFailed={onBuildUpdateFailed}
+              className="mb-2" />
 
             <BuildAd />
 
+            <h4>Stats</h4>
             <StatBar stats={buildData.stats} highlights={highlights} />
 
             <h4>Subclass</h4>
-            <div className="subclass row">
+            <div className="subclass">
               {buildData.items.subclass && (<SubclassCard className="col-md-12" item={buildData.items.subclass} highlights={highlights}/>)}
             </div>
 
             <h4>Weapons</h4>
-            <div className="weapons row">
-              {buildData.items.kinetic && (<ItemCard className="col-md-4" item={buildData.items.kinetic} highlights={highlights} />)}
-              {buildData.items.energy && (<ItemCard className="col-md-4" item={buildData.items.energy} highlights={highlights}  />)}
-              {buildData.items.power && (<ItemCard className="col-md-4" item={buildData.items.power} highlights={highlights}  />)}
+            <div className="grid md:grid-cols-3 gap-2">
+              {buildData.items.kinetic && (<ItemCard item={buildData.items.kinetic} highlights={highlights} />)}
+              {buildData.items.energy && (<ItemCard item={buildData.items.energy} highlights={highlights}  />)}
+              {buildData.items.power && (<ItemCard item={buildData.items.power} highlights={highlights}  />)}
             </div>
 
             <h4>Armor</h4>
-            <div className="armor row">
-              {buildData.items.helmet && (<ItemCard className="col-md-4" item={buildData.items.helmet} highlights={highlights}  />)}
-              {buildData.items.arms && (<ItemCard className="col-md-4" item={buildData.items.arms} highlights={highlights}  />)}
-              {buildData.items.chest && (<ItemCard className="col-md-4" item={buildData.items.chest} highlights={highlights}  />)}
-              {buildData.items.legs && (<ItemCard className="col-md-4" item={buildData.items.legs} highlights={highlights}  />)}
-              {buildData.items.classItem && (<ItemCard className="col-md-4" item={buildData.items.classItem} highlights={highlights}  />)}
+            <div className="grid md:grid-cols-3 gap-2">
+              {buildData.items.helmet && (<ItemCard item={buildData.items.helmet} highlights={highlights}  />)}
+              {buildData.items.arms && (<ItemCard item={buildData.items.arms} highlights={highlights}  />)}
+              {buildData.items.chest && (<ItemCard item={buildData.items.chest} highlights={highlights}  />)}
+              {buildData.items.legs && (<ItemCard item={buildData.items.legs} highlights={highlights}  />)}
+              {buildData.items.classItem && (<ItemCard item={buildData.items.classItem} highlights={highlights}  />)}
             </div>
 
             <BuildAd />

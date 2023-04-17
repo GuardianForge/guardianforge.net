@@ -9,14 +9,14 @@ type Props = {
   onStatClicked?: Function
   isHighlightable?: boolean
   onHighlightableClicked?: Function
+  className?: string
 }
 
 function StatBar(props: Props) {
-  const { stats, highlights, onStatClicked, isHighlightable, onHighlightableClicked } = props
+  const { stats, highlights, onStatClicked, isHighlightable, onHighlightableClicked, className } = props
 
   return (
-    <div>
-      <Card className='grid grid-cols-3 md:flex gap-2'>
+    <Card className={`grid grid-cols-3 md:flex gap-2 ${className}`}>
       {stats.mobility && (
         <Stat
           iconUrl="/img/stats/mob.png"
@@ -83,8 +83,7 @@ function StatBar(props: Props) {
           isHighlightable={isHighlightable} />
       )}
 
-      </Card>
-    </div>
+    </Card>
   )
 }
 

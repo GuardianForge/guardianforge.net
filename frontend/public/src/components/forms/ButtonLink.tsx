@@ -1,14 +1,14 @@
 import React, { ButtonHTMLAttributes } from 'react';
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
 
 }
 
-function ForgeButton(props: Props) {
-  return <button {...props}
+function ForgeButtonLink(props: Props) {
+  return <a {...props}
     className={`
       py-1
-      px-2 
+      px-2  
       border 
       border-neutral-500 
       bg-inherit 
@@ -16,10 +16,9 @@ function ForgeButton(props: Props) {
       hover:border-gray-400 
       transition 
       flex items-center justify-center gap-1
-      ${props.disabled ? 'cursor-not-allowed' : ''} 
-      ${props.className}`}>
+      hover:text-inherit ${props.className}`}>
     { props.children }
-  </button>
+  </a>
 }
 
-export default ForgeButton;
+export default ForgeButtonLink;

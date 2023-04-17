@@ -8,6 +8,7 @@ import { Button, Dropdown } from 'react-bootstrap'
 import ForgeModal from './Modal'
 import ForgeButton from './forms/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Image from './ui/Image'
 
 const Wrapper = styled.div`
   display: flex;
@@ -154,6 +155,9 @@ function UserMenu(props: Props) {
   const navigate = useNavigate()
   const { isClientLoaded, didOAuthComplete } = useContext(GlobalContext)
   const [userData, setUserData] = useState<User>({})
+
+  const [displayName, setDisplayName] = useState("")
+  const [iconUrl, setIconUrl] = useState("")
   const [isAdmin, setIsAdmin] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
@@ -170,6 +174,16 @@ function UserMenu(props: Props) {
     }
     init()
   }, [isClientLoaded])
+
+  useEffect(() => {
+    if(userData?.bungieNetUser?.displayName) {
+      setDisplayName(userData.bungieNetUser.displayName)
+    }
+
+    if(userData?.bungieNetUser?.profilePicturePath) {
+      setIconUrl(`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`)
+    }
+  }, [userData])
 
   useEffect(() => {
     if(!didOAuthComplete || !isClientLoaded) return
@@ -200,12 +214,8 @@ function UserMenu(props: Props) {
         <ul className="navbar-nav me-auto mb-2 mb-lg-0" style={{width: "100%"}}>
           <li className="nav-item dropdown">
             <a className="nav-link user-badge" href="#" onClick={() => setIsUserMenuOpen(true)}>
-              {userData.bungieNetUser && userData.bungieNetUser.profilePicturePath && (
-                <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} />
-              )}
-              {userData.bungieNetUser && userData.bungieNetUser.displayName && (
-                <span className="display-name">{ userData.bungieNetUser.displayName }</span>
-              )}
+              {iconUrl && <Image src={iconUrl} />}
+              {displayName && <span className="display-name">{ displayName }</span>}
             </a>
           </li>
         </ul>

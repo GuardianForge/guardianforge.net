@@ -69,7 +69,9 @@ function Home() {
             <p>
               Once you find a build, you can bookmark it for later (logged in users only), share it with your friends & viewers, or create a DIM Loadout Optimizer link to make it your own!
             </p>
-            <ForgeButton onClick={() => navigate("/find-builds")}><FontAwesomeIcon icon={faCube} /> Find Builds</ForgeButton>
+            <ForgeButton onClick={() => navigate("/find-builds")}>
+              <FontAwesomeIcon icon={faCube} /> Find Builds
+            </ForgeButton>
           </div>
         </div>
 
@@ -83,9 +85,10 @@ function Home() {
             <p>
               Sign into Forge using your Bungie account to unlock even more features like viewing your build history, bookmarked builds, and creating custom build directly in the app without having to set up your Guardian in-game!
             </p>
-            <div>
-              <ForgeButton onClick={() => navigate("/find-players")} style={{marginRight: "10px"}}><FontAwesomeIcon icon={faUser} /> Find Players</ForgeButton>
-              <ForgeButton onClick={() => redirectToLogin()}><FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie</ForgeButton>
+            <div className="flex gap-1">
+              <ForgeButton onClick={() => redirectToLogin()}>
+                <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
+              </ForgeButton>
             </div>
           </div>
         </div>
@@ -109,7 +112,7 @@ function Home() {
           ) : (
             <div className="grid md:grid-cols-3 gap-2 grid-cols-1">
               {latestBuilds.map((bs: BuildSummary) => (
-                <BuildSummaryCard key={bs.id} buildSummary={bs} isPublicUi/>
+                <BuildSummaryCard key={bs.id} buildSummary={bs}/>
               ))}
             </div>
           )}

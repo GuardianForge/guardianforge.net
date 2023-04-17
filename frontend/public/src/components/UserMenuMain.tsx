@@ -7,6 +7,8 @@ import colors from "../colors"
 import { Button, Dropdown } from 'react-bootstrap'
 import ForgeModal from './Modal'
 import ForgeButton from './forms/Button'
+import Image from './ui/Image'
+import Loading from './Loading'
 
 const MobileWrapper = styled.div`
   display: flex;
@@ -96,8 +98,10 @@ type Props = {
 function UserMenu(props: Props) {
   const { isMobile, onMenuItemClicked } = props
   const navigate = useNavigate()
-  const { isClientLoaded, didOAuthComplete } = useContext(GlobalContext)
+  const { isClientLoaded, didOAuthComplete, isUserDataLoaded } = useContext(GlobalContext)
   const [userData, setUserData] = useState<User>({})
+  const [displayName, setDisplayName] = useState("")
+  const [iconUrl, setIconUrl] = useState("")
   const [isAdmin, setIsAdmin] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
@@ -106,6 +110,7 @@ function UserMenu(props: Props) {
     function init() {
       let { ForgeClient } = window.services
       if(ForgeClient.isLoggedIn() && ForgeClient.userData) {
+        console.log("hit")
         setUserData(ForgeClient.userData)
         if(ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser.membershipId === "14214042") {
           setIsAdmin(true)
@@ -113,7 +118,7 @@ function UserMenu(props: Props) {
       }
     }
     init()
-  }, [isClientLoaded])
+  }, [isClientLoaded, isUserDataLoaded])
 
   useEffect(() => {
     if(!didOAuthComplete || !isClientLoaded) return
@@ -125,6 +130,16 @@ function UserMenu(props: Props) {
     }
     init()
   }, [didOAuthComplete, isClientLoaded])
+
+  useEffect(() => {
+    if(userData?.bungieNetUser?.displayName) {
+      setDisplayName(userData.bungieNetUser.displayName)
+    }
+
+    if(userData?.bungieNetUser?.profilePicturePath) {
+      setIconUrl(`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`)
+    }
+  }, [userData])
 
   function navigateTo(to: string) {
     navigate(to)
@@ -138,91 +153,42 @@ function UserMenu(props: Props) {
     ForgeClient.logout()
   }
 
-  if(isMobile) {
-    return (
-      <MobileWrapper className="d-flex">
-        <ul className="navbar-nav me-auto mb-2 mb-lg-0" style={{width: "100%"}}>
-          <li className="nav-item dropdown">
-            <a className="nav-link user-badge" href="#" onClick={() => setIsUserMenuOpen(true)}>
-              {userData.bungieNetUser && userData.bungieNetUser.profilePicturePath && (
-                <img src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`} />
-              )}
-              {userData.bungieNetUser && userData.bungieNetUser.displayName && (
-                <span className="display-name">{ userData.bungieNetUser.displayName }</span>
-              )}
-            </a>
-          </li>
-        </ul>
-
-        <ForgeModal
-          show={isUserMenuOpen}
-          title="User Menu"
-          footer={<ForgeButton onClick={() => setIsUserMenuOpen(false)}>Close</ForgeButton>}>
+  return (
+    <div className="d-flex">
+      <Dropdown align="end">
+        <Dropdown.Toggle className="user-badge flex gap-1 items-center rounded-none border-none bg-inherit hover:bg-neutral-800">
+          {!iconUrl && !displayName && <Loading small />}
+          {iconUrl && <Image className='h-[20px] w-[20px] border-neutral-600' src={iconUrl} />}
+          {displayName && <span className="display-name">{ displayName }</span>}
+        </Dropdown.Toggle>
+        <Dropdown.Menu className='bg-neutral-800 rounded-none border-neutral-600'>
           {userData && userData.bungieNetUser && (
-            <SelectItemButton className="class-option" onClick={() => navigateTo(`/app/u/${userData?.bungieNetUser?.uniqueName}`)}>
-              My Profile
-            </SelectItemButton>
+            <Dropdown.Item className='hover:bg-neutral-600'>
+              <a className="text-white hover:text-white" href="#"
+                onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}`)}>My Profile</a>
+            </Dropdown.Item>
           )}
-          <SelectItemButton className="class-option" onClick={() => navigateTo("/app/edit-profile")}>
-            Edit Profile
-          </SelectItemButton>
-          <SelectItemButton className="class-option" onClick={logout}>
-            Log Out
-          </SelectItemButton>
-          {isAdmin && <hr />}
+          <Dropdown.Item className='hover:bg-neutral-600'>
+            <Link className="text-white hover:text-white" to="/edit-profile">Edit Profile</Link>
+          </Dropdown.Item>
+          <Dropdown.Item className='hover:bg-neutral-600'>
+            <Link className="text-white hover:text-white" to="/my-builds">My Builds</Link>
+          </Dropdown.Item>
+          <Dropdown.Item className='hover:bg-neutral-600'>
+            <Link className="text-white hover:text-white" to="/my-bookmarks">My Bookmarks</Link>
+          </Dropdown.Item>
+          <Dropdown.Item className='hover:bg-neutral-600'>
+            <a className="text-white hover:text-white" href="#" onClick={logout}>Log Out</a>
+          </Dropdown.Item>
           {isAdmin && (
-            <SelectItemButton className="class-option" onClick={() => navigateTo("/app/admin/admin-tools")}>
-              Admin
-            </SelectItemButton>
+            <Dropdown.Item className='hover:bg-neutral-600'>
+              <Link className="text-white hover:text-white" to="/admin-tools">Admin</Link>
+            </Dropdown.Item>
           )}
-        </ForgeModal>
-      </MobileWrapper>
-    )
-  } else {
-    return (
-      <div className="d-flex">
-        <Dropdown align="end">
-
-          <Dropdown.Toggle className="user-badge flex gap-1 items-center rounded-none border-none bg-inherit hover:bg-neutral-800">
-            {userData && userData.bungieNetUser && (
-              <>
-                <img className='h-[20px] w-[20px] border-neutral-600'
-                  src={`https://www.bungie.net${userData.bungieNetUser.profilePicturePath}`}
-                  alt="User Profile Img" />
-                <span>{ userData.bungieNetUser.displayName }</span>
-              </>
-            )}
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu className='bg-neutral-800 rounded-none border-neutral-600'>
-            {userData && userData.bungieNetUser && (
-              <Dropdown.Item className='hover:bg-neutral-600'>
-                <a className="text-white hover:text-white" href="#"
-                  onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}`)}>My Profile</a>
-              </Dropdown.Item>
-            )}
-            <Dropdown.Item className='hover:bg-neutral-600'>
-              <Link className="text-white hover:text-white" to="/edit-profile">Edit Profile</Link>
-            </Dropdown.Item>
-            <Dropdown.Item className='hover:bg-neutral-600'>
-              <Link className="text-white hover:text-white" to="/my-builds">My Builds</Link>
-            </Dropdown.Item>
-            <Dropdown.Item className='hover:bg-neutral-600'>
-              <Link className="text-white hover:text-white" to="/my-bookmarks">My Bookmarks</Link>
-            </Dropdown.Item>
-            <Dropdown.Item className='hover:bg-neutral-600'>
-              <a className="text-white hover:text-white" href="#" onClick={logout}>Log Out</a>
-            </Dropdown.Item>
-            {isAdmin && (
-              <Dropdown.Item className='hover:bg-neutral-600'>
-                <Link className="text-white hover:text-white" to="/admin-tools">Admin</Link>
-              </Dropdown.Item>
-            )}
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-    )
-  }
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
+  )
 
 }
 

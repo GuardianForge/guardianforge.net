@@ -5,14 +5,12 @@ import Loading from '../components/Loading'
 import { GlobalContext } from '../contexts/GlobalContext'
 import userUtils from "../utils/userUtils"
 import { Helmet } from 'react-helmet'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BuildSummaryCard from '../components/BuildSummaryCard'
 import User from '../models/User'
 import DestinyMembership from '../models/DestinyMembership'
 import Guardian from '../models/Guardian'
 import { BungieOfflineAlert } from '../models/AlertDetail'
 import { useLocation, useParams } from 'react-router-dom'
-import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import BuildSummary from '../models/BuildSummary'
 import MainLayout from '../layouts/MainLayout'
 import TabGroup from '../components/ui/TabGroup'
@@ -45,10 +43,17 @@ function PublicProfile() {
   const [tab, setTab] = useState<number>(1)
 
   useEffect(() => {
+
+  }, [username])
+
+  useEffect(() => {
     async function init() {
       if(!isConfigLoaded) return
+      setCompState(COMPSTATE.LOADING)
+
       let code = location.hash.replace("#", "")
-      const { BungieApiService, ForgeApiService, ForgeClient } = window.services
+      const { BungieApiService, ForgeApiService } = window.services
+
 
       let searchRes: any;
       try {
@@ -109,29 +114,41 @@ function PublicProfile() {
       }
     }
     init()
-  }, [isConfigLoaded])
+  }, [isConfigLoaded, username])
 
   useEffect(() => {
     if(user) {
       setDisplayName(`${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`)
+    } else {
+      setDisplayName("")
     }
   }, [user])
 
   useEffect(() => {
     if(forgeUser?.user?.about) {
       setAbout(forgeUser.user.about)
+    } else {
+      setAbout("")
     }
     if(forgeUser?.user?.social?.facebook) {
       setFacebookUrl(forgeUser.user.social.facebook)
+    } else {
+      setFacebookUrl("")
     }
     if(forgeUser?.user?.social?.twitch) {
       setTwitchUrl(forgeUser.user.social.twitch)
+    } else {
+      setTwitchUrl("")
     }
     if(forgeUser?.user?.social?.twitter) {
       setTwitterUrl(forgeUser.user.social.twitter)
+    } else {
+      setTwitterUrl("")
     }
     if(forgeUser?.user?.social?.youtube) {
       setYoutubeUrl(forgeUser.user.social.youtube)
+    } else {
+      setYoutubeUrl("")
     }
   }, [forgeUser])
 
@@ -188,7 +205,7 @@ function PublicProfile() {
               <div className="grid md:grid-cols-3 gap-3">
                 {!forgeUser && <div>This user has no builds.</div>}
                 {forgeUser.builds && forgeUser.builds.map((bs: BuildSummary) => (
-                  <BuildSummaryCard key={bs.id} buildSummary={bs} isPublicUi />
+                  <BuildSummaryCard key={bs.id} buildSummary={bs} />
                 ))}
               </div>
             )}

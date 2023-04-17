@@ -238,7 +238,7 @@ function Search() {
         {searchState === SEARCH_STATE.HAS_RESULTS && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-2">
             {displayedBuilds.map((el: any, idx) => (
-              <BuildSummaryCard key={`search-${idx}`} buildSummary={el.summary} isPublicUi />
+              <BuildSummaryCard key={`search-${idx}`} buildSummary={el.summary} />
             ))}
             {totalPages > 1 && (
               <Paginator

@@ -96,10 +96,11 @@ function FindPlayers() {
 
   return (
     <MainLayout>
-      <Wrapper>
-        <Helmet>
-          <title>Find Players - GuardianForge</title>
-        </Helmet>
+      <Helmet>
+        <title>Find Players - GuardianForge</title>
+      </Helmet>
+      <div>
+        <h1>Find Players</h1>
         <div className="search-wrapper text-black">
           <DebounceInput
             placeholder="Search by username"
@@ -126,11 +127,11 @@ function FindPlayers() {
 
           {compState === COMP_STATE.HAS_RESULTS && (
             <div className="search-results">
-              {searchResults.map((user, idx) => <PlayerSearchResultCard key={`search-${idx}`} user={user} isPublicUi />)}
+              {searchResults.map((user, idx) => <PlayerSearchResultCard key={`search-${idx}`} user={user} />)}
             </div>
           )}
         </div>
-      </Wrapper>
+      </div>
     </MainLayout>
   )
 }

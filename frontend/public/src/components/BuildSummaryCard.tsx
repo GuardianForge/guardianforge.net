@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import UpvoteIcon from './UpvoteIcon'
 // @ts-ignore
 import { imageFixerMap } from "../utils/shims"
 import BuildSummary from '../models/BuildSummary'
+import colors from "../colors"
 import { faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons'
 import Image from './ui/Image'
 
 type Props = {
   buildSummary: BuildSummary
-  isPublicUi?: boolean
+  onCardClicked?: Function
 }
 
-function BuildSummaryCard(props: Props) {
+function BuildSummaryCard({ buildSummary, onCardClicked }: Props) {
   const navigate = useNavigate()
-  const { buildSummary, isPublicUi } = props
   const [highlight1IconUrl, setHighlight1IconUrl] = useState("")
   const [highlight2IconUrl, setHighlight2IconUrl] = useState("")
   const [highlight3IconUrl, setHighlight3IconUrl] = useState("")
@@ -53,6 +54,9 @@ function BuildSummaryCard(props: Props) {
   }, [])
 
   function goToBuild() {
+    if(onCardClicked) {
+      onCardClicked()
+    }
     navigate(`/build/${buildSummary.id}`)
   }
 

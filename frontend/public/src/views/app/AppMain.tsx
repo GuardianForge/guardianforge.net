@@ -100,7 +100,7 @@ function AppIndex() {
               <h2>Latest Builds</h2>
               <div className="grid md:grid-cols-3 gap-2 grid-cols-1">
                 {latestBuilds.map((bs: BuildSummary) => (
-                  <BuildSummaryCard key={bs.id} buildSummary={bs} isPublicUi/>
+                  <BuildSummaryCard key={bs.id} buildSummary={bs} />
                 ))}
               </div>
             </div>

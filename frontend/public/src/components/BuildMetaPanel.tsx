@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import { GlobalContext } from '../contexts/GlobalContext';
 import ForgeModal from './Modal'
 import { Link } from 'react-router-dom'
-import { Button } from "react-bootstrap"
 import Build from '../models/Build';
 import AlertDetail from '../models/AlertDetail';
 import colors from '../colors';
@@ -18,13 +17,10 @@ import { UserInfo } from '../models/User';
 import ActivityOption from '../models/ActivityOption';
 import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { faBan, faBox, faEdit, faLink, faSave } from '@fortawesome/free-solid-svg-icons';
+import Card from './ui/Card';
+import ForgeButtonLink from './forms/ButtonLink';
 
 const Wrapper = styled.div`
-  background-color: ${colors.theme2.dark2};
-  border-radius: 5px;
-  margin: 5px;
-  padding-bottom: 10px;
-
   .dim-btn {
     background-color: inherit !important;
     border-radius: 0 !important;
@@ -87,8 +83,6 @@ const Wrapper = styled.div`
   }
 
   @media (max-width: 576px) {
-    margin: 5px 30px !important;
-
     .share-bar {
       &-buttons {
         max-width: 287px;
@@ -151,15 +145,15 @@ type Props = {
   buildData: Build
   onBuildUpdated?: Function
   onBuildUpdateFailed?: Function
+  className?: string
 }
 
 function BuildMetaPanel(props: Props) {
-  const { buildId, buildData, onBuildUpdated, onBuildUpdateFailed } = props
+  const { buildId, buildData, onBuildUpdated, onBuildUpdateFailed, className } = props
 
   const { isConfigLoaded, isUserDataLoaded, dispatchAlert } = useContext(GlobalContext)
   const [twitterLink, setTwitterLink] = useState("")
   const [primaryActivity, setPrimaryActivity] = useState<ActivityOption>()
-  const [isCopied, setIsCopied] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [buildName, setBuildName] = useState<string>()
@@ -168,24 +162,10 @@ function BuildMetaPanel(props: Props) {
   const [isBuildArchived, setIsBuildArchived] = useState(false)
   const [createdBy, setCreatedBy] = useState<UserInfo>()
   const [guardianOf, setGuardianOf] = useState<UserInfo>()
-  const [columns, setColumns] = useState(2)
   const [displayNotes, setDisplayNotes] = useState<string>()
   const [areNotesLong, setAreNotesLong] = useState(false)
   const [isNotesDialogDisplayed, setIsNotesDialogDisplayed] = useState(false)
   const [reformattedNotes, setReformattedNotes] = useState("")
-
-  useEffect(() => {
-    let _cols = 1
-    if(buildData) {
-      if(buildData.videoLink) {
-        _cols++
-      }
-      if(buildData.createdBy || (buildData.selectedUser && buildData.selectedUser.bungieNetUserId)) {
-        _cols++
-      }
-    }
-    setColumns(_cols)
-  }, [buildData])
 
   useEffect(() => {
     if (!isUserDataLoaded) return
@@ -268,8 +248,8 @@ function BuildMetaPanel(props: Props) {
 
   function copyToClipboard() {
     copy(window.location.href)
-    setIsCopied(true)
-    setTimeout(() => setIsCopied(false), 3000)
+    let a = new AlertDetail("Link copied to clipboard.", "Link Copied")
+    dispatchAlert(a)
   }
 
   function editBuild() {
@@ -351,182 +331,184 @@ function BuildMetaPanel(props: Props) {
   }
 
   return (
-    <Wrapper className="row">
-      <div className="share-bar col-md-12">
+    <Wrapper className={className}>
 
-        <div className="flex flex-col md:flex-row">
-          <div className="flex flex-col md:flex-row flex-1 items-center">
-            <button type="button" className="btn w-" onClick={copyToClipboard}>
-              {isCopied ? (
-                <span>👍</span>
-              ) : (
-                <FontAwesomeIcon icon={faLink} />
-              )}
-              Copy Link
-            </button>
+      {/* Buttons */}
+      <div className="flex flex-col md:flex-row md:items-center mb-2 gap-2">
+        <div className="grid grid-cols-2 md:flex md:flex-row flex-1 items-center gap-1">
+          <ForgeButton onClick={copyToClipboard}>
+            <FontAwesomeIcon icon={faLink} />
+            Copy Link
+          </ForgeButton>
 
-            <a className="btn btn-twitter" href={twitterLink} target="_blank" rel="noreferrer">
-              <FontAwesomeIcon icon={faTwitter} /> Share
-            </a>
+          <ForgeButtonLink href={twitterLink} target="_blank" rel="noreferrer">
+            <FontAwesomeIcon icon={faTwitter} /> Share
+          </ForgeButtonLink>
 
-            <Button onClick={copyDIMLink} className="dim-btn flex items-center gap-1">
-              <img src="/img/dim-logo.svg" className="dim-logo" alt="DIM Logo" /> <span>DIM Link</span>
-            </Button>
+          <ForgeButton onClick={copyDIMLink} className="px-3">
+              <img src="/img/dim-logo.svg" className="max-h-[16px]" alt="DIM Logo" /> DIM&nbsp;Link
+          </ForgeButton>
 
-            <BookmarkButton buildId={buildId} buildData={buildData} />
+          <BookmarkButton buildId={buildId} buildData={buildData} />
 
-            {isOwner && !isEditing && (
-              <button type="button" className="btn" onClick={() => editBuild()}>
-                <FontAwesomeIcon icon={faEdit} /> Edit
-              </button>
-            )}
-
-            {isOwner && isEditing && (
-              <>
-                <button type="button" className="btn" onClick={() => updateBuild()}>
-                  <FontAwesomeIcon icon={faSave} /> Save
-                </button>
-                <button type="button" className="btn" onClick={() => cancelEditBuild()}>
-                  <FontAwesomeIcon icon={faBan} /> Cancel
-                </button>
-              </>
-            )}
-
-            {isOwner && (
-              <button type="button" className="btn" onClick={() => setIsArchiveModalDisplayed(true)}>
-                <FontAwesomeIcon icon={faBox} /> Archive
-              </button>
-            )}
-
-          </div>
-          <div className="share-bar-buttons-right">
-            <UpvoteButton buildId={buildId} buildData={buildData} isBuildArchived={isBuildArchived} />
-          </div>
-        </div>
-
-
-
-      </div>
-      <div className={`mt-1 col-md-${12 / columns}`}>
-        {displayNotes && !isEditing && (
-          <div>
-            <span className="build-info-header">Notes</span>
-            {displayNotes && <div dangerouslySetInnerHTML={{__html: displayNotes}} />}
-            {areNotesLong && <a href="#" className="read-more-link" onClick={() => setIsNotesDialogDisplayed(true)}>Read more</a>}
-            {/* <div className="build-notes" dangerouslySetInnerHTML={{ __html: buildData.notes }} /> */}
-          </div>
-        )}
-        {isEditing && (
-          <div>
-            <div className="form-group mb-3">
-              <label htmlFor="buildName" className="form-label build-info-header">Name</label>
-              <input type="text"
-                value={buildName}
-                onChange={(e) => setBuildName(e.target.value)}
-                id="buildName"
-                className="form-control"
-                placeholder="Give your build a name" />
-            </div>
-            <div className="form-group mb-3">
-            <label htmlFor="buildNotes" className="form-label build-info-header">Notes</label>
-              <textarea
-                value={buildNotes}
-                onChange={(e) => setBuildNotes(e.target.value)}
-                id="buildNotes"
-                className="form-control"
-                placeholder="Add notes about how to best use the build, what synergizes together, etc."
-                rows={5}>
-              </textarea>
-            </div>
-          </div>
-        )}
-        {(primaryActivity || buildData.inputStyle) && (<div className="build-info-header mt-3">Works Best With</div>)}
-        <div className="build-info-icons">
-          {primaryActivity && <img src={primaryActivity.iconUrl} alt="Primary Activity Icon" />}
-          {buildData.inputStyle === '1' && (<img src="/img/input-icons/mnk.png" alt="Mouse and Keyboard" />)}
-          {buildData.inputStyle === '2' && (<img src="/img/input-icons/controller.png" alt="Controller" />)}
-        </div>
-      </div>
-
-      {(createdBy || guardianOf) && (
-        <div className={`mt-1 col-md-${12 / columns}`}>
-          {createdBy && (
-            <div className="created-by">
-              <div className="build-info-header">Created By</div>
-              <ForgeUserInfoWrapper>
-                <span>
-                  <Link to={`/u/${createdBy.uniqueName}`}>{ createdBy.uniqueName }</Link>
-                </span>
-                {createdBy.social && (
-                  <div className="socials">
-                    {createdBy.social.twitter && (
-                      <a href={createdBy.social.twitter} className="twitter-link" target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faTwitter} />
-                      </a>
-                    )}
-                    {createdBy.social.twitch && (
-                      <a href={createdBy.social.twitch} className="twitch-link" target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faTwitch} />
-                      </a>
-                    )}
-                    {createdBy.social.youtube && (
-                      <a href={createdBy.social.youtube} className="youtube-link" target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faYoutube} />
-                      </a>
-                    )}
-                    {createdBy.social.facebook && (
-                      <a href={createdBy.social.facebook} className="facebook-link" target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faFacebook} />
-                      </a>
-                    )}
-                  </div>
-                )}
-              </ForgeUserInfoWrapper>
-            </div>
+          {isOwner && !isEditing && (
+            <ForgeButton onClick={() => editBuild()}>
+              <FontAwesomeIcon icon={faEdit} /> Edit
+            </ForgeButton>
           )}
-          {guardianOf && (
-            <div className="guardian-of">
-              <div className="build-info-header">Guardian Of</div>
-              <ForgeUserInfoWrapper>
-                <span>
-                  <Link to={`/u/${guardianOf.uniqueName}`}>{ guardianOf.uniqueName }</Link>
-                </span>
-                {guardianOf.social && (
-                  <div className="socials">
-                    {guardianOf.social.twitter && (
-                      <a href={guardianOf.social.twitter} className="twitter-link" target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faTwitter} />
-                      </a>
-                    )}
-                    {guardianOf.social.twitch && (
-                      <a href={guardianOf.social.twitch} className="twitch-link" target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faTwitch} />
-                      </a>
-                    )}
-                    {guardianOf.social.youtube && (
-                      <a href={guardianOf.social.youtube} className="youtube-link" target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faYoutube} />
-                      </a>
-                    )}
-                    {guardianOf.social.facebook && (
-                      <a href={guardianOf.social.facebook} className="facebook-link" target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faFacebook} />
-                      </a>
-                    )}
-                  </div>
-                )}
-              </ForgeUserInfoWrapper>
-            </div>
+
+          {isOwner && isEditing && (
+            <>
+              <ForgeButton onClick={() => updateBuild()}>
+                <FontAwesomeIcon icon={faSave} /> Save
+              </ForgeButton>
+              <ForgeButton onClick={() => cancelEditBuild()}>
+                <FontAwesomeIcon icon={faBan} /> Cancel
+              </ForgeButton>
+            </>
+          )}
+
+          {isOwner && (
+            <ForgeButton onClick={() => setIsArchiveModalDisplayed(true)}>
+              <FontAwesomeIcon icon={faBox} /> Archive
+            </ForgeButton>
           )}
         </div>
-      )}
 
-      {buildData.videoLink && (
-        <div className={`mt-1 col-md-${12 / columns}`}>
-          <div className="build-info-header">Video Review</div>
-          <YouTubeEmbed youtubeUrl={buildData.videoLink} />
+        <div className="flex items-center">
+          <UpvoteButton buildId={buildId} buildData={buildData} isBuildArchived={isBuildArchived} />
         </div>
-      )}
+      </div>
+      {/* /Buttons */}
+
+      <Card className='grid md:grid-cols-3 gap-2'>
+        <div>
+          {displayNotes && !isEditing && (
+            <div>
+              <span className="build-info-header">Notes</span>
+              {displayNotes && <div dangerouslySetInnerHTML={{__html: displayNotes}} />}
+              {areNotesLong && <a href="#" className="read-more-link" onClick={() => setIsNotesDialogDisplayed(true)}>Read more</a>}
+              {/* <div className="build-notes" dangerouslySetInnerHTML={{ __html: buildData.notes }} /> */}
+            </div>
+          )}
+
+          {/* TODO: bring up the modal editor */}
+          {isEditing && (
+            <div>
+              <div className="form-group mb-3">
+                <label htmlFor="buildName" className="form-label build-info-header">Name</label>
+                <input type="text"
+                  value={buildName}
+                  onChange={(e) => setBuildName(e.target.value)}
+                  id="buildName"
+                  className="form-control"
+                  placeholder="Give your build a name" />
+              </div>
+              <div className="form-group mb-3">
+              <label htmlFor="buildNotes" className="form-label build-info-header">Notes</label>
+                <textarea
+                  value={buildNotes}
+                  onChange={(e) => setBuildNotes(e.target.value)}
+                  id="buildNotes"
+                  className="form-control"
+                  placeholder="Add notes about how to best use the build, what synergizes together, etc."
+                  rows={5}>
+                </textarea>
+              </div>
+            </div>
+          )}
+
+          {(primaryActivity || buildData.inputStyle) && (<div className="build-info-header mt-3">Works Best With</div>)}
+          <div className="build-info-icons">
+            {primaryActivity && <img src={primaryActivity.iconUrl} alt="Primary Activity Icon" />}
+            {buildData.inputStyle === '1' && (<img src="/img/input-icons/mnk.png" alt="Mouse and Keyboard" />)}
+            {buildData.inputStyle === '2' && (<img src="/img/input-icons/controller.png" alt="Controller" />)}
+          </div>
+        </div>
+
+
+
+        {buildData.videoLink && (
+          <div>
+            <div className="build-info-header">Video Review</div>
+            <YouTubeEmbed youtubeUrl={buildData.videoLink} />
+          </div>
+        )}
+
+        {(createdBy || guardianOf) && (
+          <div>
+            {createdBy && (
+              <div className="created-by">
+                <div className="build-info-header">Created By</div>
+                <ForgeUserInfoWrapper>
+                  <span>
+                    <Link to={`/u/${createdBy.uniqueName}`}>{ createdBy.uniqueName }</Link>
+                  </span>
+                  {createdBy.social && (
+                    <div className="socials">
+                      {createdBy.social.twitter && (
+                        <a href={createdBy.social.twitter} className="twitter-link" target="_blank" rel="noreferrer">
+                          <FontAwesomeIcon icon={faTwitter} />
+                        </a>
+                      )}
+                      {createdBy.social.twitch && (
+                        <a href={createdBy.social.twitch} className="twitch-link" target="_blank" rel="noreferrer">
+                          <FontAwesomeIcon icon={faTwitch} />
+                        </a>
+                      )}
+                      {createdBy.social.youtube && (
+                        <a href={createdBy.social.youtube} className="youtube-link" target="_blank" rel="noreferrer">
+                          <FontAwesomeIcon icon={faYoutube} />
+                        </a>
+                      )}
+                      {createdBy.social.facebook && (
+                        <a href={createdBy.social.facebook} className="facebook-link" target="_blank" rel="noreferrer">
+                          <FontAwesomeIcon icon={faFacebook} />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </ForgeUserInfoWrapper>
+              </div>
+            )}
+            {guardianOf && (
+              <div className="guardian-of">
+                <div className="build-info-header">Guardian Of</div>
+                <ForgeUserInfoWrapper>
+                  <span>
+                    <Link to={`/u/${guardianOf.uniqueName}`}>{ guardianOf.uniqueName }</Link>
+                  </span>
+                  {guardianOf.social && (
+                    <div className="socials">
+                      {guardianOf.social.twitter && (
+                        <a href={guardianOf.social.twitter} className="twitter-link" target="_blank" rel="noreferrer">
+                          <FontAwesomeIcon icon={faTwitter} />
+                        </a>
+                      )}
+                      {guardianOf.social.twitch && (
+                        <a href={guardianOf.social.twitch} className="twitch-link" target="_blank" rel="noreferrer">
+                          <FontAwesomeIcon icon={faTwitch} />
+                        </a>
+                      )}
+                      {guardianOf.social.youtube && (
+                        <a href={guardianOf.social.youtube} className="youtube-link" target="_blank" rel="noreferrer">
+                          <FontAwesomeIcon icon={faYoutube} />
+                        </a>
+                      )}
+                      {guardianOf.social.facebook && (
+                        <a href={guardianOf.social.facebook} className="facebook-link" target="_blank" rel="noreferrer">
+                          <FontAwesomeIcon icon={faFacebook} />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </ForgeUserInfoWrapper>
+              </div>
+            )}
+          </div>
+        )}
+
+      </Card>
 
       <ForgeModal show={isArchiveModalDisplayed} title="Archive Build" footer={
         <div>

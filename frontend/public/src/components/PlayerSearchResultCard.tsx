@@ -1,53 +1,37 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
 import User from '../models/User'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
-
-const Wrapper = styled.div`
-	display: flex;
-	align-items: center;
-  justify-content: space-between;
-	width: 100%;
-	padding: 5px;
-	border-radius: 5px;
-	margin-bottom: 5px;
-  font-weight: bold;
-  font-size: 1.5rem;
-	&:hover {
-		cursor: pointer;
-		background-color: #1e1f24;
-	}
-`
+import AlertDetail from '../models/AlertDetail'
+import { GlobalContext } from '../contexts/GlobalContext'
 
 type Props = {
-  isPublicUi?: boolean
   user: User
+  onCardClicked?: Function
 }
 
-function PlayerSearchResultCard(props: Props) {
+function PlayerSearchResultCard({ user, onCardClicked }: Props) {
+  const { dispatchAlert } = useContext(GlobalContext)
   const navigate = useNavigate()
-  const { user, isPublicUi } = props
   const [userHasNoDestinyMemberships, setUserHasNoDestinyMemberships] = useState(false)
-  const [showNoDestinyMembershipsModal, setShowNoDestinyMembershipsModal] = useState(false)
+  const [displayName, setDisplayName] = useState("")
 
   useEffect(() => {
+    setDisplayName(`${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`)
     if (!user.destinyMemberships || user.destinyMemberships.length === 0) {
       setUserHasNoDestinyMemberships(true)
     }
-    setShowNoDestinyMembershipsModal(false)
   }, [])
 
   function goToCharacterSelect() {
-    if(isPublicUi) {
-      navigate(`/u/${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`, {
-        state: {
-          searchUser: user
-        }
-      })
+    if(userHasNoDestinyMemberships) {
+      dispatchAlert(new AlertDetail(`User ${displayName} has a Bungie account, but no Destiny account...`, "No memberships"))
     } else {
-      navigate(`/app/u/${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`, {
+      if(onCardClicked) {
+        onCardClicked()
+      }
+      navigate(`/u/${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`, {
         state: {
           searchUser: user
         }
@@ -56,16 +40,11 @@ function PlayerSearchResultCard(props: Props) {
   }
 
   return (
-    <Wrapper onClick={goToCharacterSelect}>
-      <span>{user.bungieGlobalDisplayName}#{user.bungieGlobalDisplayNameCode}</span>
+    <div className="flex justify-between border border-neutral-800 p-2 text-lg hover:cursor-pointer hover:border-neutral-700" onClick={goToCharacterSelect}>
+      <span>{displayName}</span>
       {userHasNoDestinyMemberships && <span><FontAwesomeIcon icon={faExclamationCircle} /></span>}
-
-      {/* <ForgeModal title="No Memberships"
-        show={showNoDestinyMembershipsModal}
-        footer={<ForgeButton onClick={() => setShowNoDestinyMembershipsModal(false)}>Close</ForgeButton>}>
-        {user.bungieGlobalDisplayName}#{user.bungieGlobalDisplayNameCode} does not have any Destiny accounts.
-      </ForgeModal> */}
-    </Wrapper>
+    </div>
+    
   )
 }
 

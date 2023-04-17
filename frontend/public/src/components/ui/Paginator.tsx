@@ -53,8 +53,8 @@ function Paginator({ onPageNavigate, page, maxPageIterationsToDisplay, totalPage
   }, [page])
 
   return (
-    <div className={`mt-3 flex justify-center ${className}`}>
-      <div className="border border-neutral-800">
+    <div className={`flex justify-center ${className}`}>
+      <div className="flex border border-neutral-800">
         <PaginatorButton
           disabled={page === 1}
           onClick={() => onPageNavigate(page - 1)}>

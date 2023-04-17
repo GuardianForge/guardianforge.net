@@ -1,17 +1,28 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, ButtonHTMLAttributes } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // @ts-ignore
 import SiteLogo from "../../images/site-logo.png"
 import { Link, LinkProps } from "react-router-dom"
-import { faCube, faSignInAlt, faUser, faHamburger, faBars, faClose } from '@fortawesome/free-solid-svg-icons'
+import { faCube, faSignInAlt, faUser, faHamburger, faBars, faClose, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { GlobalContext } from '../../contexts/GlobalContext'
 import ForgeButton from '../forms/Button'
 import UserMenu from '../UserMenuMain'
+import SearchModal from '../SearchModal'
 
 function NavLink(props: LinkProps) {
   return <Link {...props} className={`text-white md:text-gray-300 hover:text-white transition text-lg`}>
     { props.children }
   </Link>
+}
+
+interface NavLinkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+
+}
+
+function NavLinkButton(props: NavLinkButtonProps) {
+  return <button {...props} className={`text-white md:text-gray-300 hover:text-white transition text-lg`}>
+    { props.children }
+  </button>
 }
 
 type MobileMenuProps = {
@@ -93,6 +104,8 @@ function MainNav() {
     window.open(loginUrl, "_self")
   }
 
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
+
   return (
     <nav className=''>
       <div className="flex items-center p-2 border-b border-b-neutral-800 mb-2">
@@ -100,13 +113,16 @@ function MainNav() {
           <img src={SiteLogo} alt="GuardianForge Logo" className="h-[40px] w-[40px] mr-2" /> GuardianForge
         </Link>
         <div className="hidden items-center gap-4 flex-1 md:flex">
-          <NavLink className="" to="/find-players">
+          <NavLinkButton onClick={() => setIsSearchModalOpen(true)}>
+            <FontAwesomeIcon icon={faSearch} /> Search
+          </NavLinkButton>
+          {/* <NavLink to="/find-players">
             <FontAwesomeIcon icon={faUser} /> Find Players
           </NavLink>
-          <NavLink className="" to="/find-builds">
+          <NavLink to="/find-builds">
             <FontAwesomeIcon icon={faCube} /> Find Builds
-          </NavLink>
-          <NavLink className="" to="/create-build">
+          </NavLink> */}
+          <NavLink to="/create-build">
             <FontAwesomeIcon icon={faCube} /> Create Build
           </NavLink>
         </div>
@@ -123,6 +139,11 @@ function MainNav() {
           <FontAwesomeIcon className="hover:cursor-pointer" icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />
         </div>
       </div>
+      
+      <SearchModal 
+        show={isSearchModalOpen} 
+        onHide={() => setIsSearchModalOpen(false)} />
+
       <MobileMenu
         open={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}

@@ -7,6 +7,7 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import Build from '../models/Build'
 import { faBookmark as fasBookmark } from "@fortawesome/free-solid-svg-icons"
 import { faBookmark as farBookmark} from "@fortawesome/free-regular-svg-icons"
+import ForgeButton from './forms/Button'
 
 interface ButtonProps {
   isBookmarked?: boolean
@@ -79,30 +80,28 @@ function BookmarkButton(props: Props) {
     }
   }
 
-  return (
-    <div>
-      {isLoggedIn ? (
-        <Button type="button" className="btn" onClick={bookmarkBuild} isBookmarked={isBookmarked}>
-          <FontAwesomeIcon icon={isBookmarked ? fasBookmark : farBookmark}/>
-          <span className="d-none d-md-inline">{isBookmarked ? "Remove from Bookmarks" : "Add to Bookmarks"}</span>
-        </Button>
-      ) : (
-          <OverlayTrigger
-            placement="bottom"
-            delay={{ show: 250, hide: 400 }}
-            overlay={<Tooltip>Login to bookmark this build.</Tooltip>}>
-            <div style={{cursor: "not-allowed"}}>
-              <button type="button"
-                className="btn border-none flex items-center gap-1"
-                disabled>
-                <FontAwesomeIcon icon={farBookmark} />
-                <span className="d-none d-md-inline">Add to Bookmarks</span>
-              </button>
-            </div>
-          </OverlayTrigger>
-      )}
-    </div>
-  )
+  if(isLoggedIn) {
+    return (
+      <ForgeButton onClick={bookmarkBuild} className='min-w-[107px]'>
+        <FontAwesomeIcon className={isBookmarked ? 'text-red-600' : ''} icon={isBookmarked ? fasBookmark : farBookmark}/>
+        <span>
+          {isBookmarked ? "Remove" : "Bookmark"}
+        </span>
+      </ForgeButton>
+    )
+  } else {
+    return (
+      <OverlayTrigger
+        placement="bottom"
+        delay={{ show: 250, hide: 400 }}
+        overlay={<Tooltip>Login to bookmark this build.</Tooltip>}>
+        <ForgeButton type="button" className="flex items-center gap-1" disabled>
+          <FontAwesomeIcon icon={farBookmark} />
+          <span className="d-none d-md-inline">Add to Bookmarks</span>
+        </ForgeButton>
+      </OverlayTrigger>
+    )
+  }
 }
 
 export default BookmarkButton

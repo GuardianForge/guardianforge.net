@@ -154,7 +154,7 @@ function EquipmentItem(props: EquipmentItemProps) {
         isHighlightable={isHighlightModeOn} />}
 
       {!buildItem && (
-        <div className="select-item-wrapper">
+        <div className="bg-neutral-800 border border-neutral-700 flex items-center justify-center min-h-[150px]">
           <ForgeButton onClick={() => setIsSelectingItem(true)}>Select { friendyBucketName }</ForgeButton>
         </div>
       )}

@@ -324,7 +324,7 @@ function V2SubclassCard(props: Props) {
                 <div className="perk-row">
                   {availableGrenades && availableGrenades.map((p: any) => (
                     <div>
-                      <img className={p.name === grenade.name ? "available-perk selected" : "available-perk"}
+                      <Image className={p.name === grenade.name ? "available-perk selected" : "available-perk"}
                         src={`https://www.bungie.net${p.icon}`}
                         onClick={() => setGrenade(p)} />
                     </div>
@@ -401,41 +401,41 @@ function V2SubclassCard(props: Props) {
           <div className="subclass-right-lower">
             <div className="perks-col">
               {grenade && (
-                <div className="perk">
+                <div className="perk flex items-center">
                   <Highlightable highlightKey="subclass-grenade"
                     alternateKeys={["subclass-grenade-0-0"]}
                     highlights={highlights}
                     isHighlightable={isHighlightModeOn}
                     onClick={onHighlightableClickedHandler}
                     className="highlightable-wrapper">
-                    <img src={grenade.iconUrl.startsWith("http") ? grenade.iconUrl : `https://www.bungie.net${grenade.iconUrl}`} />
+                    <Image src={grenade.iconUrl.startsWith("http") ? grenade.iconUrl : `https://www.bungie.net${grenade.iconUrl}`} />
                   </Highlightable>
                   <span className="perk-title">{grenade.name}</span>
                 </div>
               )}
               {specialty && (
-                <div className="perk">
+                <div className="perk flex items-center">
                 <Highlightable highlightKey="subclass-specialty"
                   alternateKeys={["subclass-specialty-0-0"]}
                   highlights={highlights}
                   isHighlightable={isHighlightModeOn}
                   onClick={onHighlightableClickedHandler}
                   className="highlightable-wrapper">
-                  <img src={specialty.iconUrl.startsWith("http") ? specialty.iconUrl : `https://www.bungie.net${specialty.iconUrl}`} />
+                  <Image src={specialty.iconUrl.startsWith("http") ? specialty.iconUrl : `https://www.bungie.net${specialty.iconUrl}`} />
                 </Highlightable>
                   {/* <img src={`https://www.bungie.net${specialty.icon}`} /> */}
                   <span className="perk-title">{specialty.name}</span>
                 </div>
               )}
               {movement && (
-                <div className="perk">
+                <div className="perk flex items-center">
                   <Highlightable highlightKey="subclass-movement"
                     alternateKeys={["subclass-movement-0-0"]}
                     highlights={highlights}
                     isHighlightable={isHighlightModeOn}
                     onClick={onHighlightableClickedHandler}
                     className="highlightable-wrapper">
-                    <img src={movement.iconUrl.startsWith("http") ? movement.iconUrl : `https://www.bungie.net${movement.iconUrl}`} />
+                    <Image src={movement.iconUrl.startsWith("http") ? movement.iconUrl : `https://www.bungie.net${movement.iconUrl}`} />
                   </Highlightable>
                   <span className="perk-title">{movement.name}</span>
                 </div>

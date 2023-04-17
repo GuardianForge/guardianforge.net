@@ -54,7 +54,7 @@ function MainLayout(props: Props) {
   return (
     <Wrapper>
       <MainNav />
-      <div className={`min-h-[calc(100vh-112px)] mx-auto px-2 ${wide ? 'w-full' : 'max-w-[960px]'}`}>
+      <div className={`min-h-[calc(100vh-112px)] mx-auto px-2 ${wide ? 'max-w-[1400px]' : 'max-w-[960px]'}`}>
         {children}
       </div>
       <Footer />

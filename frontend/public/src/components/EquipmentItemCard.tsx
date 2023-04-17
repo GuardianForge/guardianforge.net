@@ -9,17 +9,9 @@ const EquipmentItemCardStyles = styled.div`
   width: 100%;
   display: flex;
   align-items: left;
-  background-color: ${colors.theme2.dark2};
   color: white;
-  border-radius: 5px;
-  padding-bottom: 10px;
 
   .item-base-stats {
-    margin: 0px 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
 
     .item-tier-1 {
       color: ${colors.elements.Arc};
@@ -133,10 +125,11 @@ type EquipmentItemCardProps = {
   onConfigureItemClicked?: Function
   onSwapItemClicked?: Function
   showLocation?: boolean
+  onClick?: Function
 }
 
 function EquipmentItemCard(props: EquipmentItemCardProps) {
-  const { item, configurable, onConfigureItemClicked, onSwapItemClicked, showLocation } = props
+  const { item, configurable, onConfigureItemClicked, onSwapItemClicked, showLocation, onClick } = props
 
   const [itemTierData, setItemTierData] = useState<ItemTierData>()
 
@@ -146,14 +139,16 @@ function EquipmentItemCard(props: EquipmentItemCardProps) {
 
 
   return (
-    <EquipmentItemCardStyles>
+    <EquipmentItemCardStyles className={`bg-neutral-800 border border-neutral-700 ${onClick ? 'hover:cursor-pointer hover:border-neutral-600 transition' : ''}`} onClick={onClick ? () => onClick() : undefined}>
       <div className="selected-item-left">
         <img className="selected-item-img" src={item.iconUrl} />
-        <div className="item-base-stats">
-          <span>
-            { itemTierData && itemTierData.icon && <img className="affinity-icon" src={itemTierData.icon} alt="Affinity Icon" /> }
-          </span>
-          { itemTierData && itemTierData.tier !== undefined && <span className={`item-tier item-tier-${itemTierData.damageType}`}>{itemTierData.tier} </span>}
+        <div className="item-base-stats px-2 flex justify-between text-sm mb-1">
+          { itemTierData && itemTierData.icon && <img className="affinity-icon" src={itemTierData.icon} alt="Affinity Icon" /> }
+          { itemTierData && itemTierData.tier !== undefined && 
+            <span className={`item-tier ${item.itemType === Enums.ItemTypeEnum.Weapon ? `item-tier-${itemTierData.damageType}` : 'px-2 text-black bg-white rounded-sm'}`}>
+              {itemTierData.tier}
+            </span>
+          }
           <span>{ item.getPower() }</span>
         </div>
         {configurable && (

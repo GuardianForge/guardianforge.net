@@ -37,76 +37,6 @@ const Wrapper = styled.div`
   }
 `
 
-const UserMenuWrapper = styled(Card)`
-	.user-info {
-		display: flex;
-    flex-direction: column;
-		padding-bottom: 10px;
-    margin-left: 5px;
-	}
-
-	.user-info-img {
-		max-width: 50px;
-		border-radius: 5px;
-		margin-right: 5px;
-	}
-
-	.user-info-name {
-		font-size: 1.5rem;
-		font-weight: bold;
-	}
-
-	.user-nav {
-		border-top: 1px solid #444;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.user-nav-link {
-		text-decoration: none;
-		color: #eee;
-		padding: 5px;
-		margin: 5px;
-    cursor: pointer;
-		&:hover {
-			color: #aaa;
-		}
-	}
-`
-
-const ForgeUserInfoWrapper = styled.div`
-  span {
-    font-style: italic;
-    font-size: 16px;
-  }
-
-  svg {
-    font-size: 20px;
-    margin-right: 5px;
-    margin-top: 5px;
-  }
-
-  a {
-    color: #ddd;
-  }
-
-  .twitter-link:hover {
-    color: #1da1f2;
-  }
-
-  .twitch-link:hover {
-    color: #9146ff;
-  }
-
-  .youtube-link:hover {
-    color: #ff0000;
-  }
-
-  .facebook-link:hover {
-    color: #1877f2;
-  }
-`
-
 const COMPSTATE = {
   LOADING: 1,
   DONE: 2,
@@ -126,8 +56,6 @@ function UserProfile() {
   const [membership, setMembership] = useState<DestinyMembership>({})
   const [guardians, setGuardians] = useState<Array<Guardian>>([])
   const [compState, setCompState] = useState(COMPSTATE.LOADING)
-  const [areBuildsShown, setAreBuildsShown] = useState(false)
-  const [userHasNoDestinyMemberships, setUserHasNoDestinyMemberships] = useState(false)
 
   const [displayName, setDisplayName] = useState<string>()
   const [about, setAbout] = useState<string>()
@@ -136,6 +64,11 @@ function UserProfile() {
   const [youtubeUrl, setYoutubeUrl] = useState<string>()
   const [twitchUrl, setTwitchUrl] = useState<string>()
   const [tab, setTab] = useState<number>(1)
+
+  useEffect(() => {
+    // Reset on navigate
+    setUser({})
+  }, [])
 
   useEffect(() => {
     async function init() {
@@ -150,7 +83,6 @@ function UserProfile() {
         if(user) {
           setUser(user)
           if (!user.destinyMemberships || user.destinyMemberships.length === 0) {
-            setUserHasNoDestinyMemberships(true)
             setCompState(COMPSTATE.NO_MEMBERSHIPS)
             return
           }
@@ -184,8 +116,6 @@ function UserProfile() {
     }
     init()
   }, [isInitDone])
-
-
 
   useEffect(() => {
     if(user) {
@@ -227,6 +157,7 @@ function UserProfile() {
         </Helmet>
         <div className="container-fluid pt-3">
           {compState === COMPSTATE.LOADING && (<Loading />)}
+
           {compState === COMPSTATE.NO_DATA && (
             <Row>
               <Col>
@@ -237,6 +168,7 @@ function UserProfile() {
               </Col>
             </Row>
           )}
+
           {compState === COMPSTATE.NO_MEMBERSHIPS && (
             <Row>
               <Col>
@@ -282,7 +214,7 @@ function UserProfile() {
                 <div className="grid md:grid-cols-3 gap-3">
                   {!forgeUser && <div>This user has no builds.</div>}
                   {forgeUser.builds && forgeUser.builds.map((bs: BuildSummary) => (
-                    <BuildSummaryCard key={bs.id} buildSummary={bs} isPublicUi />
+                    <BuildSummaryCard key={bs.id} buildSummary={bs} />
                   ))}
                 </div>
               )}

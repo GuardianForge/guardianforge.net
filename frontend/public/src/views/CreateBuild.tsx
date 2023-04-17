@@ -57,17 +57,11 @@ const Wrapper = styled.div`
 
 const SelectItemButton = styled(Button)`
   width: 100%;
-  background-color: ${colors.theme2.dark2} !important;
-  border: none !important;
   display: flex !important;
   align-items: center;
   justify-content: start;
   font-size: 24px !important;
   margin-bottom: 10px;
-
-  &:hover {
-    background-color: ${colors.theme2.dark3} !important;
-  }
 
   img {
     width: 50px;
@@ -599,10 +593,10 @@ function CreateBuild() {
                 </Card>
               </div>
 
-
-              <div className="hidden xl:block">
+              {/* Build info block (desktop) */}
+              <div className="hidden xl:flex h-100 flex-col">
                 <h4>Build Info</h4>
-                <Card className="mb-2">
+                <Card className="flex-1">
                   <span>Name</span>
                   <Input
                     prefixIcon={faCube}
@@ -660,6 +654,7 @@ function CreateBuild() {
                     onChange={(e: any) => setVideoLink(e.target.value)} />
                   <YouTubeEmbed youtubeUrl={videoLink} showPlaceholder />
                 </Card>
+
               </div>
 
               <div className='col-span-3 grid md:grid-cols-3 gap-2'>
@@ -686,7 +681,7 @@ function CreateBuild() {
                     onHighlightableClicked={updateHighlights} />
                 </div>
 
-                <div className='md:col-span-3 flex flex-col'>
+                <div className='md:col-span-3'>
                   <h4>Weapons</h4>
                   {weaponConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{weaponConfigValidationMessage}</span>}
                 </div>
@@ -718,7 +713,7 @@ function CreateBuild() {
                   configurable={isOwner}
                   isHighlightModeOn={isHighlightModeOn} />
 
-                <div className="md:col-span-3 flex flex-col">
+                <div className="md:col-span-3">
                   <h4>Armor</h4>
                   {armorConfigValidationMessage && <span><FontAwesomeIcon icon={faExclamationTriangle} color="yellow" />{armorConfigValidationMessage}</span>}
                 </div>
@@ -782,7 +777,7 @@ function CreateBuild() {
         title="Select Class"
         footer={<ForgeButton disabled={selectedClass === undefined} onClick={() => setIsClassSelectModalOpen(false)}>Close</ForgeButton>}>
           {classOptions.map((el: any, idx: number) => (
-            <SelectItemButton key={`classopt-${idx}`} className="class-option" onClick={() => onClassSelected(el.value)}>
+            <SelectItemButton key={`classopt-${idx}`} className="class-option rounded-none border border-neutral-700 hover:bg-neutral-800" onClick={() => onClassSelected(el.value)}>
               {el.iconUrl && <img className="classopt-icon" src={el.iconUrl} />}
               { el.name }
             </SelectItemButton>

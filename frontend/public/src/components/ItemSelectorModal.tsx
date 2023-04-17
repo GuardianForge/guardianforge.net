@@ -4,8 +4,8 @@ import EquipmentItemCard from './EquipmentItemCard'
 import Input from './forms/Input'
 import ForgeModal from './Modal'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { Button } from 'react-bootstrap'
 import { Enums, Item } from '@guardianforge/destiny-data-utils'
+import ForgeButton from './forms/Button'
 
 
 const Wrapper = styled(ForgeModal)`
@@ -92,7 +92,7 @@ function ItemSelectorModal(props: Props) {
   }
 
   return (
-    <Wrapper
+    <ForgeModal
       show={show}
       onHide={onHide}
       size="xl"
@@ -100,27 +100,25 @@ function ItemSelectorModal(props: Props) {
       scrollable
       title={title}
       footer={
-        <Button onClick={onClose}>Close</Button>
+        <ForgeButton onClick={onClose}>Close</ForgeButton>
       }
       >
       <div>
-        <div className="filter">
+        <div className="mb-2">
           <Input placeholder="Start typing to filter items..."
             type="text"
             value={inventoryFilter}
             prefixIcon={faFilter}
             onChange={(e: any) => onInventoryFilterChanged(e.target.value)} />
         </div>
-        <div className="row">
+        <div className="grid md:grid-cols-3 gap-2">
           {filteredInventorySubset.map((i: Item, idx: number) => (
-            <div className="item-card col-md-4 mb-2" key={`item-${idx}-${i.name}`}
-              onClick={() => onItemClicked(i)}>
-              <EquipmentItemCard item={i} showLocation />
-            </div>
+            <EquipmentItemCard key={`item-${idx}-${i.name}`}
+              onClick={() => onItemClicked(i)} item={i} showLocation />
           ))}
         </div>
       </div>
-    </Wrapper>
+    </ForgeModal>
   )
 }
 

@@ -8,15 +8,18 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  /* max-height: 40px; */
-  height: 40px;
 `
 
-function Loading() {
+type Props = {
+  small?: boolean
+  className?: string
+}
+
+function Loading({ small, className }: Props) {
   return (
     <div>
-      <Wrapper>
-        <FontAwesomeIcon icon={faCircleNotch} className="fa-spin" />
+      <Wrapper className={small ? '' : 'h-[40px]'}>
+        <FontAwesomeIcon icon={faCircleNotch} className={`fa-spin ${small ? 'h-[20px]' : ''}`} />
       </Wrapper>
     </div>
   )
