@@ -6,10 +6,8 @@ import { BuildItem } from '../models/Build'
 import ItemCard from './ItemCard'
 import ItemConfigModal from './ItemConfigModal'
 import ItemSelectorModal from './ItemSelectorModal'
-import Card from './ui/Card'
 
-
-const Wrapper = styled(Card)`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 20px;
@@ -144,22 +142,23 @@ function EquipmentItem(props: EquipmentItemProps) {
   }
 
   return (
-    <Wrapper>
+    <>
       {buildItem && <ItemCard item={buildItem}
-          highlights={highlights}
-          configurable={configurable}
-          itemTierData={item ? item.getItemTier() : undefined}
-          power={item ? item.getPower() : undefined}
-          onHighlightableClicked={onHighlightableClicked}
-          onConfigureItemClicked={() => setIsEditingItem(true)}
-          onSwapItemClicked={() => setIsSelectingItem(true)}
-          isHighlightable={isHighlightModeOn} />}
+        highlights={highlights}
+        configurable={configurable}
+        itemTierData={item ? item.getItemTier() : undefined}
+        power={item ? item.getPower() : undefined}
+        onHighlightableClicked={onHighlightableClicked}
+        onConfigureItemClicked={() => setIsEditingItem(true)}
+        onSwapItemClicked={() => setIsSelectingItem(true)}
+        isHighlightable={isHighlightModeOn} />}
 
       {!buildItem && (
         <div className="select-item-wrapper">
           <ForgeButton onClick={() => setIsSelectingItem(true)}>Select { friendyBucketName }</ForgeButton>
         </div>
       )}
+
 
       <ItemSelectorModal
         show={isSelectingItem}
@@ -178,7 +177,7 @@ function EquipmentItem(props: EquipmentItemProps) {
         onClose={() => setIsEditingItem(false)}
         setEquippedPlug={setEquippedPlug} />
 
-    </Wrapper>
+    </>
   )
 }
 

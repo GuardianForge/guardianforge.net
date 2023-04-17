@@ -11,21 +11,18 @@ type PaginatorButtonProps = {
 }
 
 function PaginatorButton({ disabled, active, onClick, children }: PaginatorButtonProps) {
-  return <ForgeButton 
+  return <ForgeButton
     disabled={disabled}
     onClick={onClick}
     className={`
       border-none
       px-4
       py-2
-      rounded-none
-      first:rounded-r-none
-      first:rounded-l
-      last:rounded-r 
-      last:rounded-l-none
-      border-r 
+      border-r
+      border-r-neutral-800
       last:border-none
-      ${active ? 'bg-accent1' : ''}`}>
+      ${active ? 'bg-neutral-700 hover:bg-neutral-700 disabled:bg-neutral-800' : ''}
+      ${disabled ? 'bg-neutral-800 text-neutral-500' : ''}`}>
     { children }
   </ForgeButton>
 }
@@ -35,9 +32,10 @@ type Props = {
   page: number
   maxPageIterationsToDisplay: number
   totalPages: number
+  className?: string
 }
 
-function Paginator({ onPageNavigate, page, maxPageIterationsToDisplay, totalPages }: Props) {
+function Paginator({ onPageNavigate, page, maxPageIterationsToDisplay, totalPages, className }: Props) {
   const [showLeftElipses, setShowLeftElipses] = useState(false)
   const [showRightElipses, setShowRightElipses] = useState(false)
 
@@ -55,15 +53,15 @@ function Paginator({ onPageNavigate, page, maxPageIterationsToDisplay, totalPage
   }, [page])
 
   return (
-    <div className="mt-3 flex justify-center">
-      <div className="first:rounded-l">
+    <div className={`mt-3 flex justify-center ${className}`}>
+      <div className="border border-neutral-800">
         <PaginatorButton
           disabled={page === 1}
           onClick={() => onPageNavigate(page - 1)}>
           <FontAwesomeIcon icon={faCaretLeft} />
         </PaginatorButton>
 
-        {showLeftElipses && 
+        {showLeftElipses &&
           <PaginatorButton disabled>
             <FontAwesomeIcon icon={faEllipsisH} />
           </PaginatorButton>
@@ -94,12 +92,12 @@ function Paginator({ onPageNavigate, page, maxPageIterationsToDisplay, totalPage
           return <></>
         })}
 
-        {showRightElipses && 
+        {showRightElipses &&
           <PaginatorButton disabled>
             <FontAwesomeIcon icon={faEllipsisH} />
           </PaginatorButton>
         }
-        
+
         <PaginatorButton
           disabled={page === totalPages}
           onClick={() => onPageNavigate(page + 1)}>

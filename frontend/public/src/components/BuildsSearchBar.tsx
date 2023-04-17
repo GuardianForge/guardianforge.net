@@ -12,17 +12,18 @@ type Props = {
   onChange: React.ChangeEventHandler<HTMLInputElement> | undefined
   onSearch: Function
   onCopyUrl: Function
-  onRemoveFilter: Function
+  onRemoveFilter: Function,
+  className?: string
 }
 
-function BuildsSearchBar({ value, onKeyPress, onFilterAdded, filters, onChange, onSearch, onCopyUrl, onRemoveFilter }: Props) {
+function BuildsSearchBar({ value, onKeyPress, onFilterAdded, filters, onChange, onSearch, onCopyUrl, onRemoveFilter, className }: Props) {
   return (
-    <div className="text-white bg-gray-800 rounded shadow pl-4 pr-2 py-2">
+    <div className={`text-white bg-neutral-800 shadow pl-4 pr-2 py-2 ${className}`}>
       <div className="flex justify-between">
         <div className="flex flex-1 items-center">
           <FontAwesomeIcon icon={faSearch} className="text-gray-600 mr-2" />
           <input placeholder="Search"
-            className="text-white bg-inherit border-none focus:outline-none flex"
+            className="text-white bg-inherit border-none focus:outline-none flex flex-1"
             value={value}
             onKeyPress={onKeyPress}
             onChange={onChange} />

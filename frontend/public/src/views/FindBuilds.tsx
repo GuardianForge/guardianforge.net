@@ -12,7 +12,14 @@ import BuildsSearchBar from '../components/BuildsSearchBar';
 
 const COMP_STATE = {
   LOADING: 1,
-  DONE: 2
+  DONE: 2,
+}
+
+const SEARCH_STATE = {
+  NONE: 1,
+  SEARCHING: 2,
+  HAS_RESULTS: 3,
+  NO_RESULTS: 4
 }
 
 const pageSize = 18
@@ -21,6 +28,7 @@ const maxPageIterationsToDisplay = 2
 function Search() {
   const { isConfigLoaded, dispatchAlert } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
+  const [searchState, setSearchState] = useState(SEARCH_STATE.NONE)
   const [searchInput, setSearchInput] = useState("")
   const [filters, setFilters] = useState([])
   const [hits, setHits] = useState([])
@@ -75,6 +83,7 @@ function Search() {
   }, [isConfigLoaded])
 
   async function go(inSearchInput?: any, inFilters?: any) {
+    setSearchState(SEARCH_STATE.SEARCHING)
     let { AlgoliaService } = window.services
     if(!inSearchInput) {
       inSearchInput = searchInput
@@ -83,7 +92,7 @@ function Search() {
       inFilters = filters
     }
     let filterString = searchUtils.buildAlgoliaFilters(inFilters)
-    
+
     let results = await AlgoliaService.search(inSearchInput, filterString)
 
     let queryMap: any = {}
@@ -115,9 +124,10 @@ function Search() {
         return 0
       })
       renderResults(hits)
+      setSearchState(SEARCH_STATE.HAS_RESULTS)
     } else {
-      // TODO: Add no-builds state
       setHits([])
+      setSearchState(SEARCH_STATE.NO_RESULTS)
     }
   }
 
@@ -207,34 +217,39 @@ function Search() {
           <title>Find Builds - GuardianForge</title>
         </Helmet>
         <div className="col-md-12">
-          <h1>Find Builds</h1>
+          <h1 className='mb-2'>Find Builds</h1>
           {compState === COMP_STATE.LOADING && (<Loading />)}
-          {compState === COMP_STATE.DONE && (
-            <BuildsSearchBar 
+          {compState === COMP_STATE.DONE  && (
+            <BuildsSearchBar
+              className="mb-3"
               value={searchInput}
               onChange={(e: any) => setSearchInput(e.target.value)}
               onFilterAdded={addFilter}
               onSearch={() => go(null, null)}
               onCopyUrl={copyUrl}
-              onKeyPress={onKeyPressHandler} 
+              onKeyPress={onKeyPressHandler}
               filters={filters}
-              onRemoveFilter={removeFilter}           
-            />
-          )}
+              onRemoveFilter={removeFilter}
+              />
+            )}
         </div>
-        <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-          {displayedBuilds.map((el: any, idx) => (
-            <BuildSummaryCard key={`search-${idx}`} buildSummary={el.summary} isPublicUi />
-          ))}
-        </div>
-
-        {totalPages > 1 && (
-          <Paginator 
-            totalPages={totalPages}
-            page={page}
-            maxPageIterationsToDisplay={maxPageIterationsToDisplay}
-            onPageNavigate={goToPage}
-          />
+        {searchState === SEARCH_STATE.SEARCHING && <Loading />}
+        {searchState === SEARCH_STATE.NO_RESULTS && <div className='italic'>No results found.</div>}
+        {searchState === SEARCH_STATE.HAS_RESULTS && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-2">
+            {displayedBuilds.map((el: any, idx) => (
+              <BuildSummaryCard key={`search-${idx}`} buildSummary={el.summary} isPublicUi />
+            ))}
+            {totalPages > 1 && (
+              <Paginator
+                className="md:col-span-1"
+                totalPages={totalPages}
+                page={page}
+                maxPageIterationsToDisplay={maxPageIterationsToDisplay}
+                onPageNavigate={goToPage}
+              />
+            )}
+          </div>
         )}
       </div>
 
