@@ -493,6 +493,14 @@ function CreateBuild() {
     }
   ]
 
+  function handleCloseSelectClassModal() {
+    if(selectedClass === undefined) {
+      navigate("/")
+    } else {
+      setIsClassSelectModalOpen(false)
+    }
+  }
+
   return (
     <MainLayout wide>
       <Wrapper>
@@ -768,25 +776,28 @@ function CreateBuild() {
             </div>
 
             <BuildAd />
-
           </div>
         )}
 
       <ForgeModal
         show={isClassSelectModalOpen}
         title="Select Class"
-        footer={<ForgeButton disabled={selectedClass === undefined} onClick={() => setIsClassSelectModalOpen(false)}>Close</ForgeButton>}>
+        footer={<ForgeButton onClick={handleCloseSelectClassModal}>Close</ForgeButton>}>
           {classOptions.map((el: any, idx: number) => (
             <SelectItemButton key={`classopt-${idx}`} className="class-option rounded-none border border-neutral-700 hover:bg-neutral-800" onClick={() => onClassSelected(el.value)}>
               {el.iconUrl && <img className="classopt-icon" src={el.iconUrl} />}
               { el.name }
             </SelectItemButton>
           ))}
-          {selectedClass !== undefined &&
+          {selectedClass !== undefined ? (
             <Alert variant="warning">
               Changing classes will reset the current build configuration.
             </Alert>
-          }
+          ) : (
+            <Alert variant="warning">
+              Closing this modal before selecting a class will return you to the home page.
+            </Alert>
+          )}
         </ForgeModal>
       </Wrapper>
     </MainLayout>

@@ -74,7 +74,7 @@ const Wrapper = styled.div`
 `
 
 const Seperator = styled.div`
-  border-left: 2px solid ${colors.theme2.dark1}
+  border-left: 2px solid ${colors.theme2.dark1};
 `
 
 type Props = {

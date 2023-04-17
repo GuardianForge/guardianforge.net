@@ -12,6 +12,7 @@ import TabItem from './ui/TabItem'
 import searchUtils from "../utils/searchUtils"
 import BuildSummaryCard from './BuildSummaryCard'
 import Paginator from './ui/Paginator'
+import ForgeButton from './forms/Button'
 
 const COMP_STATE = {
   NONE: 0,
@@ -86,52 +87,54 @@ function SearchModal({ show, onHide }: Props) {
     }
 
     async function searchBuilds(inSearchInput?: any, inFilters?: any) {
-      setSearchBuildsState(SEARCH_STATE.SEARCHING)
-      let { AlgoliaService } = window.services
-      if(!inSearchInput) {
-        inSearchInput = queryText
-      }
-      if(!inFilters) {
-        inFilters = filters
-      }
-      let filterString = searchUtils.buildAlgoliaFilters(inFilters)
-  
-      let results = await AlgoliaService.search(inSearchInput, filterString)
-  
-      let queryMap: any = {}
-      if(inSearchInput !== "") {
-        queryMap["searchInput"] = encodeURIComponent(inSearchInput)
-      }
-      if(inFilters.length > 0) {
-        // @ts-ignore TODO: fix me
-        queryMap["filters"] = inFilters.map(el => el.id).join(",")
-      }
-  
-      // TODO: urlencode the # in usernames, store that instead but handle just in case
-      // if(Object.keys(queryMap).length > 0) {
-      //   let queryStringArr: string[] = []
-      //   Object.keys(queryMap).map(k => queryStringArr.push(`${k}=${queryMap[k]}`))
-      //   let queryString = queryStringArr.join("&")
-      //   window.history.replaceState(null, '', `${window.location.pathname}?${queryString}`)
-      // } else {
-      //   window.history.replaceState(null, '', window.location.pathname)
-      // }
-  
-      if(results && results.hits !== undefined) {
-        let hits = results.hits
-        // @ts-ignore TODO: fix me
-        hits.sort((a,b) => {
-          let aUpv = a.summary.upvotes ? a.summary.upvotes : 0
-          let bUpv = b.summary.upvotes ? b.summary.upvotes : 0
-          if (aUpv > bUpv) return -1
-          if (bUpv > aUpv) return 1
-          return 0
-        })
-        renderResults(hits)
-        setSearchBuildsState(SEARCH_STATE.HAS_RESULTS)
-      } else {
-        setHits([])
-        setSearchBuildsState(SEARCH_STATE.NO_RESULTS)
+      if(queryText && queryText !== "") {
+        setSearchBuildsState(SEARCH_STATE.SEARCHING)
+        let { AlgoliaService } = window.services
+        if(!inSearchInput) {
+          inSearchInput = queryText
+        }
+        if(!inFilters) {
+          inFilters = filters
+        }
+        let filterString = searchUtils.buildAlgoliaFilters(inFilters)
+    
+        let results = await AlgoliaService.search(inSearchInput, filterString)
+    
+        let queryMap: any = {}
+        if(inSearchInput !== "") {
+          queryMap["searchInput"] = encodeURIComponent(inSearchInput)
+        }
+        if(inFilters.length > 0) {
+          // @ts-ignore TODO: fix me
+          queryMap["filters"] = inFilters.map(el => el.id).join(",")
+        }
+    
+        // TODO: urlencode the # in usernames, store that instead but handle just in case
+        // if(Object.keys(queryMap).length > 0) {
+        //   let queryStringArr: string[] = []
+        //   Object.keys(queryMap).map(k => queryStringArr.push(`${k}=${queryMap[k]}`))
+        //   let queryString = queryStringArr.join("&")
+        //   window.history.replaceState(null, '', `${window.location.pathname}?${queryString}`)
+        // } else {
+        //   window.history.replaceState(null, '', window.location.pathname)
+        // }
+    
+        if(results && results.hits !== undefined) {
+          let hits = results.hits
+          // @ts-ignore TODO: fix me
+          hits.sort((a,b) => {
+            let aUpv = a.summary.upvotes ? a.summary.upvotes : 0
+            let bUpv = b.summary.upvotes ? b.summary.upvotes : 0
+            if (aUpv > bUpv) return -1
+            if (bUpv > aUpv) return 1
+            return 0
+          })
+          renderResults(hits)
+          setSearchBuildsState(SEARCH_STATE.HAS_RESULTS)
+        } else {
+          setHits([])
+          setSearchBuildsState(SEARCH_STATE.NO_RESULTS)
+        }
       }
     }
     searchUsers()
@@ -244,7 +247,12 @@ function SearchModal({ show, onHide }: Props) {
       size={"lg"}
       scrollable
       closeButton
-      onHide={onHide}>
+      onHide={onHide}
+      footer={
+        <div className="flex gap-1">
+          <ForgeButton onClick={() => onHide()}>Close</ForgeButton>
+        </div>
+      }>
       <div className="h-[80vh]">
         <Input
           placeholder="Start typing to search..."
@@ -259,8 +267,18 @@ function SearchModal({ show, onHide }: Props) {
 
         <div className="search-results-container">
           <TabGroup>
-            <TabItem active={tab === 1} onClick={() => setTab(1)}>Players</TabItem>
-            <TabItem active={tab === 2} onClick={() => setTab(2)}>Builds</TabItem>
+            <TabItem active={tab === 1} onClick={() => setTab(1)}>
+              Players
+              {userSearchResults && userSearchResults.length > 0 && (
+                <div className="h-[20x] min-w-[20px]  flex justify-center items-center rounded-full text-xs bg-neutral-700 px-1">{userSearchResults.length}</div>
+              )}
+            </TabItem>
+            <TabItem active={tab === 2} onClick={() => setTab(2)}>
+              Builds
+              {hits && hits.length > 0 && (
+                <div className="h-[20x] min-w-[20px] flex justify-center items-center rounded-full text-xs bg-neutral-700 px-1">{hits.length}</div>
+              )}
+            </TabItem>
           </TabGroup>
 
           {tab === 1 && (

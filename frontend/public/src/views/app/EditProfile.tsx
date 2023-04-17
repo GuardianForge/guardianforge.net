@@ -13,6 +13,7 @@ import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import AppLayout from '../../layouts/AppLayout'
 import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import ForgeButton from '../../components/forms/Button'
+import Input from '../../components/forms/Input'
 
 function Profile() {
   const { isClientLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
@@ -148,14 +149,6 @@ function Profile() {
   return (
     <AppLayout>
       <Container>
-        <Row>
-          <Col lg="8" md="12">
-            <Form.Group className="mb-3">
-              <Form.Label><h3>About Me</h3></Form.Label>
-              <Form.Control onChange={e => setAbout(e.target.value)} value={about} type="text" placeholder="Add a bit about yourself" />
-            </Form.Group>
-          </Col>
-        </Row>
 
         <Row>
           <Col lg="8" md="12">
@@ -188,6 +181,12 @@ function Profile() {
                 <SubscribeButton />
               </Card>
             )}
+          </Col>
+        </Row>
+
+        <Row>
+          <Col lg="8" md="12">
+            <Input value={about} onChange={(e: any) => setAbout(e.target.value)} />
           </Col>
         </Row>
         <Row>

@@ -15,6 +15,7 @@ import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-br
 import ForgeButton from '../components/forms/Button'
 import MainLayout from '../layouts/MainLayout'
 import ButtonBar from '../components/forms/ButtonBar'
+import Input from '../components/forms/Input'
 
 function Profile() {
   const { isClientLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
@@ -158,10 +159,6 @@ function Profile() {
             </ForgeButton>
           </ButtonBar>
         </div>
-        <Form.Group className="mb-4">
-          <Form.Label><h4>About Me</h4></Form.Label>
-          <Form.Control onChange={e => setAbout(e.target.value)} value={about} type="text" placeholder="Add a bit about yourself" />
-        </Form.Group>
         <div className='mb-4'>
           {subscriptionDetails ? (
             <Card className="subscription-manager">
@@ -194,38 +191,33 @@ function Profile() {
           )}
         </div>
         <div className='grid md:grid-cols-2 gap-2'>
+          <h4 className="md:col-span-2">General</h4>
+          <div>
+            <span>About</span>
+            <Input onChange={(e: any) => setAbout(e.target.value)} value={about} type="text" placeholder="Add a bit about yourself" />
+          </div>
           <h4 className="md:col-span-2">Social Media Links</h4>
-            <InputGroup className="mb-3">
-              <InputGroup.Text>
-                <FontAwesomeIcon icon={faTwitter} />
-              </InputGroup.Text>
-              <Form.Control onChange={e => setTwitter(e.target.value)} value={twitter} placeholder="ex: https://twitter.com/destinythegame" aria-label="Twitter" />
-            </InputGroup>
-
-            <InputGroup className="mb-3">
-              <InputGroup.Text>
-                <FontAwesomeIcon icon={faTwitch} />
-              </InputGroup.Text>
-              <Form.Control onChange={e => setTwitch(e.target.value)} value={twitch} type="text" placeholder="ex: https://twitch.tv/username" />
-            </InputGroup>
-            <InputGroup className="mb-3">
-              <InputGroup.Text>
-                <FontAwesomeIcon icon={faYoutube} />
-              </InputGroup.Text>
-              <Form.Control onChange={e => setYoutube(e.target.value)} value={youtube} type="text" placeholder="ex: https://www.youtube.com/mychannelname" />
-            </InputGroup>
-            <InputGroup className="mb-3">
-              <InputGroup.Text>
-                <FontAwesomeIcon icon={faFacebook} />
-              </InputGroup.Text>
-              <Form.Control onChange={e => setFacebook(e.target.value)} value={facebook} type="text" placeholder="ex: https://www.facebook.com/mypagename" />
-            </InputGroup>
+            <div>
+              <span>Twitter</span>
+              <Input prefixIcon={faTwitter} onChange={(e: any) => setTwitter(e.target.value)} value={twitter} placeholder="ex: https://twitter.com/destinythegame" aria-label="Twitter" />
+            </div>
+            <div>
+              <span>Twitch</span>
+              <Input prefixIcon={faTwitch} onChange={(e: any)  => setTwitch(e.target.value)} value={twitch} type="text" placeholder="ex: https://twitch.tv/username" />
+            </div>
+            <div>
+              <span>YouTube</span>
+              <Input prefixIcon={faYoutube} onChange={(e: any)  => setYoutube(e.target.value)} value={youtube} type="text" placeholder="ex: https://www.youtube.com/mychannelname" />
+            </div>
+            <div>
+              <span>Facebook</span>
+              <Input prefixIcon={faFacebook} onChange={(e: any)  => setFacebook(e.target.value)} value={facebook} type="text" placeholder="ex: https://www.facebook.com/mypagename" />
+            </div>
           </div>
 
         <ForgeModal show={showCancelSubscriptionModal} onHide={() => setShowCancelSubscriptionModal(false)} title="Cancel Subscription" closeButton>
           <h3>😢 Sad To See You Go!</h3>
           <p>If there is something GuardianForge doesn't do for you, please consider sending me a message instead! Otherwise click the button below to disable auto renew on your subscription.</p>
-          {/* <Button style={{marginRight: "10px"}}>Send a Message</Button> */}
           <Button variant="danger" disabled={isAutoRenewUpdating} onClick={() => cancelSubscription()}>Disable Auto Renew</Button>
         </ForgeModal>
       </div>

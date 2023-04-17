@@ -16,9 +16,15 @@ import ForgeButton from './forms/Button';
 import { UserInfo } from '../models/User';
 import ActivityOption from '../models/ActivityOption';
 import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
-import { faBan, faBox, faEdit, faLink, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faBox, faCube, faEdit, faLink, faSave, faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import Card from './ui/Card';
 import ForgeButtonLink from './forms/ButtonLink';
+import ModalSelector from './forms/ModalSelector';
+import ActivitySelector from './ActivitySelector';
+import TextArea from './forms/TextArea';
+import Input from './forms/Input';
+import ModalSelectorOption from '../models/ModalSelectorOption';
+import BuildSummary from '../models/BuildSummary';
 
 const Wrapper = styled.div`
   .dim-btn {
@@ -232,6 +238,7 @@ function BuildMetaPanel(props: Props) {
       } else {
         setDisplayNotes(reformatted)
       }
+      setNotes(notes)
     }
 
     if(buildData.primaryActivity) {
@@ -244,28 +251,30 @@ function BuildMetaPanel(props: Props) {
     // setup twitter link
     let tweetText = "Checkout this build I found on @guardianforge!"
     setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${window.location.href}&hashtags=destiny2`)
+    
+    if(buildData.name) {
+      setName(buildData.name)
+    }
+    if(buildData.videoLink) setVideoLink(buildData.videoLink)
+    if(buildData.primaryActivity) {
+      let a = activityOptions.find((opt: ActivityOption) => opt.value === buildData.primaryActivity)
+      if(a) {
+        setActivity(a)
+      }
+    }
+
+    if(buildData.inputStyle) {
+      let is = inputStyleOptions.find((opt: ModalSelectorOption) => opt.value === buildData.inputStyle)
+      if(is) {
+        setInputStyle(is)
+      }
+    }
   }, [buildData])
 
   function copyToClipboard() {
     copy(window.location.href)
     let a = new AlertDetail("Link copied to clipboard.", "Link Copied")
     dispatchAlert(a)
-  }
-
-  function editBuild() {
-    let notes = ""
-    if(buildData.notes) {
-      notes = buildData.notes.replace(/<br\/>/g, "\n")
-    }
-    setBuildName(buildData.name)
-    setBuildNotes(notes)
-    setIsEditing(true)
-  }
-
-  function cancelEditBuild() {
-    setBuildName("")
-    setBuildNotes("")
-    setIsEditing(false)
   }
 
   async function archiveBuild() {
@@ -289,45 +298,68 @@ function BuildMetaPanel(props: Props) {
     }
   }
 
-  async function updateBuild() {
-    try {
-      // TODO: dont use any
-      let updates: any = {
-        name: buildName
-      }
-      if (buildNotes) {
-        updates.notes = buildNotes.replace(/\n/g, "<br/>")
-      }
-
-      if(onBuildUpdated) {
-        onBuildUpdated(updates)
-      }
-      setIsEditing(false)
-
-      let { ForgeClient, ForgeApiService } = window.services
-      let token = ForgeClient.getToken()
-      await ForgeApiService.updateBuild(buildId, updates, token)
-
-      // Update cache
-      // @ts-ignore TODO: Fix this
-      ForgeClient.userBuilds.forEach(b => {
-        if(b.id === buildId) {
-          b.name = buildName
-        }
-      })
-    } catch (err) {
-      if(onBuildUpdateFailed) {
-        onBuildUpdateFailed(err)
-      }
-    }
-  }
-
   function copyDIMLink() {
     let b = Object.assign(new Build(), buildData)
     let url = b.toDIMLink()
     copy(url)
     let a = new AlertDetail("DIM Link copied to clipboard.", "Link Copied")
     dispatchAlert(a)
+  }
+
+  const [name, setName] = useState("")
+  const [notes, setNotes] = useState("")
+  const [videoLink, setVideoLink] = useState("")
+  const [activity, setActivity] = useState<ActivityOption>({ value: "1", display: "Any Activity" })
+  const [inputStyle, setInputStyle] = useState<ModalSelectorOption>({ value: "0", display: "None"})
+  const [isSaving, setIsSaving] = useState(false)
+  const inputStyleOptions: Array<ModalSelectorOption> = [
+    {
+      iconUrl: "/img/input-icons/mnk.png",
+      value: "1",
+      display: "Mouse & Keyboard"
+    },
+    {
+      iconUrl: "/img/input-icons/controller.png",
+      value: "2",
+      display: "Controller"
+    }
+  ]
+
+  async function saveBuild() {
+    try {
+      setIsSaving(true)
+      let updates = {
+        name,
+        notes,
+        primaryActivity: activity.value,
+        inputStyle: inputStyle.value,
+        videoLink
+      }
+
+      let { ForgeClient, ForgeApiService } = window.services
+      let token = ForgeClient.getToken()
+      await ForgeApiService.updateBuild(buildId, updates, token)
+
+      // Update cache
+      ForgeClient.userBuilds.forEach((b: BuildSummary) => {
+        if(b.id === buildId) {
+          b.name = name
+        }
+      })
+      setIsEditing(false)
+      if(onBuildUpdated) {
+        onBuildUpdated(updates)
+      }
+    } catch (err) {
+      dispatchAlert({
+        title: "Updating Build",
+        body: "An error occurred while updating this build. Please try again later...",
+        isError: true,
+        autohide: false,
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -351,27 +383,15 @@ function BuildMetaPanel(props: Props) {
 
           <BookmarkButton buildId={buildId} buildData={buildData} />
 
-          {isOwner && !isEditing && (
-            <ForgeButton onClick={() => editBuild()}>
-              <FontAwesomeIcon icon={faEdit} /> Edit
-            </ForgeButton>
-          )}
-
-          {isOwner && isEditing && (
+          {isOwner && (
             <>
-              <ForgeButton onClick={() => updateBuild()}>
-                <FontAwesomeIcon icon={faSave} /> Save
+              <ForgeButton onClick={() => setIsEditing(true)}>
+                <FontAwesomeIcon icon={faEdit} /> Edit
               </ForgeButton>
-              <ForgeButton onClick={() => cancelEditBuild()}>
-                <FontAwesomeIcon icon={faBan} /> Cancel
+              <ForgeButton onClick={() => setIsArchiveModalDisplayed(true)}>
+                <FontAwesomeIcon icon={faBox} /> Archive
               </ForgeButton>
             </>
-          )}
-
-          {isOwner && (
-            <ForgeButton onClick={() => setIsArchiveModalDisplayed(true)}>
-              <FontAwesomeIcon icon={faBox} /> Archive
-            </ForgeButton>
           )}
         </div>
 
@@ -381,40 +401,15 @@ function BuildMetaPanel(props: Props) {
       </div>
       {/* /Buttons */}
 
+      {/* Info */}
       <Card className='grid md:grid-cols-3 gap-2'>
         <div>
-          {displayNotes && !isEditing && (
+          {displayNotes && (
             <div>
               <span className="build-info-header">Notes</span>
               {displayNotes && <div dangerouslySetInnerHTML={{__html: displayNotes}} />}
               {areNotesLong && <a href="#" className="read-more-link" onClick={() => setIsNotesDialogDisplayed(true)}>Read more</a>}
               {/* <div className="build-notes" dangerouslySetInnerHTML={{ __html: buildData.notes }} /> */}
-            </div>
-          )}
-
-          {/* TODO: bring up the modal editor */}
-          {isEditing && (
-            <div>
-              <div className="form-group mb-3">
-                <label htmlFor="buildName" className="form-label build-info-header">Name</label>
-                <input type="text"
-                  value={buildName}
-                  onChange={(e) => setBuildName(e.target.value)}
-                  id="buildName"
-                  className="form-control"
-                  placeholder="Give your build a name" />
-              </div>
-              <div className="form-group mb-3">
-              <label htmlFor="buildNotes" className="form-label build-info-header">Notes</label>
-                <textarea
-                  value={buildNotes}
-                  onChange={(e) => setBuildNotes(e.target.value)}
-                  id="buildNotes"
-                  className="form-control"
-                  placeholder="Add notes about how to best use the build, what synergizes together, etc."
-                  rows={5}>
-                </textarea>
-              </div>
             </div>
           )}
 
@@ -510,8 +505,9 @@ function BuildMetaPanel(props: Props) {
 
       </Card>
 
+      {/* Archive modal */}
       <ForgeModal show={isArchiveModalDisplayed} title="Archive Build" footer={
-        <div>
+        <div className="flex gap-1">
           <ForgeButton onClick={() => setIsArchiveModalDisplayed(false)}>Cancel</ForgeButton>
           <ForgeButton onClick={() => archiveBuild()}>Archive</ForgeButton>
         </div>
@@ -528,10 +524,64 @@ function BuildMetaPanel(props: Props) {
         <p><b>This operation CANNOT be undone.</b></p>
       </ForgeModal>
 
+      {/* Build notes modal */}
       <ForgeModal show={isNotesDialogDisplayed} title="Build Notes" size="lg" scrollable footer={<ForgeButton onClick={() => setIsNotesDialogDisplayed(false)}>Close</ForgeButton>}>
         <>
           {reformattedNotes && <div dangerouslySetInnerHTML={{__html: reformattedNotes}} />}
         </>
+      </ForgeModal>
+
+      {/* Edit modal */}
+      <ForgeModal
+        show={isEditing}
+        onHide={() => setIsEditing(false)}
+        title="Edit Build Info"
+        size="lg"
+        footer={
+          <div className="flex gap-1">
+            <ForgeButton disabled={isSaving} onClick={() => setIsEditing(false)}>Cancel</ForgeButton>
+            <ForgeButton disabled={isSaving} style={{marginLeft: "10px"}} onClick={() => saveBuild()}>Save</ForgeButton>
+          </div>
+        }>
+        <div className="build-info-card mb-3">
+          <span>Name</span>
+          <Input
+            prefixIcon={faCube}
+            placeholder='Give your build a name'
+            value={name}
+            onChange={(e: any) => setName(e.target.value)}
+            className="mb-3" />
+          <span>Notes</span>
+          <TextArea
+            className="mb-3"
+            prefixIcon={faStickyNote}
+            rows={10}
+            placeholder="Add some notes on how to use the build"
+            value={notes}
+            onChange={(e: any) => setNotes(e.target.value)}/>
+          <span>Primary Activity</span>
+          <ActivitySelector
+            className="mb-3"
+            value={activity}
+            onChange={(opt: ActivityOption) => setActivity(opt)} />
+          <span>Input Style</span>
+          <ModalSelector
+            title="Input Style"
+            className="mb-3"
+            options={inputStyleOptions}
+            value={inputStyle}
+            onChange={(opt: ModalSelectorOption) => setInputStyle(opt)} />
+        </div>
+        <h4>Video Review</h4>
+        <div className="build-info-card">
+          <Input
+            prefixIcon={faYoutube}
+            placeholder="Add a YouTube link"
+            value={videoLink}
+            className="mb-3"
+            onChange={(e: any) => setVideoLink(e.target.value)} />
+          <YouTubeEmbed youtubeUrl={videoLink} showPlaceholder />
+        </div>
       </ForgeModal>
     </Wrapper>
   )

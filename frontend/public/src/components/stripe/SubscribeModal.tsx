@@ -13,10 +13,7 @@ const Wrapper = styled.div`
   .pricing-option {
     display: flex;
     flex-direction: column;
-    background-color: ${colors.theme2.dark3} !important;
-    border: 1px solid ${colors.theme2.dark3};
     padding: 7px;
-    border-radius: 5px;
 
     .price {
       font-weight: bold;
@@ -121,13 +118,13 @@ function SubscribeModal(props: Props) {
           </Row>
           <Row className="mb-3">
             <Col>
-              <div onClick={() => setSelectedProduct(pricingOptions.Monthly)} className={`pricing-option ${selectedProduct === pricingOptions.Monthly ? "selected" : ""}`}>
+              <div onClick={() => setSelectedProduct(pricingOptions.Monthly)} className={`pricing-option border border-neutral-700 bg-neutral-800 ${selectedProduct === pricingOptions.Monthly ? "selected" : ""}`}>
                 <span className="price">$3</span>
                 <span className="title">per Month</span>
               </div>
             </Col>
             <Col>
-              <div onClick={() => setSelectedProduct(pricingOptions.Yearly)} className={`pricing-option ${selectedProduct === pricingOptions.Yearly ? "selected" : ""}`}>
+              <div onClick={() => setSelectedProduct(pricingOptions.Yearly)} className={`pricing-option border border-neutral-700 bg-neutral-800 ${selectedProduct === pricingOptions.Yearly ? "selected" : ""}`}>
                 <span className="price">$30</span>
                 <span className="title">per Year <i>(2 Months free!)</i></span>
               </div>

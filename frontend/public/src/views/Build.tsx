@@ -39,6 +39,8 @@ function Build() {
   const [buildName, setBuildName] = useState("")
   const [highlights, setHighlights] = useState([])
   const [displayLoginAlert, setDisplayLoginAlert] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [isArchiveBuildModalOpen, setIsArchiveBuildModalOpen] = useState(false)
 
   useEffect(() => {
     if(!isConfigLoaded) {
@@ -103,7 +105,6 @@ function Build() {
       autohide: false
     })
   }
-
   return (
     <MainLayout>
       <Wrapper>
