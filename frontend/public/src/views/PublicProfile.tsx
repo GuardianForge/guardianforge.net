@@ -203,7 +203,7 @@ function PublicProfile() {
 
             {tab === 2 && (
               <div className="grid md:grid-cols-3 gap-3">
-                {!forgeUser && <div>This user has no builds.</div>}
+                {(!forgeUser || forgeUser?.builds?.length === 0) && <div>This user has no builds or is not registered with GuardianForge. Feel free to invite them! 😄</div>}
                 {forgeUser.builds && forgeUser.builds.map((bs: BuildSummary) => (
                   <BuildSummaryCard key={bs.id} buildSummary={bs} />
                 ))}
