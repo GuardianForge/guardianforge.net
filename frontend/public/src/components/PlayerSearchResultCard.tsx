@@ -40,11 +40,11 @@ function PlayerSearchResultCard({ user, onCardClicked }: Props) {
   }
 
   return (
-    <div className="flex justify-between border border-neutral-800 p-2 text-lg hover:cursor-pointer hover:border-neutral-700" onClick={goToCharacterSelect}>
+    <div className="flex justify-between border bg-neutral-800 border-neutral-700 p-2 text-lg hover:cursor-pointer hover:border-neutral-400" onClick={goToCharacterSelect}>
       <span>{displayName}</span>
       {userHasNoDestinyMemberships && <span><FontAwesomeIcon icon={faExclamationCircle} /></span>}
     </div>
-    
+
   )
 }
 
