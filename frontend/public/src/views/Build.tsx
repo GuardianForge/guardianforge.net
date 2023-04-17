@@ -13,14 +13,6 @@ import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 
-const Wrapper = styled.div`
-  @media (max-width: 576px) {
-    h1, h2, h3 {
-      text-align: center
-    }
-  }
-`
-
 const COMP_STATE = {
   LOADING: 0,
   DONE: 1,
@@ -89,10 +81,9 @@ function Build() {
     }
 
     if(updates.notes) {
+      // TODO: edit this to make it work?
       _buildData.notes = updates.notes
     }
-
-    console.log(updates)
 
     setBuildData(_buildData)
   }
@@ -105,62 +96,61 @@ function Build() {
       autohide: false
     })
   }
+
   return (
     <MainLayout>
-      <Wrapper>
-        <Helmet>
-          <title>GuardianForge</title>
-        </Helmet>
-        {compState === COMP_STATE.LOADING && <Loading />}
-        {compState === COMP_STATE.DONE && (
-          <div id="build" className="flex flex-col gap-2 mb-2">
+      <Helmet>
+        <title>GuardianForge</title>
+      </Helmet>
+      {compState === COMP_STATE.LOADING && <Loading />}
+      {compState === COMP_STATE.DONE && (
+        <div id="build" className="flex flex-col gap-2 mb-2">
 
-            {displayLoginAlert && (
-              <div style={{ marginTop: "15px" }}>
-                <Alert>
-                  Login with your Bungie account to unlock more features! <a className="border-b border-b-blue-400" href={loginUrl}>Login w/Bungie</a>.
-                </Alert>
-              </div>
-            )}
-
-            <h1>{ buildName }</h1>
-            <BuildMetaPanel
-              buildId={buildId as string}
-              buildData={buildData}
-              onBuildUpdated={onBuildUpdated}
-              onBuildUpdateFailed={onBuildUpdateFailed}
-              className="mb-2" />
-
-            <BuildAd />
-
-            <h4>Stats</h4>
-            <StatBar stats={buildData.stats} highlights={highlights} />
-
-            <h4>Subclass</h4>
-            <div className="subclass">
-              {buildData.items.subclass && (<SubclassCard className="col-md-12" item={buildData.items.subclass} highlights={highlights}/>)}
+          {displayLoginAlert && (
+            <div style={{ marginTop: "15px" }}>
+              <Alert>
+                Login with your Bungie account to unlock more features! <a className="border-b border-b-blue-400" href={loginUrl}>Login w/Bungie</a>.
+              </Alert>
             </div>
+          )}
 
-            <h4>Weapons</h4>
-            <div className="grid md:grid-cols-3 gap-2">
-              {buildData.items.kinetic && (<ItemCard item={buildData.items.kinetic} highlights={highlights} />)}
-              {buildData.items.energy && (<ItemCard item={buildData.items.energy} highlights={highlights}  />)}
-              {buildData.items.power && (<ItemCard item={buildData.items.power} highlights={highlights}  />)}
-            </div>
+          <h1 className='flex justify-start'>{ buildName }</h1>
+          <BuildMetaPanel
+            buildId={buildId as string}
+            buildData={buildData}
+            onBuildUpdated={onBuildUpdated}
+            onBuildUpdateFailed={onBuildUpdateFailed}
+            className="mb-2" />
 
-            <h4>Armor</h4>
-            <div className="grid md:grid-cols-3 gap-2">
-              {buildData.items.helmet && (<ItemCard item={buildData.items.helmet} highlights={highlights}  />)}
-              {buildData.items.arms && (<ItemCard item={buildData.items.arms} highlights={highlights}  />)}
-              {buildData.items.chest && (<ItemCard item={buildData.items.chest} highlights={highlights}  />)}
-              {buildData.items.legs && (<ItemCard item={buildData.items.legs} highlights={highlights}  />)}
-              {buildData.items.classItem && (<ItemCard item={buildData.items.classItem} highlights={highlights}  />)}
-            </div>
+          <BuildAd />
 
-            <BuildAd />
+          <h4>Stats</h4>
+          <StatBar stats={buildData.stats} highlights={highlights} />
+
+          <h4>Subclass</h4>
+          <div className="subclass">
+            {buildData.items.subclass && (<SubclassCard className="col-md-12" item={buildData.items.subclass} highlights={highlights}/>)}
           </div>
-        )}
-      </Wrapper>
+
+          <h4>Weapons</h4>
+          <div className="grid md:grid-cols-3 gap-2">
+            {buildData.items.kinetic && (<ItemCard item={buildData.items.kinetic} highlights={highlights} />)}
+            {buildData.items.energy && (<ItemCard item={buildData.items.energy} highlights={highlights}  />)}
+            {buildData.items.power && (<ItemCard item={buildData.items.power} highlights={highlights}  />)}
+          </div>
+
+          <h4>Armor</h4>
+          <div className="grid md:grid-cols-3 gap-2">
+            {buildData.items.helmet && (<ItemCard item={buildData.items.helmet} highlights={highlights}  />)}
+            {buildData.items.arms && (<ItemCard item={buildData.items.arms} highlights={highlights}  />)}
+            {buildData.items.chest && (<ItemCard item={buildData.items.chest} highlights={highlights}  />)}
+            {buildData.items.legs && (<ItemCard item={buildData.items.legs} highlights={highlights}  />)}
+            {buildData.items.classItem && (<ItemCard item={buildData.items.classItem} highlights={highlights}  />)}
+          </div>
+
+          <BuildAd />
+        </div>
+      )}
 
     </MainLayout>
   )

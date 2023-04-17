@@ -162,8 +162,6 @@ function BuildMetaPanel(props: Props) {
   const [primaryActivity, setPrimaryActivity] = useState<ActivityOption>()
   const [isOwner, setIsOwner] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-  const [buildName, setBuildName] = useState<string>()
-  const [buildNotes, setBuildNotes] = useState<string>()
   const [isArchiveModalDisplayed, setIsArchiveModalDisplayed] = useState(false)
   const [isBuildArchived, setIsBuildArchived] = useState(false)
   const [createdBy, setCreatedBy] = useState<UserInfo>()
@@ -251,7 +249,7 @@ function BuildMetaPanel(props: Props) {
     // setup twitter link
     let tweetText = "Checkout this build I found on @guardianforge!"
     setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${window.location.href}&hashtags=destiny2`)
-    
+
     if(buildData.name) {
       setName(buildData.name)
     }
@@ -347,6 +345,7 @@ function BuildMetaPanel(props: Props) {
         }
       })
       setIsEditing(false)
+
       if(onBuildUpdated) {
         onBuildUpdated(updates)
       }
