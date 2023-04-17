@@ -29,10 +29,11 @@ type MobileMenuProps = {
   open: boolean
   onClose: Function
   loginUrl: string,
-  isLoggedIn: boolean
+  isLoggedIn: boolean,
+  onSearchClicked: Function
 }
 
-function MobileMenu({ open, onClose, loginUrl, isLoggedIn }: MobileMenuProps) {
+function MobileMenu({ open, onClose, loginUrl, isLoggedIn, onSearchClicked }: MobileMenuProps) {
 
   useEffect(() => {
     function preventScroll(e: any) {
@@ -59,12 +60,9 @@ function MobileMenu({ open, onClose, loginUrl, isLoggedIn }: MobileMenuProps) {
         </div>
       </div>
       <div className="flex flex-col gap-4 pl-4 mt-4">
-        <NavLink className="" to="/find-players">
-          <FontAwesomeIcon icon={faUser} /> Find Players
-        </NavLink>
-        <NavLink className="" to="/find-builds">
-          <FontAwesomeIcon icon={faCube} /> Find Builds
-        </NavLink>
+        <NavLinkButton onClick={() => onSearchClicked()}>
+          <FontAwesomeIcon icon={faSearch} /> Search
+        </NavLinkButton>
         <NavLink className="" to="/create-build">
           <FontAwesomeIcon icon={faCube} /> Create Build
         </NavLink>
@@ -148,6 +146,7 @@ function MainNav() {
         open={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         isLoggedIn={isLoggedIn}
+        onSearchClicked={() => setIsSearchModalOpen(true)}
         loginUrl={loginUrl} />
     </nav>
   )
