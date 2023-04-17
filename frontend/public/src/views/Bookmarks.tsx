@@ -46,7 +46,7 @@ function Bookmarks() {
         {compState === State.LOADING && <Loading />}
         {compState === State.DONE && (
           <div className="grid md:grid-cols-3 gap-2 grid-cols-1">
-            <h1 className='md:col-span-3'>My Builds</h1>
+            <h1 className='md:col-span-3'>My Bookmarks</h1>
             {builds.map((bs: BuildSummary) => (
               <BuildSummaryCard key={bs.id} buildSummary={bs}/>
             ))}
