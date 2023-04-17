@@ -188,7 +188,7 @@ function Guardian() {
         {compState === COMP_STATE.DONE && (
           <div>
             <div className='flex flex-col md:flex-row gap-2 border-b border-b-neutral-800 md:border-none mb-2'>
-              <h1 className='flex-1'>{ guardianName }</h1>
+              <h1 className='flex-1 break-words'>{ guardianName }</h1>
               <ButtonBar>
                 <ForgeButton onClick={copyToClipboard}>
                   <FontAwesomeIcon icon={faLink} /> Copy Link
