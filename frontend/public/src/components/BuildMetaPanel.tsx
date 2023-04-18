@@ -172,11 +172,13 @@ function BuildMetaPanel(props: Props) {
   const [reformattedNotes, setReformattedNotes] = useState("")
 
   useEffect(() => {
+    console.log('isUserDataLoaded', isUserDataLoaded)
     if (!isUserDataLoaded) return
     async function init() {
       const { ForgeClient } = window.services
       // @ts-ignore TODO: dont use any
       if(ForgeClient.userBuilds && ForgeClient.userBuilds.find(b => b.id === buildId)) {
+        console.log("userBuilds", ForgeClient.userBuilds)
         setIsOwner(true)
       }
     }
@@ -246,7 +248,7 @@ function BuildMetaPanel(props: Props) {
     }
 
     // setup twitter link
-    let tweetText = "Checkout this build I found on @guardianforge!"
+    let tweetText = "Check out this build I found on @guardianforge!"
     setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${window.location.href}&hashtags=destiny2`)
 
     if(buildData.name) {
@@ -379,7 +381,9 @@ function BuildMetaPanel(props: Props) {
               <img src="/img/dim-logo.svg" className="max-h-[16px]" alt="DIM Logo" /> DIM&nbsp;Link
           </ForgeButton>
 
-          <BookmarkButton buildId={buildId} buildData={buildData} />
+          {!isBuildArchived &&
+            <BookmarkButton buildId={buildId} buildData={buildData} />
+          }
 
           {isOwner && (
             <>

@@ -39,6 +39,8 @@ function OAuthHandler() {
       await ForgeClient.completeLogin(query.code)
       setDidOAuthComplete(true)
 
+      // TODO: do something with the context to notify that the users logged in
+
       if(nextState && !nextState.startsWith("/oauth")) {
         localStorage.removeItem("nextState")
         navigate(nextState)
@@ -46,6 +48,7 @@ function OAuthHandler() {
         navigate("/")
       }
     }
+
     try {
       completeLogin()
     } catch (err) {

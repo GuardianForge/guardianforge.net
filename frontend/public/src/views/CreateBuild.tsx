@@ -28,7 +28,6 @@ import userUtils from '../utils/userUtils'
 import BuildAd from '../components/ads/BuildAd'
 import AlertDetail, { BungieOfflineAlert } from '../models/AlertDetail'
 import { useLocation, useNavigate } from 'react-router-dom'
-import AppLayout from '../layouts/AppLayout'
 import MainLayout from '../layouts/MainLayout'
 import Card from '../components/ui/Card'
 
@@ -434,7 +433,7 @@ function CreateBuild() {
       let buildSummary = build.toBuildSummary(buildId)
       ForgeClient.userBuilds.push(buildSummary)
 
-      navigate(`/app/build/${buildId}`)
+      navigate(`/build/${buildId}`)
     } catch(err) {
       let alert = new AlertDetail("An error occurred while saving this build. Please try again later...", "Saving Build", true, false)
       dispatchAlert(alert)

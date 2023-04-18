@@ -100,7 +100,7 @@ function CommandsBar(props: Props) {
     setShareLink(link)
 
     // TODO: Update this with the same thing I use for Notion
-    let tweetText = "Checkout this build I found on @guardianforge!"
+    let tweetText = "Check out this build I found on @guardianforge!"
     setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${link}&hashtags=destiny2`)
   }, [])
 
