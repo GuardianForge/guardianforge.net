@@ -12,11 +12,10 @@ function ForgeButton(props: Props) {
       border 
       border-neutral-500 
       bg-inherit 
-      hover:bg-neutral-800 
-      hover:border-gray-400 
+       
       transition 
       flex items-center justify-center gap-1
-      ${props.disabled ? 'cursor-not-allowed' : ''} 
+      ${props.disabled ? 'cursor-not-allowed bg-neutral-700 hover:bg-neutral-700 text-neutral-400 border-neutral-600 hover:border-neutral-600' : 'hover:bg-neutral-800 hover:border-gray-400 hover:cursor-pointer'} 
       ${props.className}`}>
     { props.children }
   </button>
