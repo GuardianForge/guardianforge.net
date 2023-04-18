@@ -85,10 +85,15 @@ function CreateBuild() {
   const [selectedClass, setSelectedClass] = useState<Enums.ClassEnum>()
   const [selectedUser, setSelectedUser] = useState<any>()
   const [isInventoryLoaded, setIsInventoryLoaded] = useState(false)
-  const [isPrivate, setIsPrivate] = useState(false)
+  // const [isPrivate, setIsPrivate] = useState(false)
   const [highlights, setHighlights] = useState<Array<string>>([])
   const [isHighlightModeOn, setIsHighlightModeOn] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
+  const [visibility, setVisibility] = useState<ModalSelectorOption>({
+    iconUrl: "/img/eye.png",
+    value: "1",
+    display: "Public"
+  })
 
   // Build Items
   const [kinetic, setKinetic] = useState<BuildItem>()
@@ -199,7 +204,11 @@ function CreateBuild() {
     setClassItem(undefined)
     setSubclass(undefined)
     setHighlights([])
-    setIsPrivate(false)
+    setVisibility({
+      iconUrl: "/img/eye.png",
+      value: "1",
+      display: "Public"
+    })
     setName("")
     setNotes("")
     setStats(new BuildStatCollection())
@@ -381,7 +390,7 @@ function CreateBuild() {
       build.primaryActivity = activity.value
     }
 
-    if(isPrivate) {
+    if(visibility.value === "0") {
       build.isPrivate = true
     }
 
@@ -493,6 +502,19 @@ function CreateBuild() {
     }
   ]
 
+  const visibilityOptions: Array<ModalSelectorOption> = [
+    {
+      iconUrl: "/img/eye.png",
+      value: "1",
+      display: "Public"
+    },
+    {
+      iconUrl: "/img/eye-slash.png",
+      value: "0",
+      display: "Private"
+    },
+  ]
+
   function handleCloseSelectClassModal() {
     if(selectedClass === undefined) {
       navigate("/")
@@ -511,7 +533,7 @@ function CreateBuild() {
           <div>
             <div className='flex flex-col md:flex-row md:items-center border-b border-b-neutral-800 md:border-b-0 mb-2'>
               <h1 className='flex-1'>Create Build</h1>
-              <ButtonBar>
+              <ButtonBar className='grid grid-cols-2 gap-2 md:flex'>
                 <ForgeButton onClick={onSaveClicked} disabled={!isBuildValid || _state === State.SAVING}>
                   <FontAwesomeIcon icon={faSave} />Save
                 </ForgeButton>
@@ -567,25 +589,12 @@ function CreateBuild() {
                         value={inputStyle}
                         onChange={(opt: ModalSelectorOption) => setInputStyle(opt)} />
                       <span>Visibility</span>
-                      <div className="form-group mb-3">
-                        <ButtonGroup>
-                          <Button className={isPrivate ? "visibility-disabled" : "visibility-enabled"} onClick={() => {setIsPrivate(false)}}>
-                            <FontAwesomeIcon icon={faEye} />
-                          </Button>
-                          <Button className={isPrivate ? "visibility-enabled" : "visibility-disabled"} onClick={() => setIsPrivate(true)}>
-                            <FontAwesomeIcon icon={faEyeSlash} />
-                          </Button>
-                        </ButtonGroup>
-                        {isPrivate === true ? (
-                          <label className="form-label mx-2">
-                            <i>Private</i>
-                          </label>
-                        ) : (
-                          <label className="form-label mx-2">
-                            <i>Public</i>
-                          </label>
-                        )}
-                      </div>
+                      <ModalSelector
+                        title="Visibility"
+                        className="mb-3"
+                        options={visibilityOptions}
+                        value={visibility}
+                        onChange={(opt: ModalSelectorOption) => setVisibility(opt)} />
                     </Col>
                     <Col md="4" sm="6">
                       <span>Video Review</span>
@@ -633,26 +642,12 @@ function CreateBuild() {
                     value={inputStyle}
                     onChange={(opt: ModalSelectorOption) => setInputStyle(opt)} />
                   <span>Visibility</span>
-                  {/* TODO: Move this to a custom component */}
-                  <div className="form-group mb-3">
-                    <ButtonGroup>
-                      <Button className={isPrivate ? "visibility-disabled" : "visibility-enabled"} onClick={() => {setIsPrivate(false)}}>
-                        <FontAwesomeIcon icon={faEye} />
-                      </Button>
-                      <Button className={isPrivate ? "visibility-enabled" : "visibility-disabled"} onClick={() => setIsPrivate(true)}>
-                        <FontAwesomeIcon icon={faEyeSlash} />
-                      </Button>
-                    </ButtonGroup>
-                    {isPrivate === true ? (
-                      <label className="form-label mx-2">
-                        <i>Private</i>
-                      </label>
-                    ) : (
-                      <label className="form-label mx-2">
-                        <i>Public</i>
-                      </label>
-                    )}
-                  </div>
+                  <ModalSelector
+                    title="Visibility"
+                    className="mb-3"
+                    options={visibilityOptions}
+                    value={visibility}
+                    onChange={(opt: ModalSelectorOption) => setVisibility(opt)} />
                   <span>Video Review</span>
                   <Input
                     prefixIcon={faYoutube}
