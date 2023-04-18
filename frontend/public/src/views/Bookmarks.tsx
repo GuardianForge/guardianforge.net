@@ -6,7 +6,6 @@ import Loading from '../components/Loading'
 import BuildSummaryCard from "../components/BuildSummaryCard"
 import { Helmet } from 'react-helmet'
 import BuildSummary from "../models/BuildSummary"
-import AppLayout from "../layouts/MainLayout"
 import MainLayout from "../layouts/MainLayout"
 
 const Wrapper = styled.div`

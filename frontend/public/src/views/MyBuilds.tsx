@@ -8,7 +8,6 @@ import BuildSummaryCard from "../components/BuildSummaryCard"
 import { Helmet } from 'react-helmet'
 import { Container, Row } from "react-bootstrap"
 import BuildSummary from "../models/BuildSummary.js"
-import AppLayout from "../layouts/AppLayout"
 import MainLayout from "../layouts/MainLayout"
 
 const Wrapper = styled(Container)`

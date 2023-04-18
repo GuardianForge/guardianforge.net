@@ -9,7 +9,6 @@ import colors from '../colors'
 import FeatureToggle from '../models/FeatureToggle'
 import { GlobalContext } from '../contexts/GlobalContext'
 import Card from '../components/ui/Card'
-import AppLayout from '../layouts/AppLayout'
 import MainLayout from '../layouts/MainLayout'
 
 const Wrapper = styled(Container)`

@@ -17,7 +17,6 @@ import ButtonBar from '../components/forms/ButtonBar'
 import copy from "copy-to-clipboard";
 import { faCube, faLink, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate, useParams } from 'react-router-dom'
-import AppLayout from '../layouts/AppLayout'
 import MainLayout from '../layouts/MainLayout'
 import ForgeButton from '../components/forms/Button'
 import AlertDetail from '../models/AlertDetail'
