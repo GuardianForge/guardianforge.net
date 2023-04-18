@@ -7,6 +7,8 @@ import ItemTierBar from './ItemTierBar'
 import ForgeModal from './Modal'
 import styled from 'styled-components'
 import ItemStatDisplay, { ItemStatDisplayModeEnum } from './ItemStatDisplay'
+import Image from './ui/Image'
+import ForgeButton from './forms/Button'
 
 const Wrapper = styled(ForgeModal)`
   .modal-title {
@@ -158,17 +160,8 @@ const Wrapper = styled(ForgeModal)`
 
 const SelectItemButton = styled(Button)`
   width: 100%;
-  background-color: ${colors.theme2.dark2} !important;
-  border: none !important;
-  display: flex !important;
   align-items: center;
   justify-content: start;
-  font-size: 18px !important;
-  margin-bottom: 10px;
-
-  &:hover {
-    background-color: ${colors.theme2.dark3} !important;
-  }
 
   img {
     width: 40px;
@@ -255,7 +248,7 @@ function ItemConfigModal(props: Props) {
         </Modal.Title>
       }
       footer={
-        <Button onClick={onClose}>Close</Button>
+        <ForgeButton onClick={onClose}>Close</ForgeButton>
       }
       >
       <div className="config-modal-wrapper">
@@ -304,27 +297,30 @@ function ItemConfigModal(props: Props) {
                     </>
                   ))}
                 </div>
+
                 <ForgeModal
                   centered
                   size="xl"
                   show={isModDrawerOpen}
                   title="Select Mod"
-                  footer={<Button onClick={() => setIsModDrawerOpen(false)}>Close</Button>}>
-                  <Row>
+                  footer={<ForgeButton onClick={() => setIsModDrawerOpen(false)}>Close</ForgeButton>}>
+                  <div className="grid md:grid-cols-3 gap-2">
                     {availableMods && availableMods.map((plug: Item, idx: number) => (
-                      <Col md="4" key={`plug-${idx}`} >
-                        <SelectItemButton disabled={plug.cost !== undefined && (plug.cost > maxModCostAllowed)} className="activity-option" onClick={() => onSocketPlugClicked(plug)}>
-                          { plug.iconUrl && <img className="plug-icon" src={plug.iconUrl} alt="Plug Icon" />}
-                          <div className="right">
-                            <div>{ plug.name }</div>
-                            {plug.cost && (
-                              <div className="energy-cost">Cost: <span className={plug.cost > maxModCostAllowed ? "energy-cost-over" : ""}>{plug.cost}</span></div>
-                            )}
-                          </div>
-                        </SelectItemButton>
-                      </Col>
+                      <SelectItemButton 
+                        key={`plug-${idx}`}
+                        disabled={plug.cost !== undefined && (plug.cost > maxModCostAllowed)} 
+                        className="flex gap-1 items-center bg-neutral-800 rounded-none border border-neutral-600 hover:border-neutral-400 hover:cursor-pointer" 
+                        onClick={() => onSocketPlugClicked(plug)}>
+                        { plug.iconUrl && <Image className="w-[40px] h-[40px]" src={plug.iconUrl} alt="Plug Icon" />}
+                        <div className="right">
+                          <div>{ plug.name }</div>
+                          {plug.cost && (
+                            <div className="energy-cost">Cost: <span className={plug.cost > maxModCostAllowed ? "energy-cost-over" : ""}>{plug.cost}</span></div>
+                          )}
+                        </div>
+                      </SelectItemButton>
                     ))}
-                  </Row>
+                  </div>
                 </ForgeModal>
               </div>
             )}
