@@ -114,12 +114,6 @@ function MainNav() {
           <NavLinkButton onClick={() => setIsSearchModalOpen(true)}>
             <FontAwesomeIcon icon={faSearch} /> Search
           </NavLinkButton>
-          {/* <NavLink to="/find-players">
-            <FontAwesomeIcon icon={faUser} /> Find Players
-          </NavLink>
-          <NavLink to="/find-builds">
-            <FontAwesomeIcon icon={faCube} /> Find Builds
-          </NavLink> */}
           <NavLink to="/create-build">
             <FontAwesomeIcon icon={faCube} /> Create Build
           </NavLink>
