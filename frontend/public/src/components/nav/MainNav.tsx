@@ -102,6 +102,11 @@ function MainNav() {
     window.open(loginUrl, "_self")
   }
 
+  function onSearchClicked() {
+    setIsMobileMenuOpen(false)
+    setIsSearchModalOpen(true)
+  }
+
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
   return (
@@ -140,7 +145,7 @@ function MainNav() {
         open={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         isLoggedIn={isLoggedIn}
-        onSearchClicked={() => setIsSearchModalOpen(true)}
+        onSearchClicked={onSearchClicked}
         loginUrl={loginUrl} />
     </nav>
   )
