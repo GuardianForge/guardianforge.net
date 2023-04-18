@@ -183,7 +183,7 @@ function ItemCard(props: Props) {
           {(itemTierData !== undefined || power !== undefined) && (
             <div className="item-base-stats">
               <div className="power">{ power }</div>
-              { itemTierData && itemTierData.tier !== undefined && <div className={`item-tier item-tier-${itemTierData.damageType}`}>{itemTierData.tier} </div>}
+              { itemTierData && itemTierData.tier !== undefined && <div className={`item-tier bg-white`}>{itemTierData.tier} </div>}
             </div>
           )}
 

@@ -102,6 +102,11 @@ function MainNav() {
     window.open(loginUrl, "_self")
   }
 
+  function onSearchClicked() {
+    setIsMobileMenuOpen(false)
+    setIsSearchModalOpen(true)
+  }
+
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
   return (
@@ -114,12 +119,6 @@ function MainNav() {
           <NavLinkButton onClick={() => setIsSearchModalOpen(true)}>
             <FontAwesomeIcon icon={faSearch} /> Search
           </NavLinkButton>
-          {/* <NavLink to="/find-players">
-            <FontAwesomeIcon icon={faUser} /> Find Players
-          </NavLink>
-          <NavLink to="/find-builds">
-            <FontAwesomeIcon icon={faCube} /> Find Builds
-          </NavLink> */}
           <NavLink to="/create-build">
             <FontAwesomeIcon icon={faCube} /> Create Build
           </NavLink>
@@ -146,7 +145,7 @@ function MainNav() {
         open={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         isLoggedIn={isLoggedIn}
-        onSearchClicked={() => setIsSearchModalOpen(true)}
+        onSearchClicked={onSearchClicked}
         loginUrl={loginUrl} />
     </nav>
   )

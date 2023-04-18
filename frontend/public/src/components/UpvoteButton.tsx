@@ -5,6 +5,7 @@ import buildUtils from '../utils/buildUtils'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Build from '../models/Build'
+import { faBan } from '@fortawesome/free-solid-svg-icons'
 
 type Props = {
   buildId: string
@@ -97,7 +98,7 @@ function UpvoteButton({ buildId, buildData, isBuildArchived, className }: Props)
         overlay={<Tooltip>This build is private or has been archived. Upvoting has been disabled.</Tooltip>}>
         <div className={`hover:cursor-not-allowed ${className}`}>
           <button disabled>
-            <FontAwesomeIcon icon="ban" />
+            <FontAwesomeIcon icon={faBan}/>
           </button>
         </div>
       </OverlayTrigger>

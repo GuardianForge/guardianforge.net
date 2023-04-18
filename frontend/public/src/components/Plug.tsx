@@ -116,8 +116,10 @@ function Plug(props: Props) {
           placement="bottom"
           delay={{ show: 250, hide: 400 }}
           overlay={<Tooltip>{ plugName }</Tooltip>}>
-          <Image src={fixedIconUrl ? fixedIconUrl : iconUrl}
-            className={`socket-icon ${plugType === "perk" ? "perk" : "mod"}`} />
+          <span>
+            <Image src={fixedIconUrl ? fixedIconUrl : iconUrl}
+              className={`socket-icon ${plugType === "perk" ? "perk" : "mod"}`} />
+          </span>
         </OverlayTrigger>
       </Highlightable>
     </Wrapper>
