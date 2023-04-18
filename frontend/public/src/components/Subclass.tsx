@@ -18,24 +18,6 @@ const SelectSubclassButtonWrapper = styled.div`
 `
 
 const SelectSubclassButton = styled(Button)`
-  width: 100%;
-  background-color: ${colors.theme2.dark2} !important;
-  border: none !important;
-  display: flex !important;
-  align-items: center;
-  justify-content: start;
-  font-size: 24px !important;
-  margin-bottom: 10px;
-
-  &:hover {
-    background-color: ${colors.theme2.dark3} !important;
-  }
-
-  img {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-  }
 `
 
 type Props = {
@@ -137,18 +119,17 @@ function Subclass(props: Props) {
       )}
 
       <ForgeModal show={isSelectingSubclass} title="Select Subclass" footer={footer}>
-        <Container fluid>
-          <Row>
-            <Col>
-              {availableSubclasses.map((i: Item) => (
-                <SelectSubclassButton key={`subclass-${i.hash}`} onClick={() => onSubclassSelected(i)}>
-                  <img src={i.iconUrl} alt="" />
-                  <span>{ i.name }</span>
-                </SelectSubclassButton>
-              ))}
-            </Col>
-          </Row>
-        </Container>
+        <div className="flex flex-col gap-2">
+          {availableSubclasses.map((i: Item) => (
+            <SelectSubclassButton 
+              className="bg-neutral-800 border border-neutral-600 hover:border-neutral-400 rounded-none flex items-center gap-2"
+              key={`subclass-${i.hash}`} 
+              onClick={() => onSubclassSelected(i)}>
+              <img className="w-[40px] h-[40px]" src={i.iconUrl} alt="" />
+              <span className='text-lg'>{ i.name }</span>
+            </SelectSubclassButton>
+          ))}
+        </div>
       </ForgeModal>
     </Card>
   )
