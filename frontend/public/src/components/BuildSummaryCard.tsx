@@ -75,14 +75,16 @@ function BuildSummaryCard({ buildSummary, onCardClicked }: Props) {
       <div className="flex">
         <div className="flex gap-2 flex-1 items-center">
           <FontAwesomeIcon icon={faUser} /> { buildSummary.username }
-          {buildSummary.isPrivate && <FontAwesomeIcon icon={faEyeSlash} />}
         </div>
-        {buildSummary.upvotes !== undefined && buildSummary.upvotes > 0 && (
-          <div>
-            <UpvoteIcon filled />
-            { buildSummary.upvotes }
-          </div>
-        )}
+        <div>
+          {buildSummary.isPrivate && <FontAwesomeIcon icon={faEyeSlash} />}
+          {buildSummary.upvotes !== undefined && buildSummary.upvotes > 0 && (
+            <div>
+              <UpvoteIcon filled />
+              { buildSummary.upvotes }
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -101,7 +101,8 @@ class Build {
       primaryIconSet: "",
       upvotes: 0,
       username: "",
-      publishedOn: Date.now() / 1000
+      publishedOn: Date.now() / 1000,
+      isPrivate: this.isPrivate
     }
 
     if(this.selectedUser && summary.userId) {
