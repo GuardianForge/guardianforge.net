@@ -148,37 +148,30 @@ const ForgeUserInfoWrapper = styled.div`
 
 type Props = {
   buildId: string
-  buildData: Build
-  onBuildUpdated?: Function
-  onBuildUpdateFailed?: Function
+  primaryActivity: ActivityOption
+  isArchived?: boolean
+  createdBy?: UserInfo
+  guardianOf?: UserInfo
+  notes?: string
+  isOwner?: boolean
   className?: string
+  videoLink?: string
+  inputStyle?: string
 }
 
-function BuildMetaPanel(props: Props) {
-  const { buildId, buildData, onBuildUpdated, onBuildUpdateFailed, className } = props
-
+function BuildMetaPanel({ buildId, primaryActivity, isArchived, createdBy, guardianOf, notes, isOwner, videoLink, className, inputStyle }: Props) {
   const { isConfigLoaded, isUserDataLoaded, dispatchAlert } = useContext(GlobalContext)
-  const [twitterLink, setTwitterLink] = useState("")
-  const [primaryActivity, setPrimaryActivity] = useState<ActivityOption>()
-  const [isOwner, setIsOwner] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
-  const [isArchiveModalDisplayed, setIsArchiveModalDisplayed] = useState(false)
-  const [isBuildArchived, setIsBuildArchived] = useState(false)
-  const [createdBy, setCreatedBy] = useState<UserInfo>()
-  const [guardianOf, setGuardianOf] = useState<UserInfo>()
   const [displayNotes, setDisplayNotes] = useState<string>()
   const [areNotesLong, setAreNotesLong] = useState(false)
   const [isNotesDialogDisplayed, setIsNotesDialogDisplayed] = useState(false)
   const [reformattedNotes, setReformattedNotes] = useState("")
 
   useEffect(() => {
-    console.log('isUserDataLoaded', isUserDataLoaded)
     if (!isUserDataLoaded) return
     async function init() {
       const { ForgeClient } = window.services
       // @ts-ignore TODO: dont use any
       if(ForgeClient.userBuilds && ForgeClient.userBuilds.find(b => b.id === buildId)) {
-        console.log("userBuilds", ForgeClient.userBuilds)
         setIsOwner(true)
       }
     }
@@ -226,8 +219,6 @@ function BuildMetaPanel(props: Props) {
   }, [isConfigLoaded, buildData])
 
   useEffect(() => {
-    const { notes } = buildData
-
     if(notes) {
       let reformatted = notes.replace(/\n/g, "<br/>")
       setReformattedNotes(reformatted)
@@ -239,71 +230,7 @@ function BuildMetaPanel(props: Props) {
       }
       setNotes(notes)
     }
-
-    if(buildData.primaryActivity) {
-      let activity = activityOptions.find(el => el.value === buildData.primaryActivity)
-      if(activity && activity.value !== '1') {
-        setPrimaryActivity(activity)
-      }
-    }
-
-    // setup twitter link
-    let tweetText = "Check out this build I found on @guardianforge!"
-    setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${window.location.href}&hashtags=destiny2`)
-
-    if(buildData.name) {
-      setName(buildData.name)
-    }
-    if(buildData.videoLink) setVideoLink(buildData.videoLink)
-    if(buildData.primaryActivity) {
-      let a = activityOptions.find((opt: ActivityOption) => opt.value === buildData.primaryActivity)
-      if(a) {
-        setActivity(a)
-      }
-    }
-
-    if(buildData.inputStyle) {
-      let is = inputStyleOptions.find((opt: ModalSelectorOption) => opt.value === buildData.inputStyle)
-      if(is) {
-        setInputStyle(is)
-      }
-    }
-  }, [buildData])
-
-  function copyToClipboard() {
-    copy(window.location.href)
-    let a = new AlertDetail("Link copied to clipboard.", "Link Copied")
-    dispatchAlert(a)
-  }
-
-  async function archiveBuild() {
-    let { ForgeClient, ForgeApiService } = window.services
-    try {
-      let token = ForgeClient.getToken()
-      await ForgeApiService.archiveBuild(buildId, token)
-      // @ts-ignore TODO: dont use any
-      ForgeClient.userBuilds = ForgeClient.userBuilds.filter(b => b.id !== buildId)
-      setIsOwner(false)
-      setIsBuildArchived(true)
-    } catch (err) {
-      dispatchAlert({
-        title: "Archiving Build",
-        body: "An error occurred while archiving this build. Please try again later...",
-        isError: true,
-        autohide: false,
-      })
-    } finally {
-      setIsArchiveModalDisplayed(false)
-    }
-  }
-
-  function copyDIMLink() {
-    let b = Object.assign(new Build(), buildData)
-    let url = b.toDIMLink()
-    copy(url)
-    let a = new AlertDetail("DIM Link copied to clipboard.", "Link Copied")
-    dispatchAlert(a)
-  }
+  }, [notes])
 
   const [name, setName] = useState("")
   const [notes, setNotes] = useState("")
@@ -365,46 +292,7 @@ function BuildMetaPanel(props: Props) {
   return (
     <Wrapper className={className}>
 
-      {/* Buttons */}
-      <div className="flex flex-col md:flex-row md:items-center mb-2 gap-2">
-        <div className="grid grid-cols-2 md:flex md:flex-row flex-1 items-center gap-1">
-          <ForgeButton onClick={copyToClipboard}>
-            <FontAwesomeIcon icon={faLink} />
-            Copy Link
-          </ForgeButton>
 
-          <ForgeButtonLink href={twitterLink} target="_blank" rel="noreferrer">
-            <FontAwesomeIcon icon={faTwitter} /> Share
-          </ForgeButtonLink>
-
-          <ForgeButton onClick={copyDIMLink} className="px-3">
-              <img src="/img/dim-logo.svg" className="max-h-[16px]" alt="DIM Logo" /> DIM&nbsp;Link
-          </ForgeButton>
-
-          {!isBuildArchived &&
-            <BookmarkButton buildId={buildId} buildData={buildData} />
-          }
-
-          {isOwner && (
-            <>
-              <ForgeButton onClick={() => setIsEditing(true)}>
-                <FontAwesomeIcon icon={faEdit} /> Edit
-              </ForgeButton>
-              <ForgeButton onClick={() => setIsArchiveModalDisplayed(true)}>
-                <FontAwesomeIcon icon={faBox} /> Archive
-              </ForgeButton>
-            </>
-          )}
-        </div>
-
-        <div className="flex items-center justify-center text-lg">
-          <UpvoteButton
-            buildId={buildId}
-            buildData={buildData}
-            isBuildArchived={isBuildArchived} />
-        </div>
-      </div>
-      {/* /Buttons */}
 
       {/* Info */}
       <Card className='grid md:grid-cols-3 gap-2'>
@@ -421,17 +309,17 @@ function BuildMetaPanel(props: Props) {
           {(primaryActivity || buildData.inputStyle) && (<div className="build-info-header mt-3">Works Best With</div>)}
           <div className="build-info-icons">
             {primaryActivity && <img src={primaryActivity.iconUrl} alt="Primary Activity Icon" />}
-            {buildData.inputStyle === '1' && (<img src="/img/input-icons/mnk.png" alt="Mouse and Keyboard" />)}
-            {buildData.inputStyle === '2' && (<img src="/img/input-icons/controller.png" alt="Controller" />)}
+            {inputStyle === '1' && (<img src="/img/input-icons/mnk.png" alt="Mouse and Keyboard" />)}
+            {inputStyle === '2' && (<img src="/img/input-icons/controller.png" alt="Controller" />)}
           </div>
         </div>
 
 
 
-        {buildData.videoLink && (
+        {videoLink && (
           <div>
             <div className="build-info-header">Video Review</div>
-            <YouTubeEmbed youtubeUrl={buildData.videoLink} />
+            <YouTubeEmbed youtubeUrl={videoLink} />
           </div>
         )}
 
@@ -510,83 +398,11 @@ function BuildMetaPanel(props: Props) {
 
       </Card>
 
-      {/* Archive modal */}
-      <ForgeModal show={isArchiveModalDisplayed} title="Archive Build" footer={
-        <div className="flex gap-1">
-          <ForgeButton onClick={() => setIsArchiveModalDisplayed(false)}>Cancel</ForgeButton>
-          <ForgeButton onClick={() => archiveBuild()}>Archive</ForgeButton>
-        </div>
-      }>
-        <p>
-          Archiving a build will do the following:
-        </p>
-        <ul>
-          <li>Remove from "My Builds"</li>
-          <li>Remove from search & other public build lists</li>
-          <li>Remove upvote & ownership information</li>
-        </ul>
-        <p>Direct links & bookmarks will still be valid. </p>
-        <p><b>This operation CANNOT be undone.</b></p>
-      </ForgeModal>
-
       {/* Build notes modal */}
       <ForgeModal show={isNotesDialogDisplayed} title="Build Notes" size="lg" scrollable footer={<ForgeButton onClick={() => setIsNotesDialogDisplayed(false)}>Close</ForgeButton>}>
         <>
           {reformattedNotes && <div dangerouslySetInnerHTML={{__html: reformattedNotes}} />}
         </>
-      </ForgeModal>
-
-      {/* Edit modal */}
-      <ForgeModal
-        show={isEditing}
-        onHide={() => setIsEditing(false)}
-        title="Edit Build Info"
-        size="lg"
-        footer={
-          <div className="flex gap-1">
-            <ForgeButton disabled={isSaving} onClick={() => setIsEditing(false)}>Cancel</ForgeButton>
-            <ForgeButton disabled={isSaving} style={{marginLeft: "10px"}} onClick={() => saveBuild()}>Save</ForgeButton>
-          </div>
-        }>
-        <div className="build-info-card mb-3">
-          <span>Name</span>
-          <Input
-            prefixIcon={faCube}
-            placeholder='Give your build a name'
-            value={name}
-            onChange={(e: any) => setName(e.target.value)}
-            className="mb-3" />
-          <span>Notes</span>
-          <TextArea
-            className="mb-3"
-            prefixIcon={faStickyNote}
-            rows={10}
-            placeholder="Add some notes on how to use the build"
-            value={notes}
-            onChange={(e: any) => setNotes(e.target.value)}/>
-          <span>Primary Activity</span>
-          <ActivitySelector
-            className="mb-3"
-            value={activity}
-            onChange={(opt: ActivityOption) => setActivity(opt)} />
-          <span>Input Style</span>
-          <ModalSelector
-            title="Input Style"
-            className="mb-3"
-            options={inputStyleOptions}
-            value={inputStyle}
-            onChange={(opt: ModalSelectorOption) => setInputStyle(opt)} />
-        </div>
-        <h4>Video Review</h4>
-        <div className="build-info-card">
-          <Input
-            prefixIcon={faYoutube}
-            placeholder="Add a YouTube link"
-            value={videoLink}
-            className="mb-3"
-            onChange={(e: any) => setVideoLink(e.target.value)} />
-          <YouTubeEmbed youtubeUrl={videoLink} showPlaceholder />
-        </div>
       </ForgeModal>
     </Wrapper>
   )
