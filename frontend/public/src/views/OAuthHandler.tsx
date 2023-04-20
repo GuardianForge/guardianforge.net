@@ -52,7 +52,6 @@ function OAuthHandler() {
     try {
       completeLogin()
     } catch (err) {
-      console.error(err)
       let alert = new AlertDetail("An error occurred while logging in. Please try again later...", "Login Error", true, false)
       dispatchAlert(alert)
     }
@@ -60,12 +59,12 @@ function OAuthHandler() {
 
   return (
     <MainLayout>
-      <Wrapper>
-        <Helmet>
-          <title>Signing In - GuardianForge</title>
-        </Helmet>
+      <Helmet>
+        <title>Signing In - GuardianForge</title>
+      </Helmet>
+      <div className="flex items-center">
         <Loading />
-      </Wrapper>
+      </div>
     </MainLayout>
   )
 }

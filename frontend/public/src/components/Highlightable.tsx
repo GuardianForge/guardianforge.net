@@ -48,7 +48,7 @@ const Wrapper = styled.div<IHighlightableStyleProps>`
 type Props = {
   highlightKey: string
   alternateKeys?: Array<string>
-  highlights: Array<string>
+  highlights?: Array<string>
   isHighlightable?: boolean
   onClick?: Function
   className?: string
@@ -66,6 +66,7 @@ function Highlightable(props: Props) {
   }
 
   function isHighlighted(): boolean {
+    if(!highlights) return false
     let isHighlighted = false
     if(highlights.find(el => el === highlightKey)) {
       isHighlighted = true

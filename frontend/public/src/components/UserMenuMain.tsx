@@ -91,26 +91,24 @@ const SelectItemButton = styled(Button)`
 `
 
 type Props = {
-  isMobile?: boolean
   onMenuItemClicked?: Function
 }
 
 function UserMenu(props: Props) {
-  const { isMobile, onMenuItemClicked } = props
+  const { onMenuItemClicked } = props
   const navigate = useNavigate()
-  const { isClientLoaded, didOAuthComplete, isUserDataLoaded } = useContext(GlobalContext)
+  const { isClientLoaded, didOAuthComplete, isUserDataLoaded, isLoggedIn } = useContext(GlobalContext)
   const [userData, setUserData] = useState<User>({})
   const [displayName, setDisplayName] = useState("")
   const [iconUrl, setIconUrl] = useState("")
   const [isAdmin, setIsAdmin] = useState(false)
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
   useEffect(() => {
     if(!isClientLoaded) return
+    if(!isLoggedIn) return
     function init() {
       let { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn() && ForgeClient.userData) {
-        console.log("hit")
+      if(ForgeClient.userData) {
         setUserData(ForgeClient.userData)
         if(ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser.membershipId === "14214042") {
           setIsAdmin(true)
@@ -118,18 +116,7 @@ function UserMenu(props: Props) {
       }
     }
     init()
-  }, [isClientLoaded, isUserDataLoaded])
-
-  useEffect(() => {
-    if(!didOAuthComplete || !isClientLoaded) return
-    function init() {
-      let { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn()) {
-        setUserData(ForgeClient.userData)
-      }
-    }
-    init()
-  }, [didOAuthComplete, isClientLoaded])
+  }, [isClientLoaded, isLoggedIn, isUserDataLoaded])
 
   useEffect(() => {
     if(userData?.bungieNetUser?.displayName) {
@@ -143,8 +130,6 @@ function UserMenu(props: Props) {
 
   function navigateTo(to: string) {
     navigate(to)
-    setIsUserMenuOpen(false)
-
     if(onMenuItemClicked) onMenuItemClicked()
   }
 

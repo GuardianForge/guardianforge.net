@@ -38,7 +38,7 @@ type Props = {
   plug?: BuildItemPlug
   item?: Item | SocketItem
   plugType: string
-  highlights: Array<string>
+  highlights?: Array<string>
   onClick?: Function
   itemInstanceId: string
   socketIndex: number

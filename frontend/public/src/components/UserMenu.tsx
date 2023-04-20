@@ -153,7 +153,7 @@ type Props = {
 function UserMenu(props: Props) {
   const { isMobile, onMenuItemClicked } = props
   const navigate = useNavigate()
-  const { isClientLoaded, didOAuthComplete } = useContext(GlobalContext)
+  const { isClientLoaded, didOAuthComplete, isLoggedIn } = useContext(GlobalContext)
   const [userData, setUserData] = useState<User>({})
 
   const [displayName, setDisplayName] = useState("")
@@ -163,9 +163,10 @@ function UserMenu(props: Props) {
 
   useEffect(() => {
     if(!isClientLoaded) return
+    if(!isLoggedIn) return
     function init() {
       let { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn() && ForgeClient.userData) {
+      if(ForgeClient.userData) {
         setUserData(ForgeClient.userData)
         if(ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser.membershipId === "14214042") {
           setIsAdmin(true)
@@ -186,12 +187,10 @@ function UserMenu(props: Props) {
   }, [userData])
 
   useEffect(() => {
-    if(!didOAuthComplete || !isClientLoaded) return
+    if(!didOAuthComplete || !isClientLoaded || !isLoggedIn) return
     function init() {
       let { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn()) {
-        setUserData(ForgeClient.userData)
-      }
+      setUserData(ForgeClient.userData)
     }
     init()
   }, [didOAuthComplete, isClientLoaded])

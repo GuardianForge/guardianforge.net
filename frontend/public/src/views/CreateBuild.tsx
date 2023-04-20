@@ -76,7 +76,7 @@ function useQuery() {
 }
 
 function CreateBuild() {
-  const { isInitDone, setPageTitle, dispatchAlert, redirectToLogin } = useContext(GlobalContext)
+  const { isInitDone, isLoggedIn, dispatchAlert, redirectToLogin } = useContext(GlobalContext)
   const query = useQuery()
   const navigate = useNavigate()
   const [_state, setState] = useState(State.LOADING)
@@ -138,10 +138,9 @@ function CreateBuild() {
     async function init() {
       const { ForgeClient, BungieApiService, ManifestService } = window.services
 
-      if(!ForgeClient.isLoggedIn()) {
+      if(!isLoggedIn) {
         redirectToLogin()
       }
-      console.log('hit!')
 
       // TODO: Pull this from ForgeClient user info
       let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(ForgeClient.userData)

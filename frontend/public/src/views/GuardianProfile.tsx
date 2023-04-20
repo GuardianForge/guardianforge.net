@@ -77,7 +77,7 @@ function Guardian() {
   const { guardianKey } = useParams()
   const navigate = useNavigate()
 
-  const { isInitDone, isClientLoaded, dispatchAlert } = useContext(GlobalContext)
+  const { isInitDone, dispatchAlert } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
   const [highlights, setHighlights] = useState([])
   const [items, setItems] = useState<BuildItemCollection>({})
@@ -88,7 +88,6 @@ function Guardian() {
   const [isSaving, setIsSaving] = useState(false)
   const [className, setClassName] = useState("")
   const [isPrivate, setIsPrivate] = useState(false)
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const [guardianName, setGuardianName] = useState<string>()
 
@@ -154,17 +153,6 @@ function Guardian() {
     }
     init()
   }, [isInitDone])
-
-  useEffect(() => {
-    if(!isClientLoaded) return
-    function load() {
-      const { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn()) {
-        setIsUserLoggedIn(true)
-      }
-    }
-    load()
-  }, [isClientLoaded])
 
 
   function copyToClipboard() {

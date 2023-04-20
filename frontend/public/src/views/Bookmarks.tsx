@@ -13,16 +13,15 @@ const Wrapper = styled.div`
 `
 
 function Bookmarks() {
-  const { isInitDone, setPageTitle } = useContext(GlobalContext)
+  const { isInitDone, isLoggedIn } = useContext(GlobalContext)
   const [builds, setBuilds] = useState<Array<BuildSummary>>([])
   const [compState, setCompState] = useState(State.LOADING)
 
   useEffect(() => {
-    setPageTitle("Bookmarks")
     if(!isInitDone) return
     async function init() {
-      const { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn()) {
+      const { ForgeClient, BungieAuthService } = window.services
+      if(!isLoggedIn) {
         const { userBookmarks } = ForgeClient
         if(userBookmarks) {
           let bookmarks = Object.keys(userBookmarks).map(key => userBookmarks[key])
@@ -30,11 +29,11 @@ function Bookmarks() {
         }
         setCompState(State.DONE)
       } else {
-        // TODO: Redirect to login
+        BungieAuthService.redirectToLogin()
       }
     }
     init()
-  }, [isInitDone])
+  }, [isInitDone, isLoggedIn])
 
   return (
     <MainLayout>

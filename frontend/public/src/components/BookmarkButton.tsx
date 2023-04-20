@@ -15,24 +15,21 @@ type Props = {
 
 function BookmarkButton(props: Props) {
   const { buildId, buildData } = props
-  const { isInitDone, redirectToLogin } = useContext(GlobalContext)
+  const { isInitDone, isLoggedIn, redirectToLogin } = useContext(GlobalContext)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [isBookmarking, setIsBookmarking] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     if(!isInitDone) return
+    if(!isLoggedIn) return
     async function init() {
       const { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn()) {
-        setIsLoggedIn(true)
-      }
       if(ForgeClient.userBookmarks && ForgeClient.userBookmarks[buildId]) {
         setIsBookmarked(true)
       }
     }
     init()
-  }, [isInitDone, buildId])
+  }, [isInitDone, buildId, isLoggedIn])
 
   async function bookmarkBuild() {
     const { ForgeClient, ForgeApiService } = window.services

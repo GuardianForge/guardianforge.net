@@ -140,7 +140,7 @@ const Wrapper = styled(Card)`
 
 type Props = {
   item: BuildItem
-  highlights: Array<string>
+  highlights?: Array<string>
   className?: string
   configurable?: boolean
   onConfigureItemClicked?: Function

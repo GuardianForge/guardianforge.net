@@ -77,10 +77,9 @@ function MobileMenu({ open, onClose, loginUrl, isLoggedIn, onSearchClicked }: Mo
 }
 
 function MainNav() {
-  const { isClientLoaded } = useContext(GlobalContext)
+  const { isClientLoaded, isLoggedIn } = useContext(GlobalContext)
   const [loginUrl, setLoginUrl] = useState("")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     if(!isClientLoaded) return
@@ -89,10 +88,6 @@ function MainNav() {
 
       if(ForgeClient?.config?.loginUrl) {
         setLoginUrl(ForgeClient.config.loginUrl)
-      }
-
-      if(ForgeClient?.isLoggedIn()) {
-        setIsLoggedIn(true)
       }
     }
     init()

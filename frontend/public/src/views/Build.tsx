@@ -31,7 +31,7 @@ import { UserInfo } from '../models/User'
 function Build() {
   const navigate = useNavigate()
   const { id } = useParams()
-  const { isConfigLoaded, dispatchAlert } = useContext(GlobalContext)
+  const { isConfigLoaded, dispatchAlert, isLoggedIn } = useContext(GlobalContext)
   const [loginUrl, setLoginUrl] = useState("")
 
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
@@ -80,7 +80,7 @@ function Build() {
     async function init() {
       const { ForgeApiService, ForgeClient, BungieApiService } = window.services
 
-      if(!ForgeClient.isLoggedIn()) {
+      if(!isLoggedIn) {
         setDisplayLoginAlert(true)
       } else {
         if(ForgeClient?.userBuilds?.find((b: any) => b.id === buildId)) {

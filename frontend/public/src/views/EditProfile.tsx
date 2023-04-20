@@ -17,7 +17,7 @@ import ButtonBar from '../components/forms/ButtonBar'
 import Input from '../components/forms/Input'
 
 function Profile() {
-  const { isClientLoaded, dispatchAlert, setPageTitle } = useContext(GlobalContext)
+  const { isClientLoaded, dispatchAlert, isLoggedIn } = useContext(GlobalContext)
   const [compState, setCompState] = useState(State.LOADING)
   const [about, setAbout] = useState("")
   const [twitter, setTwitter] = useState("")
@@ -31,18 +31,20 @@ function Profile() {
   const [showCancelSubscriptionModal, setShowCancelSubscriptionModal] = useState(false)
 
   useEffect(() => {
-    setPageTitle("Edit Profile")
-  }, [])
-
-  useEffect(() => {
     if(!isClientLoaded) return
+    if(!isLoggedIn) {
+      const { BungieAuthService } = window.services
+      BungieAuthService.redirectToLogin()
+    }
     function init() {
       const { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn() && ForgeClient.userInfo) {
+      if(ForgeClient.userInfo) {
         const { userInfo } = ForgeClient
+
         if(userInfo.about) {
           setAbout(userInfo.about)
         }
+
         if(userInfo.social) {
           const { facebook, twitter, youtube, twitch } = userInfo.social
           if(facebook) setFacebook(facebook)
@@ -50,6 +52,7 @@ function Profile() {
           if(youtube) setYoutube(youtube)
           if(twitch) setTwitch(twitch)
         }
+
         if(userInfo.subscriptionDetails) {
           setSubscriptionDetails(userInfo.subscriptionDetails)
         }
@@ -57,7 +60,7 @@ function Profile() {
       setCompState(State.DONE);
     }
     init()
-  }, [isClientLoaded])
+  }, [isClientLoaded, isLoggedIn])
 
   async function saveProfile() {
     try {

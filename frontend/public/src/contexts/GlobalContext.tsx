@@ -43,25 +43,33 @@ export const GlobalContext = React.createContext<IGlobalContext>({
   setBannerMessage: noop
 })
 
+
 type Props = {
   children: ReactNode
 }
 
 export const Provider = (props: Props) => {
   const { children } = props
+
+  // Used to track init state
   const [isInitStarted, setIsInitStarted] = useState(false)
   const [isInitDone, setIsInitDone] = useState(false)
+
+  // Used to track individual init components
   const [isConfigLoaded, setIsConfigLoaded] = useState(false)
   const [isClientLoaded, setIsClientLoaded] = useState(false)
-  const [isUserDataLoaded, setIsUserDataLoaded] = useState(false)
   const [isManifestLoaded, setIsManifestLoaded] = useState(false)
+
+  // Used to track if the user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isUserDataLoaded, setIsUserDataLoaded] = useState(false)
+
   const [isErrorBeingReported, setIsErrorBeingReported] = useState(false)
   const [didOAuthComplete, setDidOAuthComplete] = useState(false)
   const [errorBeingReported, setErrorBeingReported] = useState({})
   const [pageTitle, setPageTitle] = useState("")
   const [areAdsDisabled, setAreAdsDisabled] = useState(false)
   const [bannerMessage, setBannerMessage] = useState<string>("")
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   async function initClient() {
     let { ForgeClient } = window.services
@@ -75,23 +83,6 @@ export const Provider = (props: Props) => {
       }
       setIsUserDataLoaded(true)
     }
-
-    // try {
-    //   await ForgeClient.init()
-    //   setIsClientLoaded(true)
-    //   if(ForgeClient.isLoggedIn()) {
-    //     await ForgeClient.fetchUserData()
-    //     if(ForgeClient.isPremiumUser()) {
-    //       console.log("Go premium user!")
-    //       setAreAdsDisabled(true)
-    //     }
-    //     setIsUserDataLoaded(true)
-    //   }
-    // } catch (err: any) {
-    //   if(err.message == ErrorMessages.RefreshTokenExpired) {
-    //     redirectToLogin()
-    //   }
-    // }
   }
 
   async function initManifestService() {
@@ -102,11 +93,9 @@ export const Provider = (props: Props) => {
 
   function redirectToLogin(nextState?: string) {
     let { BungieAuthService } = window.services
-    if(nextState) {
-      localStorage.setItem("nextState", nextState)
-    } else {
-      localStorage.setItem("nextState", window.location.pathname)
-    }
+    let _nextState = nextState ? nextState : window.location.pathname
+    _nextState = encodeURIComponent(_nextState)
+    localStorage.setItem("nextState", _nextState)
     BungieAuthService.redirectToLogin()
   }
 

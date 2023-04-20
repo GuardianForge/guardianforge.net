@@ -15,45 +15,47 @@ const Wrapper = styled(Container)`
 `
 
 function UserBuilds() {
-  const { isInitDone, setPageTitle } = useContext(GlobalContext)
+  const { isInitDone, isLoggedIn } = useContext(GlobalContext)
   const [builds, setBuilds] = useState<Array<BuildSummary>>([])
   const [compState, setCompState] = useState(State.LOADING)
 
   useEffect(() => {
     if(!isInitDone) return
+    if(!isLoggedIn) {
+      const { BungieAuthService } = window.services
+      BungieAuthService.redirectToLogin()
+    }
     async function init() {
       const { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn()) {
-        let builds: Array<BuildSummary> = []
-        if(ForgeClient.userBuilds) {
-          builds = [...ForgeClient.userBuilds]
-        }
-        if(ForgeClient.privateBuilds) {
-          Object.keys(ForgeClient.privateBuilds).forEach((k: string) => {
-            let b = ForgeClient.privateBuilds[k]
-            b.id = k
-            b.isPrivate = true
-            builds.push(b)
-          })
-        }
-        if(builds && builds.length > 0) {
-          builds.sort((a:BuildSummary, b:BuildSummary) => {
-            if(a.publishedOn && b.publishedOn) {
-              if(b.publishedOn > a.publishedOn) {
-                return 1
-              } else {
-                return -1
-              }
-            }
-            return 0
-          })
-          setBuilds(builds)
-        }
-        setCompState(State.DONE)
+      let builds: Array<BuildSummary> = []
+      if(ForgeClient.userBuilds) {
+        builds = [...ForgeClient.userBuilds]
       }
+      if(ForgeClient.privateBuilds) {
+        Object.keys(ForgeClient.privateBuilds).forEach((k: string) => {
+          let b = ForgeClient.privateBuilds[k]
+          b.id = k
+          b.isPrivate = true
+          builds.push(b)
+        })
+      }
+      if(builds && builds.length > 0) {
+        builds.sort((a:BuildSummary, b:BuildSummary) => {
+          if(a.publishedOn && b.publishedOn) {
+            if(b.publishedOn > a.publishedOn) {
+              return 1
+            } else {
+              return -1
+            }
+          }
+          return 0
+        })
+        setBuilds(builds)
+      }
+      setCompState(State.DONE)
     }
     init()
-  }, [isInitDone])
+  }, [isInitDone, isLoggedIn])
 
   return (
     <MainLayout>

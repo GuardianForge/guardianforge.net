@@ -13,13 +13,13 @@ const Wrapper = styled.div`
 `
 
 function SubscribeButton() {
-  const { redirectToLogin } = useContext(GlobalContext)
+  const { redirectToLogin, isLoggedIn } = useContext(GlobalContext)
   const [isModalShowing, setIsModalShowing] = useState(false)
 
   function onSubscribeClicked() {
     const { ForgeClient } = window.services
     if(!ForgeClient) return
-    if(!ForgeClient.isLoggedIn()) {
+    if(!isLoggedIn) {
       redirectToLogin("/app?showSubscribeModal=true")
       return
     }
