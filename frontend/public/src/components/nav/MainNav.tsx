@@ -29,7 +29,7 @@ type MobileMenuProps = {
   open: boolean
   onClose: Function
   loginUrl: string,
-  isLoggedIn: boolean,
+  isLoggedIn?: boolean,
   onSearchClicked: Function
 }
 

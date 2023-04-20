@@ -25,7 +25,7 @@ import BuildObj, { BuildItem } from '../models/Build'
 import AlertDetail from '../models/AlertDetail'
 import { COMP_STATE, activityOptions, inputStyleOptions } from '../constants'
 import copy from "copy-to-clipboard";
-import EditBuildModal from '../components/EditBuildModal'
+import EditBuildModal, { UpdateBuildResponse } from '../components/EditBuildModal'
 import { UserInfo } from '../models/User'
 
 function Build() {
@@ -202,7 +202,7 @@ function Build() {
   }
 
   // TODO: This shouldnt be any
-  function onBuildUpdated(updates: any) {
+  function onBuildUpdated(updates: UpdateBuildResponse) {
     let _buildData = buildData
 
     if(updates.name) {
@@ -211,11 +211,33 @@ function Build() {
     }
 
     if(updates.notes) {
-      // TODO: edit this to make it work?
       _buildData.notes = updates.notes
+      setNotes(updates.notes)
+    }
+
+    if(updates.primaryActivity) {
+      let a = activityOptions.find((opt: ActivityOption) => opt.value === updates.primaryActivity)
+      if(a) {
+        _buildData.primaryActivity = updates.primaryActivity
+        setActivity(a)
+      }
+    }
+
+    if(updates.inputStyle) {
+      let is = inputStyleOptions.find((opt: ModalSelectorOption) => opt.value === updates.inputStyle)
+      if(is) {
+        _buildData.inputStyle = updates.inputStyle
+        setInputStyle(is)
+      }
+    }
+
+    if(updates.videoLink) {
+      _buildData.videoLink = updates.videoLink
+      setVideoLink(updates.videoLink)
     }
 
     setBuildData(_buildData)
+    setIsEditBuildModalOpen(false)
   }
 
   function onBuildUpdateFailed() {

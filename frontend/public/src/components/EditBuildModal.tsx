@@ -13,6 +13,14 @@ import TextArea from './forms/TextArea'
 import BuildSummary from '../models/BuildSummary'
 import ForgeButton from './forms/Button'
 
+export type  UpdateBuildResponse = {
+  name?: string
+  notes?: string
+  primaryActivity?: string
+  inputStyle?: string
+  videoLink?: string
+}
+
 interface Props {
   buildId: string
   name: string
@@ -20,8 +28,8 @@ interface Props {
   videoLink: string
   activity: ActivityOption
   inputStyle: ModalSelectorOption
-  onUpdateFailed: Function
-  onUpdated: Function
+  onUpdateFailed: (err: any) => void
+  onUpdated: (updates: UpdateBuildResponse) => void
   show: boolean
   onHide: Function
 }

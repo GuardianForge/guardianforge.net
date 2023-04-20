@@ -71,7 +71,7 @@ export default class GuardianForgeApiService {
   }
 
   async fetchBuild(buildId: string) {
-    let res = await fetch(`https://${this._dataBucketName}.s3-${this._region}.amazonaws.com/builds/${buildId}.json`)
+    let res = await fetch(`https://${this._dataBucketName}.s3-${this._region}.amazonaws.com/builds/${buildId}.json?v=${(new Date()).getTime()}`)
     return await res.json()
   }
 

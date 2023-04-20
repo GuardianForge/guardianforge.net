@@ -562,6 +562,7 @@ Resources:
       CodeUri: api/builds/_put
       Handler: _put
       Runtime: go1.x
+      Timeout: 10
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref DataBucket
