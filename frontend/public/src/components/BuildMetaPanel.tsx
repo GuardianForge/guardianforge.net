@@ -172,7 +172,6 @@ function BuildMetaPanel({ createdBy, guardianOf, notes, videoLink, className, in
               <span className="build-info-header">Notes</span>
               {displayNotes && <div dangerouslySetInnerHTML={{__html: displayNotes}} />}
               {areNotesLong && <a href="#" className="read-more-link" onClick={() => setIsNotesDialogDisplayed(true)}>Read more</a>}
-              {/* <div className="build-notes" dangerouslySetInnerHTML={{ __html: buildData.notes }} /> */}
             </div>
           )}
 

@@ -63,30 +63,6 @@ export const Provider = (props: Props) => {
   const [bannerMessage, setBannerMessage] = useState<string>("")
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  useEffect(() => {
-    let el1 = document.getElementById('___gatsby')
-    let el2 = document.getElementById("gatsby-focus-wrapper")
-
-    const observer = new MutationObserver(function (mutations, observer) {
-      if(el1 && el1.style) el1.style.height = ''
-      if(el2 && el2.style) el2.style.height = ''
-    })
-
-    if(el1) {
-      observer.observe(el1, {
-        attributes: true,
-        attributeFilter: ['style']
-      })
-    }
-
-    if(el2) {
-      observer.observe(el2, {
-        attributes: true,
-        attributeFilter: ['style']
-      })
-    }
-  }, [])
-
   async function initClient() {
     let { ForgeClient } = window.services
     await ForgeClient.init()

@@ -14,16 +14,10 @@ import MainLayout from '../layouts/MainLayout'
 import UpvoteButton from '../components/UpvoteButton'
 import ForgeButton from '../components/forms/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
-import { faLink, faEdit, faBox, faCube, faStickyNote } from '@fortawesome/free-solid-svg-icons'
+import { faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { faLink, faEdit, faBox } from '@fortawesome/free-solid-svg-icons'
 import BookmarkButton from '../components/BookmarkButton'
 import ForgeButtonLink from '../components/forms/ButtonLink'
-import ActivitySelector from '../components/ActivitySelector'
-import ForgeModal from '../components/Modal'
-import YouTubeEmbed from '../components/YouTubeEmbed'
-import Input from '../components/forms/Input'
-import ModalSelector from '../components/forms/ModalSelector'
-import TextArea from '../components/forms/TextArea'
 import ActivityOption from '../models/ActivityOption'
 import ModalSelectorOption from '../models/ModalSelectorOption'
 import ArchiveBuildModal from '../components/ArchiveBuildModal'
@@ -74,7 +68,6 @@ function Build() {
   const [legs, setLegs] = useState<BuildItem>()
   const [classItem, setClassItem] = useState<BuildItem>()
 
-
   useEffect(() => {
     if(id && buildId === "") {
       setBuildId(id)
@@ -119,15 +112,9 @@ function Build() {
         setBuildName(`Build ${buildId}`)
       }
 
-      if(buildData.notes) {
-        console.log(buildData.notes)
-        setNotes(buildData.notes)
-      }
+      if(buildData.notes) setNotes(buildData.notes)
 
-      if(buildData.highlights) {
-        setHighlights(buildData.highlights)
-      }
-
+      if(buildData.highlights) setHighlights(buildData.highlights)
 
       if(buildData.primaryActivity) {
         let activity = activityOptions.find(el => el.value === buildData.primaryActivity)
@@ -139,7 +126,7 @@ function Build() {
       // setup twitter link
       let tweetText = "Check out this build I found on @guardianforge!"
       setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${window.location.href}&hashtags=destiny2`)
-    
+
       if(buildData.videoLink) setVideoLink(buildData.videoLink)
 
       if(buildData.primaryActivity) {
@@ -162,7 +149,7 @@ function Build() {
           BungieApiService.fetchBungieUser(buildData.createdBy),
           ForgeApiService.fetchForgeUser(buildData.createdBy)
         ])
-        let bungieUser = responses[0] 
+        let bungieUser = responses[0]
         let forgeUser = responses[0]
         if(bungieUser?.uniqueName) {
           let createdByUser: any = {
@@ -182,7 +169,7 @@ function Build() {
           BungieApiService.fetchBungieUser(buildData.selectedUser.bungieNetUserId),
           ForgeApiService.fetchForgeUser(buildData.selectedUser.bungieNetUserId)
         ])
-        let bungieUser = responses[0] 
+        let bungieUser = responses[0]
         let forgeUser = responses[1]
         if(bungieUser?.uniqueName) {
           let guardianOfUser: any = {
@@ -194,7 +181,7 @@ function Build() {
           setGuardianOf(guardianOfUser)
         }
       }
-      
+
       setCompState(COMP_STATE.DONE)
     }
     init()
