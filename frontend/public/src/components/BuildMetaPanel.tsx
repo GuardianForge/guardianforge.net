@@ -165,12 +165,12 @@ function BuildMetaPanel({ createdBy, guardianOf, notes, videoLink, className, in
   return (
     <Wrapper className={className}>
       {/* Info */}
-      <Card className='grid md:grid-cols-3 gap-2'>
+      <Card className='grid md:grid-cols-3 gap-4'>
         <div>
           {displayNotes && (
             <div>
               <span className="build-info-header">Notes</span>
-              {displayNotes && <div dangerouslySetInnerHTML={{__html: displayNotes}} />}
+              {displayNotes && <div className="break-words" dangerouslySetInnerHTML={{__html: displayNotes}} />}
               {areNotesLong && <a href="#" className="read-more-link" onClick={() => setIsNotesDialogDisplayed(true)}>Read more</a>}
             </div>
           )}
