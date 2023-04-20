@@ -27,14 +27,20 @@ function UserProfile() {
   const { username } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const { isConfigLoaded, dispatchAlert } = useContext(GlobalContext)
+  const { isConfigLoaded, dispatchAlert, isLoggedIn, isUserDataLoaded, isClientLoaded } = useContext(GlobalContext)
   const [user, setUser] = useState<User>({})
-  const [forgeUser, setForgeUser] = useState<User>({})
+  const [isProfileOwner, setIsProfileOwner] = useState(false)
   const [membership, setMembership] = useState<DestinyMembership>({})
   const [guardians, setGuardians] = useState<Array<Guardian>>([])
   const [compState, setCompState] = useState(COMPSTATE.LOADING)
-
+  
   const [displayName, setDisplayName] = useState<string>()
+  
+  // Forge user stuff
+  const [forgeUser, setForgeUser] = useState<User>({})
+  const [builds, setBuilds] = useState<BuildSummary[]>()
+  const [privateBuilds, setPrivateBuilds] = useState<BuildSummary[]>()
+  const [bookmarks, setBookmarks] = useState<BuildSummary[]>()
   const [about, setAbout] = useState<string>()
   const [facebookUrl, setFacebookUrl] = useState<string>()
   const [twitterUrl, setTwitterUrl] = useState<string>()
@@ -43,88 +49,125 @@ function UserProfile() {
   const [tab, setTab] = useState<number>(1)
 
   useEffect(() => {
-
-  }, [username])
-
-  useEffect(() => {
+    if(!isConfigLoaded) return
+    if(!isClientLoaded) return
     async function init() {
-      if(!isConfigLoaded) return
       setCompState(COMPSTATE.LOADING)
 
       let code = location.hash.replace("#", "")
-      const { BungieApiService, ForgeApiService } = window.services
+      const { BungieApiService, ForgeClient, ForgeApiService } = window.services
 
-
-      let searchRes: any;
-      try {
-        if(username) {
-          searchRes = await BungieApiService.searchBungieNetUsers(username)
-        }
-      } catch (err) {
-        dispatchAlert(BungieOfflineAlert)
-        return
-      }
-
-      if(searchRes === undefined) {
-        dispatchAlert(BungieOfflineAlert)
-        return
-      }
-
-      // TODO: Handle this better
-      if(searchRes && searchRes.length > 0) {
-        // @ts-ignore
-        let user = searchRes.find(el => el.bungieGlobalDisplayName === username && el.bungieGlobalDisplayNameCode === Number(code))
-        setUser(user)
-
-        if(user.bungieNetMembershipId) {
-          let forgeUser = await ForgeApiService.fetchForgeUser(user.bungieNetMembershipId)
-          if(forgeUser) {
-            setForgeUser(forgeUser)
-          }
-        }
-
-        // Load guardians
-        let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(user)
-        setMembership({ type: membershipType, id: membershipId })
-        let res: any;
+      if(isLoggedIn && ForgeClient?.userData?.bungieNetUser?.uniqueName === `${username}#${code}`) {
+        // This triggers a useEffect below that waits for login to complete
+        setIsProfileOwner(true)
+      } else {
+        setIsProfileOwner(false)
+        let searchRes: any;
         try {
-          res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
-          console.log('res', res)
+          if(username) {
+            searchRes = await BungieApiService.searchBungieNetUsers(username)
+          }
         } catch (err) {
           dispatchAlert(BungieOfflineAlert)
           return
         }
-        if(res === undefined) {
+  
+        if(searchRes === undefined) {
           dispatchAlert(BungieOfflineAlert)
           return
         }
-        if(res && res.characters && res.characters.data) {
-          let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
-          if(guardians.length > 0) {
-            // @ts-ignore
-            guardians.sort((a: any, b: any) => new Date(b.dateLastPlayed) - new Date(a.dateLastPlayed))
-            setGuardians(guardians)
-            setCompState(COMPSTATE.DONE)
-          } else {
-            setCompState(COMPSTATE.NO_DATA)
+  
+        // TODO: Handle this better
+        if(searchRes && searchRes.length > 0) {
+          // @ts-ignore
+          let user = searchRes.find(el => el.bungieGlobalDisplayName === username && el.bungieGlobalDisplayNameCode === Number(code))
+          setUser(user)
+  
+          if(user.bungieNetMembershipId) {
+            let forgeUser = await ForgeApiService.fetchForgeUser(user.bungieNetMembershipId)
+            if(forgeUser) {
+              setForgeUser(forgeUser)
+            }
           }
+  
+          // Load guardians
+          let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(user)
+          setMembership({ type: membershipType, id: membershipId })
+          let res: any;
+          try {
+            res = await BungieApiService.fetchCharactersList(membershipType, membershipId)
+          } catch (err) {
+            dispatchAlert(BungieOfflineAlert)
+            return
+          }
+          if(res === undefined) {
+            dispatchAlert(BungieOfflineAlert)
+            return
+          }
+          if(res && res.characters && res.characters.data) {
+            let guardians = Object.keys(res.characters.data).map(key => res.characters.data[key])
+            if(guardians.length > 0) {
+              // @ts-ignore
+              guardians.sort((a: any, b: any) => new Date(b.dateLastPlayed) - new Date(a.dateLastPlayed))
+              setGuardians(guardians)
+              setCompState(COMPSTATE.DONE)
+            } else {
+              setCompState(COMPSTATE.NO_DATA)
+            }
+          }
+        } else {
+          console.warn("cant find that user")
         }
-      } else {
-        console.warn("cant find that user")
       }
     }
     init()
-  }, [isConfigLoaded, username])
+  }, [isConfigLoaded, username, dispatchAlert, isLoggedIn, location, isClientLoaded])
 
+  // Profile owner
   useEffect(() => {
-    if(user) {
+    if(!isUserDataLoaded) return
+    if(!isProfileOwner) return
+    if(!isLoggedIn) return
+    const { ForgeClient } = window.services
+    const { userData, userBuilds, userGuardians, userBookmarks, userInfo, userPrivateBuilds } = ForgeClient
+    let fu: User = {
+      user: userInfo,
+      builds: userBuilds
+    }
+    // TODO: Move this logic into the ForgeClient
+    let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(userData)
+    setMembership({ type: membershipType, id: membershipId })
+    setForgeUser(fu)
+    setDisplayName(ForgeClient.userData.bungieNetUser.uniqueName)
+    setGuardians(userGuardians)
+    if(userBookmarks) {
+      let bm = Object.keys(userBookmarks).map(key => userBookmarks[key])
+      setBookmarks([...bm])
+    }
+    if(userPrivateBuilds) {
+      let pb = Object.keys(userPrivateBuilds).map(key => userPrivateBuilds[key])
+      setPrivateBuilds(pb)
+    }
+    setCompState(COMPSTATE.DONE)
+  }, [isLoggedIn, isProfileOwner, isUserDataLoaded])
+
+  // sets the display name on a non-owner profile
+  useEffect(() => {
+    if(isProfileOwner) return
+    if(user?.bungieGlobalDisplayName) {
       setDisplayName(`${user.bungieGlobalDisplayName}#${user.bungieGlobalDisplayNameCode}`)
     } else {
       setDisplayName("")
     }
-  }, [user])
+  }, [user, isProfileOwner])
 
+  // sets info for a forge user
   useEffect(() => {
+    if(forgeUser?.builds && forgeUser.builds.length > 0) {
+      setBuilds(forgeUser.builds)
+    } else {
+      setBuilds([])
+    }
     if(forgeUser?.user?.about) {
       setAbout(forgeUser.user.about)
     } else {
@@ -187,10 +230,20 @@ function UserProfile() {
               <TabItem onClick={() => setTab(2)} active={tab === 2}>
                 Builds
               </TabItem>
+              {isProfileOwner && (
+                <>
+                  <TabItem onClick={() => setTab(3)} active={tab === 3}>
+                    Private Builds
+                  </TabItem>
+                  <TabItem onClick={() => setTab(4)} active={tab === 4}>
+                    Bookmarks
+                  </TabItem>
+                </>
+              )}
             </TabGroup>
             {tab === 1 && (
               <div className="flex flex-col gap-2">
-                {guardians.map((g: Guardian) => (
+                {guardians && guardians.length > 0 && guardians.map((g: Guardian) => (
                   <GuardianCard key={g.characterId}
                     classType={g.classType as string}
                     raceType={g.raceType as string}
@@ -202,9 +255,27 @@ function UserProfile() {
             )}
 
             {tab === 2 && (
-              <div className="grid md:grid-cols-3 gap-3">
-                {(!forgeUser || forgeUser?.builds?.length === 0) && <div>This user has no builds or is not registered with GuardianForge. Feel free to invite them! 😄</div>}
-                {forgeUser.builds && forgeUser.builds.map((bs: BuildSummary) => (
+              <div className="grid md:grid-cols-3 gap-2">
+                {(!forgeUser || forgeUser?.builds?.length === 0) && <div className="md:col-span-3 flex items-center justify-center">This user has no builds or is not registered with GuardianForge. Feel free to invite them! 😄</div>}
+                {builds && builds.length > 0 && builds.map((bs: BuildSummary) => (
+                  <BuildSummaryCard key={bs.id} buildSummary={bs} />
+                ))}
+              </div>
+            )}
+
+            {tab === 3 && (
+              <div className="grid md:grid-cols-3 gap-2">
+                {!(privateBuilds && privateBuilds.length > 0) && <div className="md:col-span-3 flex items-center justify-center text-neutral-400 italic">You have created any private builds yet...</div>}
+                {privateBuilds && privateBuilds.length > 0 && privateBuilds.map((bs: BuildSummary) => (
+                  <BuildSummaryCard key={bs.id} buildSummary={bs} />
+                ))}
+              </div>
+            )}
+
+            {tab === 4 && (
+              <div className="grid md:grid-cols-3 gap-2">
+                {!(bookmarks && bookmarks.length > 0) && <div className="md:col-span-3 flex items-center justify-center text-neutral-400 italic">You have not bookmarked any builds yet...</div>}
+                {bookmarks && bookmarks.length > 0 && bookmarks.map((bs: BuildSummary) => (
                   <BuildSummaryCard key={bs.id} buildSummary={bs} />
                 ))}
               </div>

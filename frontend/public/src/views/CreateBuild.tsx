@@ -132,7 +132,6 @@ function CreateBuild() {
   const [armorConfigValidationMessage, setArmorConfigValidationMessage] = useState<string>()
 
   useEffect(() => {
-    console.log('sdlfksj')
     if(!isInitDone) return
     if(isInventoryLoaded) return
     async function init() {
@@ -484,7 +483,6 @@ function CreateBuild() {
       _highlights.push(key)
     }
     setHighlights([..._highlights])
-    console.log(highlights)
   }
 
   const inputStyleOptions: Array<ModalSelectorOption> = [

@@ -9,11 +9,11 @@ import MainLayout from '../layouts/MainLayout'
 
 function OAuthHandler() {
   const navigate = useNavigate()
-  const { isConfigLoaded, setDidOAuthComplete, dispatchAlert } = useContext(GlobalContext)
+  const { isConfigLoaded, dispatchAlert, completeLogin } = useContext(GlobalContext)
 
   useEffect(() => {
     if(!isConfigLoaded) return
-    async function completeLogin() {
+    async function handleCode() {
       let { search } = window.location
       search = search.replace("?", "")
       let query = {}
@@ -25,11 +25,8 @@ function OAuthHandler() {
 
       let nextState = localStorage.getItem("nextState")
 
-      const { ForgeClient } = window.services
-
       // @ts-ignore
-      await ForgeClient.completeLogin(query.code)
-      setDidOAuthComplete(true)
+      await completeLogin(query.code)
 
       if(nextState && !nextState.startsWith("/oauth")) {
         localStorage.removeItem("nextState")
@@ -40,7 +37,7 @@ function OAuthHandler() {
     }
 
     try {
-      completeLogin()
+      handleCode()
     } catch (err) {
       let alert = new AlertDetail("An error occurred while logging in. Please try again later...", "Login Error", true, false)
       dispatchAlert(alert)

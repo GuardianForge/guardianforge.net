@@ -13,7 +13,7 @@ type Props = {
 function UserMenu(props: Props) {
   const { onMenuItemClicked } = props
   const navigate = useNavigate()
-  const { isClientLoaded, didOAuthComplete, isUserDataLoaded, isLoggedIn } = useContext(GlobalContext)
+  const { isClientLoaded, isUserDataLoaded, isLoggedIn } = useContext(GlobalContext)
   const [userData, setUserData] = useState<User>({})
   const [displayName, setDisplayName] = useState("")
   const [iconUrl, setIconUrl] = useState("")

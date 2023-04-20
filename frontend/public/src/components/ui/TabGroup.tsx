@@ -1,7 +1,7 @@
-import React, { ReactElement } from 'react'
+import React, { ReactNode } from 'react'
 
 type Props = {
-  children?: ReactElement | ReactElement[]
+  children?: ReactNode
 }
 
 function TabGroup({ children }: Props) {

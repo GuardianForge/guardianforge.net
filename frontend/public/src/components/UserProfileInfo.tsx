@@ -18,7 +18,6 @@ function UserProfileInfo({ displayName, about, facebookUrl, twitterUrl, youtubeU
         {displayName && <span className="text-2xl font-bold">
           {displayName}
         </span>}
-
         {about && <span className="italic">"{ about }"</span>}
       </div>
 

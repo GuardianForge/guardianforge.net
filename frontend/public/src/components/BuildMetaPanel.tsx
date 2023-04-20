@@ -149,7 +149,6 @@ function BuildMetaPanel({ createdBy, guardianOf, notes, videoLink, className, in
   const [reformattedNotes, setReformattedNotes] = useState("")
 
   useEffect(() => {
-    console.log("build meta", notes)
     if(notes) {
       let reformatted = notes.replace(/\n/g, "<br/>")
       setReformattedNotes(reformatted)

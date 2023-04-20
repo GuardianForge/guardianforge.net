@@ -19,8 +19,7 @@ interface IGlobalContext {
   isErrorBeingReported?: boolean
   // TODO: Make this a model
   errorBeingReported?: any
-  didOAuthComplete?: boolean
-  setDidOAuthComplete: Function
+  completeLogin: Function
   pageTitle?: string
   setPageTitle: Function
   initApp: Function
@@ -36,7 +35,7 @@ function noop() {
 
 export const GlobalContext = React.createContext<IGlobalContext>({
   dispatchAlert: noop,
-  setDidOAuthComplete: noop,
+  completeLogin: noop,
   setPageTitle: noop,
   initApp: noop,
   redirectToLogin: noop,
@@ -58,13 +57,13 @@ export const Provider = (props: Props) => {
   // Used to track individual init components
   const [isConfigLoaded, setIsConfigLoaded] = useState(false)
   const [isClientLoaded, setIsClientLoaded] = useState(false)
+  const [isClientInitStarted, setIsClientInitStarted] = useState(false)
   const [isManifestLoaded, setIsManifestLoaded] = useState(false)
 
-  // Used to track if the user is logged in
+  // Used to track if the user is logged in =======
+  // Set on first load, or during oauth process
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isUserDataLoaded, setIsUserDataLoaded] = useState(false)
-  // TODO: see if this can be wrapped into isLoggedIn
-  const [didOAuthComplete, setDidOAuthComplete] = useState(false)
 
   const [isErrorBeingReported, setIsErrorBeingReported] = useState(false)
   const [errorBeingReported, setErrorBeingReported] = useState({})
@@ -73,9 +72,10 @@ export const Provider = (props: Props) => {
   const [bannerMessage, setBannerMessage] = useState<string>("")
 
   async function initClient() {
+    if(isClientInitStarted) return
+    setIsClientInitStarted(true)
     let { ForgeClient } = window.services
     await ForgeClient.init()
-    setIsClientLoaded(true)
     if(ForgeClient.isLoggedIn()) {
       setIsLoggedIn(true)
       await ForgeClient.fetchUserData()
@@ -84,6 +84,7 @@ export const Provider = (props: Props) => {
       }
       setIsUserDataLoaded(true)
     }
+    setIsClientLoaded(true)
   }
 
   async function initManifestService() {
@@ -99,8 +100,9 @@ export const Provider = (props: Props) => {
     localStorage.setItem("nextState", _nextState)
     BungieAuthService.redirectToLogin()
   }
+  
 
-  const init = async () => {
+  async function init() {
     if(!isInitDone && !isInitStarted) {
       setIsInitStarted(true)
 
@@ -179,6 +181,16 @@ export const Provider = (props: Props) => {
     }))
   }
 
+  async function completeLogin(code: string) {
+    try {
+      let { ForgeClient } = window.services
+      await ForgeClient.completeLogin(code)
+      setIsLoggedIn(true)
+    } catch (err) {
+      // TODO: handle me
+    }
+  }
+
   // function reportError(detail: AlertDetail) {
   //   setErrorBeingReported(detail)
   //   setIsErrorBeingReported(true)
@@ -199,8 +211,7 @@ export const Provider = (props: Props) => {
     dispatchAlert,
     isErrorBeingReported,
     errorBeingReported,
-    didOAuthComplete,
-    setDidOAuthComplete,
+    completeLogin,
     pageTitle,
     setPageTitle,
     redirectToLogin,

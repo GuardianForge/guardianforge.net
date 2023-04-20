@@ -54,7 +54,6 @@ class TokenHandler {
   async init() {
     let now = new Date()
     if(this.expiresAt < now) {
-      console.log(this.expiresAt, now)
       if(this.refreshExpiresAt < now) {
         await this.refresh()
       } else {
@@ -79,7 +78,6 @@ class TokenHandler {
     if(this.expiresAt) {
       let waitMs = (this.expiresAt.getTime() - Date.now() - 10)
       let self = this
-      console.log(`(TokenHandler.watch) Waiting ${waitMs}ms until refresh`)
       this.timeoutJob = setTimeout(async () => {
         await self.refresh()
         self.unwatch()
@@ -104,7 +102,6 @@ class TokenHandler {
    * Refreshes the token
    */
   async refresh() {
-    console.log("(TokenHandler.refresh) Refreshing token...")
     if(this.refreshExpiresAt < new Date()) {
       throw new Error(ErrorMessages.RefreshTokenExpired)
     }
@@ -164,6 +161,7 @@ export default class GuardianForgeClientService {
   }
 
   async setAuthData(authData: any, opts?: SetAuthDataOptions) {
+    // Store the auth data for logging in on next visit
     if(typeof(authData) === "string") {
       localStorage.setItem("auth", authData)
       authData = JSON.parse(authData)
@@ -171,6 +169,7 @@ export default class GuardianForgeClientService {
       localStorage.setItem("auth", JSON.stringify(authData))
     }
 
+    // Setup posthog TODO: Pull this into somewhere else...
     posthog.identify(authData.membership_id)
 
     try {
@@ -193,9 +192,11 @@ export default class GuardianForgeClientService {
         await this.fetchUserData()
       }
     } catch (err: any) {
-      if(err.message == ErrorMessages.RefreshTokenExpired) {
+      if(err.message === ErrorMessages.RefreshTokenExpired) {
         // User needs to log in again
         this.clearAuthData()
+      } else {
+        throw err
       }
     }
   }
@@ -213,7 +214,12 @@ export default class GuardianForgeClientService {
         let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(this.userData)
         if(token) {
           let res = await Promise.all([
-            this.forgeApiService.fetchMe(token, { builds: true, upvotes: true, bookmarks: true, privateBuilds: true }),
+            this.forgeApiService.fetchMe(token, { 
+              builds: true, 
+              upvotes: true, 
+              bookmarks: true, 
+              privateBuilds: true 
+            }),
             this.bungieApiService.fetchCharactersList(membershipType, membershipId)
           ])
 

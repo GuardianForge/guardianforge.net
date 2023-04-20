@@ -15,12 +15,13 @@ const Wrapper = styled(Container)`
 `
 
 function UserBuilds() {
-  const { isInitDone, isLoggedIn } = useContext(GlobalContext)
+  const { isInitDone, isLoggedIn, isClientLoaded } = useContext(GlobalContext)
   const [builds, setBuilds] = useState<Array<BuildSummary>>([])
   const [compState, setCompState] = useState(State.LOADING)
 
   useEffect(() => {
     if(!isInitDone) return
+    if(!isClientLoaded) return
     if(!isLoggedIn) {
       const { BungieAuthService } = window.services
       BungieAuthService.redirectToLogin()
@@ -55,7 +56,7 @@ function UserBuilds() {
       setCompState(State.DONE)
     }
     init()
-  }, [isInitDone, isLoggedIn])
+  }, [isInitDone, isClientLoaded, isLoggedIn])
 
   return (
     <MainLayout>

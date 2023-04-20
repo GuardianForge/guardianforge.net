@@ -45,11 +45,7 @@ type Props = {
 
 function MainLayout(props: Props) {
   const { wide, children } = props
-  const { isInitDone, initApp, bannerMessage } = useContext(GlobalContext)
-
-  useEffect(() => {
-    initApp()
-  }, [isInitDone])
+  const { bannerMessage } = useContext(GlobalContext)
 
   return (
     <Wrapper>

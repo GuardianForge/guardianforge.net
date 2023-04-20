@@ -169,7 +169,6 @@ function V2SubclassCard(props: Props) {
 
   useEffect(() => {
     if(subclass) {
-      console.log("subclass hit")
       setSpecialty(subclass.getEquippedClassSpecialty())
       setGrenade(subclass.getEquippedGrenade())
       setMovement(subclass.getEquippedMovementMode())

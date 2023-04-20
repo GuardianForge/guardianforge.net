@@ -122,14 +122,16 @@ function MainNav() {
         {isLoggedIn ? (
           <UserMenu />
         ) : (
-          <ForgeButton className='hidden md:block' onClick={() => redirectToLogin()}>
-            <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
-          </ForgeButton>
+          <>
+            <ForgeButton className='hidden md:block' onClick={() => redirectToLogin()}>
+              <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
+            </ForgeButton>
+            <div className="flex md:hidden flex-1 justify-end text-xl mr-2">
+              <FontAwesomeIcon className="hover:cursor-pointer" icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />
+            </div>
+          </>
         )}
 
-        {/* <div className="flex md:hidden flex-1 justify-end text-xl mr-2">
-          <FontAwesomeIcon className="hover:cursor-pointer" icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />
-        </div> */}
       </div>
 
       <SearchModal

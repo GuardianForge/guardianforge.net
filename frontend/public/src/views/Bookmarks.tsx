@@ -8,32 +8,29 @@ import { Helmet } from 'react-helmet'
 import BuildSummary from "../models/BuildSummary"
 import MainLayout from "../layouts/MainLayout"
 
-const Wrapper = styled.div`
-  margin-top: 10px;
-`
-
 function Bookmarks() {
-  const { isInitDone, isLoggedIn } = useContext(GlobalContext)
+  const { isInitDone, isLoggedIn, isUserDataLoaded } = useContext(GlobalContext)
   const [builds, setBuilds] = useState<Array<BuildSummary>>([])
   const [compState, setCompState] = useState(State.LOADING)
 
   useEffect(() => {
     if(!isInitDone) return
-    async function init() {
-      const { ForgeClient, BungieAuthService } = window.services
-      if(isLoggedIn) {
-        const { userBookmarks } = ForgeClient
-        if(userBookmarks) {
-          let bookmarks = Object.keys(userBookmarks).map(key => userBookmarks[key])
-          setBuilds(bookmarks)
-        }
-        setCompState(State.DONE)
-      } else {
-        BungieAuthService.redirectToLogin()
+    const { BungieAuthService } = window.services
+    if(!isLoggedIn) {
+      BungieAuthService.redirectToLogin()
+    }
+    if(!isUserDataLoaded) return
+    function init() {
+      const { ForgeClient } = window.services
+      const { userBookmarks } = ForgeClient
+      if(userBookmarks) {
+        let bookmarks = Object.keys(userBookmarks).map(key => userBookmarks[key])
+        setBuilds(bookmarks)
       }
+      setCompState(State.DONE)
     }
     init()
-  }, [isInitDone, isLoggedIn])
+  }, [isInitDone, isLoggedIn, isUserDataLoaded])
 
   return (
     <MainLayout>
