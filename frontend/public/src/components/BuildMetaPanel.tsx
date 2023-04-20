@@ -1,30 +1,16 @@
 import { useContext, useEffect, useState } from 'react'
-import copy from "copy-to-clipboard";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import UpvoteButton from './UpvoteButton';
-import BookmarkButton from './BookmarkButton';
 import YouTubeEmbed from './YouTubeEmbed';
-import activityOptions from '../utils/activityOptions'
 import styled from 'styled-components';
 import { GlobalContext } from '../contexts/GlobalContext';
 import ForgeModal from './Modal'
 import { Link } from 'react-router-dom'
-import Build from '../models/Build';
-import AlertDetail from '../models/AlertDetail';
 import colors from '../colors';
 import ForgeButton from './forms/Button';
 import { UserInfo } from '../models/User';
 import ActivityOption from '../models/ActivityOption';
 import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
-import { faBan, faBox, faCube, faEdit, faLink, faSave, faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import Card from './ui/Card';
-import ForgeButtonLink from './forms/ButtonLink';
-import ModalSelector from './forms/ModalSelector';
-import ActivitySelector from './ActivitySelector';
-import TextArea from './forms/TextArea';
-import Input from './forms/Input';
-import ModalSelectorOption from '../models/ModalSelectorOption';
-import BuildSummary from '../models/BuildSummary';
 
 const Wrapper = styled.div`
   .dim-btn {
@@ -147,78 +133,23 @@ const ForgeUserInfoWrapper = styled.div`
 `
 
 type Props = {
-  buildId: string
   primaryActivity: ActivityOption
-  isArchived?: boolean
   createdBy?: UserInfo
   guardianOf?: UserInfo
   notes?: string
-  isOwner?: boolean
   className?: string
   videoLink?: string
   inputStyle?: string
 }
 
-function BuildMetaPanel({ buildId, primaryActivity, isArchived, createdBy, guardianOf, notes, isOwner, videoLink, className, inputStyle }: Props) {
-  const { isConfigLoaded, isUserDataLoaded, dispatchAlert } = useContext(GlobalContext)
+function BuildMetaPanel({ createdBy, guardianOf, notes, videoLink, className, inputStyle, primaryActivity }: Props) {
   const [displayNotes, setDisplayNotes] = useState<string>()
   const [areNotesLong, setAreNotesLong] = useState(false)
   const [isNotesDialogDisplayed, setIsNotesDialogDisplayed] = useState(false)
   const [reformattedNotes, setReformattedNotes] = useState("")
 
   useEffect(() => {
-    if (!isUserDataLoaded) return
-    async function init() {
-      const { ForgeClient } = window.services
-      // @ts-ignore TODO: dont use any
-      if(ForgeClient.userBuilds && ForgeClient.userBuilds.find(b => b.id === buildId)) {
-        setIsOwner(true)
-      }
-    }
-    init()
-  }, [isUserDataLoaded, buildId])
-
-  useEffect(() => {
-    if(!isConfigLoaded) return
-    async function load() {
-      const { ForgeApiService, BungieApiService } = window.services
-      // TODO: Optimize this, if they are the same ID
-      if(buildData) {
-        if(buildData.selectedUser && buildData.selectedUser.bungieNetUserId) {
-          let guardianOfBungieUser = await BungieApiService.fetchBungieUser(buildData.selectedUser.bungieNetUserId)
-          let guardianOfForgeUser = await ForgeApiService.fetchForgeUser(buildData.selectedUser.bungieNetUserId)
-          if(guardianOfBungieUser) {
-            let guardianOfUser: any = {
-              uniqueName: guardianOfBungieUser.uniqueName
-            }
-
-            if(guardianOfForgeUser && guardianOfForgeUser.user.social) {
-              guardianOfUser.social = guardianOfForgeUser.user.social
-            }
-            setGuardianOf(guardianOfUser)
-          }
-        }
-
-        if(buildData.createdBy) {
-          let createdByBungieUser = await BungieApiService.fetchBungieUser(buildData.createdBy)
-          let createdByForgeUser = await ForgeApiService.fetchForgeUser(buildData.createdBy)
-          if(createdByBungieUser) {
-            let createdByUser: any = {
-              uniqueName: createdByBungieUser.uniqueName
-            }
-
-            if(createdByForgeUser && createdByForgeUser.user.social) {
-              createdByUser.social = createdByForgeUser.user.social
-            }
-            setCreatedBy(createdByUser)
-          }
-        }
-      }
-    }
-    load()
-  }, [isConfigLoaded, buildData])
-
-  useEffect(() => {
+    console.log("build meta", notes)
     if(notes) {
       let reformatted = notes.replace(/\n/g, "<br/>")
       setReformattedNotes(reformatted)
@@ -228,72 +159,11 @@ function BuildMetaPanel({ buildId, primaryActivity, isArchived, createdBy, guard
       } else {
         setDisplayNotes(reformatted)
       }
-      setNotes(notes)
     }
   }, [notes])
 
-  const [name, setName] = useState("")
-  const [notes, setNotes] = useState("")
-  const [videoLink, setVideoLink] = useState("")
-  const [activity, setActivity] = useState<ActivityOption>({ value: "1", display: "Any Activity" })
-  const [inputStyle, setInputStyle] = useState<ModalSelectorOption>({ value: "0", display: "None"})
-  const [isSaving, setIsSaving] = useState(false)
-  const inputStyleOptions: Array<ModalSelectorOption> = [
-    {
-      iconUrl: "/img/input-icons/mnk.png",
-      value: "1",
-      display: "Mouse & Keyboard"
-    },
-    {
-      iconUrl: "/img/input-icons/controller.png",
-      value: "2",
-      display: "Controller"
-    }
-  ]
-
-  async function saveBuild() {
-    try {
-      setIsSaving(true)
-      let updates = {
-        name,
-        notes,
-        primaryActivity: activity.value,
-        inputStyle: inputStyle.value,
-        videoLink
-      }
-
-      let { ForgeClient, ForgeApiService } = window.services
-      let token = ForgeClient.getToken()
-      await ForgeApiService.updateBuild(buildId, updates, token)
-
-      // Update cache
-      ForgeClient.userBuilds.forEach((b: BuildSummary) => {
-        if(b.id === buildId) {
-          b.name = name
-        }
-      })
-      setIsEditing(false)
-
-      if(onBuildUpdated) {
-        onBuildUpdated(updates)
-      }
-    } catch (err) {
-      dispatchAlert({
-        title: "Updating Build",
-        body: "An error occurred while updating this build. Please try again later...",
-        isError: true,
-        autohide: false,
-      })
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
   return (
     <Wrapper className={className}>
-
-
-
       {/* Info */}
       <Card className='grid md:grid-cols-3 gap-2'>
         <div>
@@ -306,7 +176,7 @@ function BuildMetaPanel({ buildId, primaryActivity, isArchived, createdBy, guard
             </div>
           )}
 
-          {(primaryActivity || buildData.inputStyle) && (<div className="build-info-header mt-3">Works Best With</div>)}
+          {(primaryActivity || inputStyle) && (<div className="build-info-header mt-3">Works Best With</div>)}
           <div className="build-info-icons">
             {primaryActivity && <img src={primaryActivity.iconUrl} alt="Primary Activity Icon" />}
             {inputStyle === '1' && (<img src="/img/input-icons/mnk.png" alt="Mouse and Keyboard" />)}

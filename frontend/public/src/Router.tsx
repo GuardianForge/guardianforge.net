@@ -58,7 +58,7 @@ function ForgeRouter() {
         <Route path="/my-bookmarks" element={<BookmarksMain />} />
         <Route path="/admin-tools" element={<AdminToolsMain />} />
         <Route path="/oauth" element={<OAuthHandler />} />
-        <Route path="/build/:buildId" element={<Build />} />
+        <Route path="/build/:id" element={<Build />} />
         <Route path="/u/:username" element={<PublicProfile />} />
         <Route path="/g/:guardianKey" element={<GuardianProfileMain />} />
 

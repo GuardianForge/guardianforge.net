@@ -8,7 +8,7 @@ const Wrapper = styled(Modal)`
   }
 `
 
-type Props = {
+export interface ForgeModalProps {
   className?: string
   title?: string
   header?: React.ReactFragment
@@ -23,7 +23,7 @@ type Props = {
   closeButton?: boolean
 }
 
-function ForgeModal(props: Props) {
+function ForgeModal(props: ForgeModalProps) {
   const { className, title, children, show, onHide, scrollable, footer, centered, header, fullscreen, size, closeButton } = props
 
   return (

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import activityOptions from '../utils/activityOptions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ActivityOption from '../models/ActivityOption'
 import ForgeModal from './Modal'
@@ -8,6 +7,7 @@ import ForgeButton from './forms/Button'
 import colors from '../colors'
 import { Button } from 'react-bootstrap'
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import { activityOptions } from '../constants'
 
 const Wrapper = styled.div`
   color: #eee;

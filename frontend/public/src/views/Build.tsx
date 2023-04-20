@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react'
-import styled from 'styled-components'
 import { GlobalContext } from '../contexts/GlobalContext'
 import Loading from "../components/Loading"
 import SubclassCard from '../components/SubclassCard'
@@ -28,34 +27,41 @@ import TextArea from '../components/forms/TextArea'
 import ActivityOption from '../models/ActivityOption'
 import ModalSelectorOption from '../models/ModalSelectorOption'
 import ArchiveBuildModal from '../components/ArchiveBuildModal'
-import { BuildItem } from '../models/Build'
+import BuildObj, { BuildItem } from '../models/Build'
 import AlertDetail from '../models/AlertDetail'
-
-const COMP_STATE = {
-  LOADING: 0,
-  DONE: 1,
-  ERROR: 2,
-  SAVING: 3
-}
+import { COMP_STATE, activityOptions, inputStyleOptions } from '../constants'
+import copy from "copy-to-clipboard";
+import EditBuildModal from '../components/EditBuildModal'
+import { UserInfo } from '../models/User'
 
 function Build() {
   const navigate = useNavigate()
-  const { buildId } = useParams()
+  const { id } = useParams()
   const { isConfigLoaded, dispatchAlert } = useContext(GlobalContext)
   const [loginUrl, setLoginUrl] = useState("")
 
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
-  // TODO: this shouldnt be any
-  // const [buildData, setBuildData] = useState<any>({})
+  const [buildData, setBuildData] = useState<any>({})
+
+
+  // Build meta
+  const [buildId, setBuildId] = useState("")
   const [buildName, setBuildName] = useState("")
   const [highlights, setHighlights] = useState([])
   const [notes, setNotes] = useState("")
   const [videoLink, setVideoLink] = useState("")
+  const [twitterLink, setTwitterLink] = useState("")
+  const [activity, setActivity] = useState<ActivityOption>(activityOptions[0])
+  const [inputStyle, setInputStyle] = useState<ModalSelectorOption>({ value: "0", display: "None"})
+  const [isOwner, setIsOwner] = useState(false)
+  const [isArchived, setIsArchived] = useState(false)
+  const [createdBy, setCreatedBy] = useState<UserInfo>()
+  const [guardianOf, setGuardianOf] = useState<UserInfo>()
 
   // Modals
   const [displayLoginAlert, setDisplayLoginAlert] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
   const [isArchiveBuildModalOpen, setIsArchiveBuildModalOpen] = useState(false)
+  const [isEditBuildModalOpen, setIsEditBuildModalOpen] = useState(false)
 
   // Build items
   const [subclass, setSubclass] = useState<BuildItem>()
@@ -70,14 +76,23 @@ function Build() {
 
 
   useEffect(() => {
+    if(id && buildId === "") {
+      setBuildId(id)
+    }
+
     if(!isConfigLoaded) {
       return
     }
+
     async function init() {
-      const { ForgeApiService, ForgeClient } = window.services
+      const { ForgeApiService, ForgeClient, BungieApiService } = window.services
 
       if(!ForgeClient.isLoggedIn()) {
         setDisplayLoginAlert(true)
+      } else {
+        if(ForgeClient?.userBuilds?.find((b: any) => b.id === buildId)) {
+          setIsOwner(true)
+        }
       }
 
       if(ForgeClient.config && ForgeClient.config.loginUrl) {
@@ -85,6 +100,7 @@ function Build() {
       }
 
       let buildData = await ForgeApiService.fetchBuild(buildId)
+      setBuildData(buildData)
 
       // Extract items
       if(buildData?.items?.subclass) setSubclass(buildData.items.subclass)
@@ -104,7 +120,8 @@ function Build() {
       }
 
       if(buildData.notes) {
-        buildData.notes = buildData.notes.replace(/\n/g, "<br/>")
+        console.log(buildData.notes)
+        setNotes(buildData.notes)
       }
 
       if(buildData.highlights) {
@@ -112,38 +129,72 @@ function Build() {
       }
 
 
-    if(buildData.primaryActivity) {
-      let activity = activityOptions.find(el => el.value === buildData.primaryActivity)
-      if(activity && activity.value !== '1') {
-        setPrimaryActivity(activity)
+      if(buildData.primaryActivity) {
+        let activity = activityOptions.find(el => el.value === buildData.primaryActivity)
+        if(activity && activity.value !== '1') {
+          setActivity(activity)
+        }
       }
-    }
 
-    // setup twitter link
-    let tweetText = "Check out this build I found on @guardianforge!"
-    setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${window.location.href}&hashtags=destiny2`)
+      // setup twitter link
+      let tweetText = "Check out this build I found on @guardianforge!"
+      setTwitterLink(`https://twitter.com/intent/tweet?text=${tweetText}&url=${window.location.href}&hashtags=destiny2`)
+    
+      if(buildData.videoLink) setVideoLink(buildData.videoLink)
 
-    if(buildData.name) {
-      setName(buildData.name)
-    }
-
-    if(buildData.videoLink) setVideoLink(buildData.videoLink)
-
-    if(buildData.primaryActivity) {
-      let a = activityOptions.find((opt: ActivityOption) => opt.value === buildData.primaryActivity)
-      if(a) {
-        setActivity(a)
+      if(buildData.primaryActivity) {
+        let a = activityOptions.find((opt: ActivityOption) => opt.value === buildData.primaryActivity)
+        if(a) {
+          setActivity(a)
+        }
       }
-    }
 
-    if(buildData.inputStyle) {
-      let is = inputStyleOptions.find((opt: ModalSelectorOption) => opt.value === buildData.inputStyle)
-      if(is) {
-        setInputStyle(is)
+      if(buildData.inputStyle) {
+        let is = inputStyleOptions.find((opt: ModalSelectorOption) => opt.value === buildData.inputStyle)
+        if(is) {
+          setInputStyle(is)
+        }
       }
-    }
 
-      setBuildData(buildData)
+      // Load created by
+      if(buildData.createdBy) {
+        let responses = await Promise.all([
+          BungieApiService.fetchBungieUser(buildData.createdBy),
+          ForgeApiService.fetchForgeUser(buildData.createdBy)
+        ])
+        let bungieUser = responses[0] 
+        let forgeUser = responses[0]
+        if(bungieUser?.uniqueName) {
+          let createdByUser: any = {
+            uniqueName: bungieUser.uniqueName
+          }
+
+          if(forgeUser?.user?.social) {
+            createdByUser.social = forgeUser.user.social
+          }
+          setCreatedBy(createdByUser)
+        }
+      }
+
+      // Load guardian of
+      if(buildData?.selectedUser?.bungieNetUserId) {
+        let responses = await Promise.all([
+          BungieApiService.fetchBungieUser(buildData.selectedUser.bungieNetUserId),
+          ForgeApiService.fetchForgeUser(buildData.selectedUser.bungieNetUserId)
+        ])
+        let bungieUser = responses[0] 
+        let forgeUser = responses[1]
+        if(bungieUser?.uniqueName) {
+          let guardianOfUser: any = {
+            uniqueName: bungieUser.uniqueName
+          }
+          if(forgeUser?.user?.social) {
+            guardianOfUser.social = forgeUser.user.social
+          }
+          setGuardianOf(guardianOfUser)
+        }
+      }
+      
       setCompState(COMP_STATE.DONE)
     }
     init()
@@ -156,7 +207,7 @@ function Build() {
   }
 
   function copyDIMLink() {
-    let b = Object.assign(new Build(), buildData)
+    let b = Object.assign(new BuildObj(), buildData)
     let url = b.toDIMLink()
     copy(url)
     let a = new AlertDetail("DIM Link copied to clipboard.", "Link Copied")
@@ -191,7 +242,7 @@ function Build() {
 
   function onBuildArchived() {
     setIsOwner(false)
-    setIsBuildArchived(true)
+    setIsArchived(true)
   }
 
   function onBuildArchiveError() {
@@ -219,6 +270,7 @@ function Build() {
               </Alert>
             </div>
           )}
+
           <div className='flex items-center justify-between'>
             <h1 className='text-2xl'>{ buildName }</h1>
           </div>
@@ -238,16 +290,16 @@ function Build() {
                   <img src="/img/dim-logo.svg" className="max-h-[16px]" alt="DIM Logo" /> DIM&nbsp;Link
               </ForgeButton>
 
-              {!isBuildArchived &&
+              {!isArchived &&
                 <BookmarkButton buildId={buildId} buildData={buildData} />
               }
 
               {isOwner && (
                 <>
-                  <ForgeButton onClick={() => setIsEditing(true)}>
+                  <ForgeButton onClick={() => setIsEditBuildModalOpen(true)}>
                     <FontAwesomeIcon icon={faEdit} /> Edit
                   </ForgeButton>
-                  <ForgeButton onClick={() => setIsArchiveModalDisplayed(true)}>
+                  <ForgeButton onClick={() => setIsArchiveBuildModalOpen(true)}>
                     <FontAwesomeIcon icon={faBox} /> Archive
                   </ForgeButton>
                 </>
@@ -258,16 +310,18 @@ function Build() {
           <UpvoteButton
             buildId={buildId as string}
             buildData={buildData}
-            isBuildArchived={isBuildArchived} />
+            isBuildArchived={isArchived} />
         </div>
       </div>
       {/* /Buttons */}
-          <BuildMetaPanel
-            buildId={buildId as string}
-            buildData={buildData}
-            onBuildUpdated={onBuildUpdated}
-            onBuildUpdateFailed={onBuildUpdateFailed}
-            className="mb-2" />
+        <BuildMetaPanel
+          primaryActivity={activity}
+          createdBy={createdBy}
+          guardianOf={guardianOf}
+          notes={notes}
+          inputStyle={inputStyle.value}
+          videoLink={videoLink}
+          className="mb-2" />
 
           <BuildAd />
 
@@ -298,62 +352,22 @@ function Build() {
           <BuildAd />
 
           {/* Edit modal */}
-          <ForgeModal
-            show={isEditing}
-            onHide={() => setIsEditing(false)}
-            title="Edit Build Info"
-            size="lg"
-            footer={
-              <div className="flex gap-1">
-                <ForgeButton disabled={isSaving} onClick={() => setIsEditing(false)}>Cancel</ForgeButton>
-                <ForgeButton disabled={isSaving} style={{marginLeft: "10px"}} onClick={() => saveBuild()}>Save</ForgeButton>
-              </div>
-            }>
-            <div className="build-info-card mb-3">
-              <span>Name</span>
-              <Input
-                prefixIcon={faCube}
-                placeholder='Give your build a name'
-                value={name}
-                onChange={(e: any) => setName(e.target.value)}
-                className="mb-3" />
-              <span>Notes</span>
-              <TextArea
-                className="mb-3"
-                prefixIcon={faStickyNote}
-                rows={10}
-                placeholder="Add some notes on how to use the build"
-                value={notes}
-                onChange={(e: any) => setNotes(e.target.value)}/>
-              <span>Primary Activity</span>
-              <ActivitySelector
-                className="mb-3"
-                value={activity}
-                onChange={(opt: ActivityOption) => setActivity(opt)} />
-              <span>Input Style</span>
-              <ModalSelector
-                title="Input Style"
-                className="mb-3"
-                options={inputStyleOptions}
-                value={inputStyle}
-                onChange={(opt: ModalSelectorOption) => setInputStyle(opt)} />
-            </div>
-            <h4>Video Review</h4>
-            <div className="build-info-card">
-              <Input
-                prefixIcon={faYoutube}
-                placeholder="Add a YouTube link"
-                value={videoLink}
-                className="mb-3"
-                onChange={(e: any) => setVideoLink(e.target.value)} />
-              <YouTubeEmbed youtubeUrl={videoLink} showPlaceholder />
-            </div>
-          </ForgeModal>
+          <EditBuildModal
+            show={isEditBuildModalOpen}
+            onHide={() => setIsEditBuildModalOpen(false)}
+            buildId={buildId}
+            name={buildName}
+            notes={notes}
+            videoLink={videoLink}
+            activity={activity}
+            inputStyle={inputStyle}
+            onUpdateFailed={onBuildUpdateFailed}
+            onUpdated={onBuildUpdated} />
 
 
           {/* Archive modal */}
           <ArchiveBuildModal
-            buildId={buildId as string}
+            buildId={buildId}
             show={isArchiveBuildModalOpen}
             onHide={() => setIsArchiveBuildModalOpen(false)}
             onArchived={onBuildArchived}

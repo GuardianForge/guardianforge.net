@@ -16,7 +16,7 @@ build:
 	sam build
 
 run: build
-	sam local start-api --env-vars devenv.json -p 4000
+	sam local start-api --env-vars devenv.json -p 4040
 
 transform-params:
 	go run scripts/transform-params.go

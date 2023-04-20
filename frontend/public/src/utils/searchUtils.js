@@ -1,4 +1,4 @@
-const { default: activityOptions } = require("./activityOptions")
+const { activityOptions } = require("../constants")
 
 const defaultFiltersMap = {
   "Class": {

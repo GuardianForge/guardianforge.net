@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import activityOptions from '../utils/activityOptions'
 import ActivityOption from '../models/ActivityOption';
 import Card from './ui/Card';
 import styled from 'styled-components';
 import colors from '../colors';
 import ForgeModal from './Modal';
 import ForgeButton from './forms/Button';
+import { activityOptions } from '../constants';
 
 const Wrapper = styled(Card)`
   .read-more-link {
