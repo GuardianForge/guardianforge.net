@@ -23,7 +23,7 @@ const COMPSTATE = {
   NO_DATA: 3
 }
 
-function PublicProfile() {
+function UserProfile() {
   const { username } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -216,4 +216,4 @@ function PublicProfile() {
   )
 }
 
-export default PublicProfile
+export default UserProfile

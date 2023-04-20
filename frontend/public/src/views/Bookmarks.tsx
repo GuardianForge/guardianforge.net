@@ -21,7 +21,7 @@ function Bookmarks() {
     if(!isInitDone) return
     async function init() {
       const { ForgeClient, BungieAuthService } = window.services
-      if(!isLoggedIn) {
+      if(isLoggedIn) {
         const { userBookmarks } = ForgeClient
         if(userBookmarks) {
           let bookmarks = Object.keys(userBookmarks).map(key => userBookmarks[key])
@@ -37,10 +37,10 @@ function Bookmarks() {
 
   return (
     <MainLayout>
-      <Wrapper>
-        <Helmet>
-          <title>My Bookmarks - GuardianForge</title>
-        </Helmet>
+      <Helmet>
+        <title>My Bookmarks - GuardianForge</title>
+      </Helmet>
+      <div className="mt-4">
         {compState === State.LOADING && <Loading />}
         {compState === State.DONE && (
           <div className="grid md:grid-cols-3 gap-2 grid-cols-1">
@@ -50,7 +50,7 @@ function Bookmarks() {
             ))}
           </div>
         )}
-      </Wrapper>
+      </div>
     </MainLayout>
   )
 }

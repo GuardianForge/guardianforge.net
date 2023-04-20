@@ -7,14 +7,6 @@ import { Helmet } from 'react-helmet'
 import AlertDetail from '../models/AlertDetail'
 import MainLayout from '../layouts/MainLayout'
 
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
 function OAuthHandler() {
   const navigate = useNavigate()
   const { isConfigLoaded, setDidOAuthComplete, dispatchAlert } = useContext(GlobalContext)
@@ -39,8 +31,6 @@ function OAuthHandler() {
       await ForgeClient.completeLogin(query.code)
       setDidOAuthComplete(true)
 
-      // TODO: do something with the context to notify that the users logged in
-
       if(nextState && !nextState.startsWith("/oauth")) {
         localStorage.removeItem("nextState")
         navigate(nextState)
@@ -62,7 +52,7 @@ function OAuthHandler() {
       <Helmet>
         <title>Signing In - GuardianForge</title>
       </Helmet>
-      <div className="flex items-center">
+      <div className="flex items-center justify-center">
         <Loading />
       </div>
     </MainLayout>

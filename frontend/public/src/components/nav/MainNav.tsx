@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // @ts-ignore
 import SiteLogo from "../../images/site-logo.png"
 import { Link, LinkProps } from "react-router-dom"
-import { faCube, faSignInAlt, faUser, faHamburger, faBars, faClose, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faCube, faSignInAlt, faBars, faClose, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { GlobalContext } from '../../contexts/GlobalContext'
 import ForgeButton from '../forms/Button'
-import UserMenu from '../UserMenuMain'
+import UserMenu from '../UserMenu'
 import SearchModal from '../SearchModal'
 
 function NavLink(props: LinkProps) {
@@ -127,9 +127,9 @@ function MainNav() {
           </ForgeButton>
         )}
 
-        <div className="flex md:hidden flex-1 justify-end text-xl mr-2">
+        {/* <div className="flex md:hidden flex-1 justify-end text-xl mr-2">
           <FontAwesomeIcon className="hover:cursor-pointer" icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />
-        </div>
+        </div> */}
       </div>
 
       <SearchModal

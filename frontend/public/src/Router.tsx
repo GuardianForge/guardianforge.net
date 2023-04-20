@@ -4,9 +4,8 @@ import FindBuilds from './views/FindBuilds'
 import FindPlayers from './views/FindPlayers'
 import Home from './views/Home'
 import OAuthHandler from './views/OAuthHandler'
-import PublicProfile from './views/PublicProfile'
-import BookmarksMain from './views/Bookmarks'
-import MainBookmarks from './views/Bookmarks'
+import UserProfile from './views/UserProfile'
+import Bookmarks from './views/Bookmarks'
 import GuardianProfileMain from './views/GuardianProfile'
 import MyBuildsMain from './views/MyBuilds'
 import CreateBuildMain from './views/CreateBuild'
@@ -49,17 +48,17 @@ function ForgeRouter() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/bookmarks" element={<MainBookmarks />} />
+        <Route path="/bookmarks" element={<Bookmarks />} />
         <Route path="/find-builds" element={<FindBuilds />} />
         <Route path="/find-players" element={<FindPlayers />} />
         <Route path="/edit-profile" element={<EditProfileMain />} />
         <Route path="/create-build" element={<CreateBuildMain />} />
         <Route path="/my-builds" element={<MyBuildsMain />} />
-        <Route path="/my-bookmarks" element={<BookmarksMain />} />
+        <Route path="/my-bookmarks" element={<Bookmarks />} />
         <Route path="/admin-tools" element={<AdminToolsMain />} />
         <Route path="/oauth" element={<OAuthHandler />} />
         <Route path="/build/:id" element={<Build />} />
-        <Route path="/u/:username" element={<PublicProfile />} />
+        <Route path="/u/:username" element={<UserProfile />} />
         <Route path="/g/:guardianKey" element={<GuardianProfileMain />} />
 
         {/* Redirects */}

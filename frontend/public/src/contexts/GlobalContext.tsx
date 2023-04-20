@@ -63,9 +63,10 @@ export const Provider = (props: Props) => {
   // Used to track if the user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isUserDataLoaded, setIsUserDataLoaded] = useState(false)
+  // TODO: see if this can be wrapped into isLoggedIn
+  const [didOAuthComplete, setDidOAuthComplete] = useState(false)
 
   const [isErrorBeingReported, setIsErrorBeingReported] = useState(false)
-  const [didOAuthComplete, setDidOAuthComplete] = useState(false)
   const [errorBeingReported, setErrorBeingReported] = useState({})
   const [pageTitle, setPageTitle] = useState("")
   const [areAdsDisabled, setAreAdsDisabled] = useState(false)
