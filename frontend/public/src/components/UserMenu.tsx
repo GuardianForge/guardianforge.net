@@ -74,18 +74,26 @@ function UserMenu(props: Props) {
           <Dropdown.Menu className='bg-neutral-800 rounded-none border-neutral-600'>
             {userData && userData.bungieNetUser && (
               <Dropdown.Item className='hover:bg-neutral-600'>
-                <a className="text-white hover:text-white" href="#"
-                  onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}`)}>My Profile</a>
+                <button className="text-white hover:text-white"
+                  onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}`)}>
+                    My Profile
+                </button>
               </Dropdown.Item>
             )}
             <Dropdown.Item className='hover:bg-neutral-600'>
               <Link className="text-white hover:text-white" to="/edit-profile">Edit Profile</Link>
             </Dropdown.Item>
             <Dropdown.Item className='hover:bg-neutral-600'>
-              <Link className="text-white hover:text-white" to="/my-builds">My Builds</Link>
+              <button className="text-white hover:text-white"
+                onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}?tab=2`)}>
+                  My Builds
+              </button>
             </Dropdown.Item>
             <Dropdown.Item className='hover:bg-neutral-600'>
-              <Link className="text-white hover:text-white" to="/my-bookmarks">My Bookmarks</Link>
+              <button className="text-white hover:text-white"
+                onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}?tab=4`)}>
+                  My Bookmarks
+              </button>
             </Dropdown.Item>
             <Dropdown.Item className='hover:bg-neutral-600'>
               <a className="text-white hover:text-white" href="#" onClick={logout}>Log Out</a>

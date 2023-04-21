@@ -49,6 +49,7 @@ function UserProfile() {
   const [tab, setTab] = useState<number>(1)
 
   useEffect(() => {
+    console.log(username)
     if(!isConfigLoaded) return
     if(!isClientLoaded) return
     async function init() {
@@ -68,9 +69,15 @@ function UserProfile() {
       const { BungieApiService, ForgeClient, ForgeApiService } = window.services
 
       if(isLoggedIn && ForgeClient?.userData?.bungieNetUser?.uniqueName === `${username}#${code}`) {
-        // This triggers a useEffect below that waits for login to complete
-        setIsProfileOwner(true)
+        // If profile owner is already set, the data is already loaded
+        if(isProfileOwner) {
+          setCompState(COMPSTATE.DONE)
+        } else {
+          // This triggers a useEffect below that waits for login to complete
+          setIsProfileOwner(true)
+        }
       } else {
+        console.log("hit 2")
         setIsProfileOwner(false)
         let searchRes: any;
         try {

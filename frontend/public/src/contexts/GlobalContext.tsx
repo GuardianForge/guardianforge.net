@@ -95,7 +95,7 @@ export const Provider = (props: Props) => {
 
   function redirectToLogin(nextState?: string) {
     let { BungieAuthService } = window.services
-    let _nextState = nextState ? nextState : window.location.pathname
+    let _nextState = nextState ? nextState : window.location.pathname + window.location.search
     _nextState = encodeURIComponent(_nextState)
     localStorage.setItem("nextState", _nextState)
     BungieAuthService.redirectToLogin()
