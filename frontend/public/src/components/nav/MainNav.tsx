@@ -2,12 +2,13 @@ import { useContext, useState, useEffect, ButtonHTMLAttributes } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // @ts-ignore
 import SiteLogo from "../../images/site-logo.png"
-import { Link, LinkProps } from "react-router-dom"
-import { faCube, faSignInAlt, faBars, faClose, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { Link, LinkProps, useNavigate } from "react-router-dom"
+import { faCube, faSignInAlt, faBars, faClose, faSearch, faPerson, faCubes, faBookmark, faLock, faDoorClosed, faUser, faPencil } from '@fortawesome/free-solid-svg-icons'
 import { GlobalContext } from '../../contexts/GlobalContext'
 import ForgeButton from '../forms/Button'
 import UserMenu from '../UserMenu'
 import SearchModal from '../SearchModal'
+import User from '../../models/User'
 
 function NavLink(props: LinkProps) {
   return <Link {...props} className={`text-white md:text-gray-300 hover:text-white transition text-lg`}>
@@ -29,11 +30,14 @@ type MobileMenuProps = {
   open: boolean
   onClose: Function
   loginUrl: string,
-  isLoggedIn?: boolean,
   onSearchClicked: Function
 }
 
-function MobileMenu({ open, onClose, loginUrl, isLoggedIn, onSearchClicked }: MobileMenuProps) {
+function MobileMenu({ open, onClose, loginUrl, onSearchClicked }: MobileMenuProps) {
+  const { isClientLoaded, isLoggedIn, isUserDataLoaded } = useContext(GlobalContext)
+  const navigate = useNavigate()
+  const [userData, setUserData] = useState<User>({})
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     function preventScroll(e: any) {
@@ -45,8 +49,32 @@ function MobileMenu({ open, onClose, loginUrl, isLoggedIn, onSearchClicked }: Mo
     el?.addEventListener("wheel", preventScroll, { passive: false })
   }, [open])
 
+  useEffect(() => {
+    if(!isClientLoaded) return
+    if(!isLoggedIn) return
+    if(!isUserDataLoaded) return
+    let { ForgeClient } = window.services
+    if(ForgeClient.userData) {
+      setUserData(ForgeClient.userData)
+      if(ForgeClient.userData.bungieNetUser && ForgeClient.userData.bungieNetUser.membershipId === "14214042") {
+        setIsAdmin(true)
+      }
+    }
+
+  }, [isClientLoaded, isLoggedIn, isUserDataLoaded])
+
   function redirectToLogin() {
     window.open(loginUrl, "_self")
+  }
+
+  function logout() {
+    const { ForgeClient } = window.services
+    ForgeClient.logout()
+  }
+
+  function navigateTo(to: string) {
+    navigate(to)
+    onClose()
   }
 
   return (
@@ -66,10 +94,33 @@ function MobileMenu({ open, onClose, loginUrl, isLoggedIn, onSearchClicked }: Mo
         <NavLink className="" to="/create-build">
           <FontAwesomeIcon icon={faCube} /> Create Build
         </NavLink>
-        {!isLoggedIn && (
+        {!isLoggedIn ? (
           <ForgeButton className='mr-3' onClick={() => redirectToLogin()}>
             <FontAwesomeIcon icon={faSignInAlt} /> Login w/Bungie
           </ForgeButton>
+        ) : (
+          <>
+            <NavLinkButton className='flex items-center gap-1' onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}`)}>
+              <FontAwesomeIcon icon={faUser} /> My Profile
+            </NavLinkButton>
+            <NavLink to="/edit-profile">
+              <FontAwesomeIcon icon={faPencil}/> Edit Profile
+            </NavLink>
+            <NavLinkButton className='flex items-center gap-1' onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}?tab=2`)}>
+              <FontAwesomeIcon icon={faCubes} /> My Builds
+            </NavLinkButton>
+            <NavLinkButton className='flex items-center gap-1' onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}?tab=4`)}>
+              <FontAwesomeIcon icon={faBookmark} /> My Bookmarks
+            </NavLinkButton>
+            <NavLinkButton className='flex items-center gap-1' onClick={logout}>
+              <FontAwesomeIcon icon={faDoorClosed} /> Log Out
+            </NavLinkButton>
+            {isAdmin && (
+              <NavLink to="/admin-tools">
+                <FontAwesomeIcon icon={faLock}/>  Admin
+              </NavLink>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -105,7 +156,7 @@ function MainNav() {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
   return (
-    <nav className=''>
+    <nav>
       <div className="flex items-center p-2 border-b border-b-neutral-800 mb-2">
         <Link className="flex items-center text-xl mr-4 text-white hover:text-white" to="/">
           <img src={SiteLogo} alt="GuardianForge Logo" className="h-[40px] w-[40px] mr-2" /> GuardianForge
@@ -120,7 +171,7 @@ function MainNav() {
         </div>
 
         {isLoggedIn ? (
-          <UserMenu />
+          <UserMenu onClickMobile={() => setIsMobileMenuOpen(true)} />
         ) : (
           <>
             <ForgeButton className='hidden md:block' onClick={() => redirectToLogin()}>
@@ -141,7 +192,6 @@ function MainNav() {
       <MobileMenu
         open={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
-        isLoggedIn={isLoggedIn}
         onSearchClicked={onSearchClicked}
         loginUrl={loginUrl} />
     </nav>

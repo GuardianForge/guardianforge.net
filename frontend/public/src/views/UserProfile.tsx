@@ -55,6 +55,11 @@ function UserProfile() {
       setCompState(COMPSTATE.LOADING)
 
       let code = location.hash.replace("#", "")
+      if(code.includes("?")) {
+        let spl = code.split("?")
+        code = spl[0]
+        setTab(+spl[1])
+      }
       const { BungieApiService, ForgeClient, ForgeApiService } = window.services
 
       if(isLoggedIn && ForgeClient?.userData?.bungieNetUser?.uniqueName === `${username}#${code}`) {

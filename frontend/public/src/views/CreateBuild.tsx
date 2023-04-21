@@ -30,6 +30,7 @@ import AlertDetail, { BungieOfflineAlert } from '../models/AlertDetail'
 import { useLocation, useNavigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import Card from '../components/ui/Card'
+import useQuery from '../hooks/useQuery'
 
 const Wrapper = styled.div`
   padding-bottom: 20px;
@@ -69,11 +70,6 @@ const SelectItemButton = styled(Button)`
   }
 `
 
-function useQuery() {
-  const { search } = useLocation();
-
-  return React.useMemo(() => new URLSearchParams(search), [search]);
-}
 
 function CreateBuild() {
   const { isInitDone, isLoggedIn, dispatchAlert, redirectToLogin } = useContext(GlobalContext)

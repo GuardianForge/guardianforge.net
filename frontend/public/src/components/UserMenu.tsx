@@ -5,14 +5,18 @@ import User from '../models/User'
 import { Dropdown } from 'react-bootstrap'
 import Image from './ui/Image'
 import Loading from './Loading'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 type Props = {
   onMenuItemClicked?: Function
+  onClickMobile?: Function
 }
 
 function UserMenu(props: Props) {
-  const { onMenuItemClicked } = props
+  const { onMenuItemClicked, onClickMobile } = props
   const navigate = useNavigate()
+
   const { isClientLoaded, isUserDataLoaded, isLoggedIn } = useContext(GlobalContext)
   const [userData, setUserData] = useState<User>({})
   const [displayName, setDisplayName] = useState("")
@@ -54,41 +58,55 @@ function UserMenu(props: Props) {
     ForgeClient.logout()
   }
 
+  function onClickMobileMenu() {
+    if(onClickMobile) onClickMobile()
+  }
+
   return (
-    <div className="d-flex">
-      <Dropdown align="end">
-        <Dropdown.Toggle className="user-badge flex gap-1 items-center rounded-none border-none bg-inherit hover:bg-neutral-800">
+    <>
+      <div className="hidden md:flex">
+        <Dropdown align="end">
+          <Dropdown.Toggle className="user-badge flex gap-1 items-center rounded-none border-none bg-inherit hover:bg-neutral-800">
+            {!iconUrl && !displayName && <Loading small />}
+            {iconUrl && <Image className='h-[20px] w-[20px] border-neutral-600' src={iconUrl} />}
+            {displayName && <span className="display-name">{ displayName }</span>}
+          </Dropdown.Toggle>
+          <Dropdown.Menu className='bg-neutral-800 rounded-none border-neutral-600'>
+            {userData && userData.bungieNetUser && (
+              <Dropdown.Item className='hover:bg-neutral-600'>
+                <a className="text-white hover:text-white" href="#"
+                  onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}`)}>My Profile</a>
+              </Dropdown.Item>
+            )}
+            <Dropdown.Item className='hover:bg-neutral-600'>
+              <Link className="text-white hover:text-white" to="/edit-profile">Edit Profile</Link>
+            </Dropdown.Item>
+            <Dropdown.Item className='hover:bg-neutral-600'>
+              <Link className="text-white hover:text-white" to="/my-builds">My Builds</Link>
+            </Dropdown.Item>
+            <Dropdown.Item className='hover:bg-neutral-600'>
+              <Link className="text-white hover:text-white" to="/my-bookmarks">My Bookmarks</Link>
+            </Dropdown.Item>
+            <Dropdown.Item className='hover:bg-neutral-600'>
+              <a className="text-white hover:text-white" href="#" onClick={logout}>Log Out</a>
+            </Dropdown.Item>
+            {isAdmin && (
+              <Dropdown.Item className='hover:bg-neutral-600'>
+                <Link className="text-white hover:text-white" to="/admin-tools">Admin</Link>
+              </Dropdown.Item>
+            )}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+      <div className="flex flex-1 items-center justify-end md:hidden">
+        <div onClick={onClickMobileMenu} className="user-badge flex gap-1 items-center rounded-none border-none bg-inherit hover:bg-neutral-800 hover:cursor-pointer px-3 py-2">
           {!iconUrl && !displayName && <Loading small />}
           {iconUrl && <Image className='h-[20px] w-[20px] border-neutral-600' src={iconUrl} />}
           {displayName && <span className="display-name">{ displayName }</span>}
-        </Dropdown.Toggle>
-        <Dropdown.Menu className='bg-neutral-800 rounded-none border-neutral-600'>
-          {userData && userData.bungieNetUser && (
-            <Dropdown.Item className='hover:bg-neutral-600'>
-              <a className="text-white hover:text-white" href="#"
-                onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}`)}>My Profile</a>
-            </Dropdown.Item>
-          )}
-          <Dropdown.Item className='hover:bg-neutral-600'>
-            <Link className="text-white hover:text-white" to="/edit-profile">Edit Profile</Link>
-          </Dropdown.Item>
-          <Dropdown.Item className='hover:bg-neutral-600'>
-            <Link className="text-white hover:text-white" to="/my-builds">My Builds</Link>
-          </Dropdown.Item>
-          <Dropdown.Item className='hover:bg-neutral-600'>
-            <Link className="text-white hover:text-white" to="/my-bookmarks">My Bookmarks</Link>
-          </Dropdown.Item>
-          <Dropdown.Item className='hover:bg-neutral-600'>
-            <a className="text-white hover:text-white" href="#" onClick={logout}>Log Out</a>
-          </Dropdown.Item>
-          {isAdmin && (
-            <Dropdown.Item className='hover:bg-neutral-600'>
-              <Link className="text-white hover:text-white" to="/admin-tools">Admin</Link>
-            </Dropdown.Item>
-          )}
-        </Dropdown.Menu>
-      </Dropdown>
-    </div>
+          <FontAwesomeIcon icon={faBars} />
+        </div>
+      </div>
+    </>
   )
 
 }
