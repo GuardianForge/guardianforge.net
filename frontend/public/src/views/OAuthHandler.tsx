@@ -23,12 +23,13 @@ function OAuthHandler() {
         query[split[0]] = split[1]
       })
 
-      let nextState = localStorage.getItem("nextState")
 
       // @ts-ignore
       await completeLogin(query.code)
 
+      let nextState = localStorage.getItem("nextState")
       if(nextState && !nextState.startsWith("/oauth")) {
+        nextState = decodeURIComponent(nextState)
         localStorage.removeItem("nextState")
         navigate(nextState)
       } else {

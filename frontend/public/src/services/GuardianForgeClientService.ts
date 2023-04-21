@@ -214,11 +214,11 @@ export default class GuardianForgeClientService {
         let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(this.userData)
         if(token) {
           let res = await Promise.all([
-            this.forgeApiService.fetchMe(token, { 
-              builds: true, 
-              upvotes: true, 
-              bookmarks: true, 
-              privateBuilds: true 
+            this.forgeApiService.fetchMe(token, {
+              builds: true,
+              upvotes: true,
+              bookmarks: true,
+              privateBuilds: true
             }),
             this.bungieApiService.fetchCharactersList(membershipType, membershipId)
           ])
@@ -292,9 +292,7 @@ export default class GuardianForgeClientService {
       throw new Error(`Error logging in (${json.error})`)
     }
     json.issuedAt = Date.now()
-    await this.setAuthData(json, {
-      fetchUserData: true
-    })
+    await this.setAuthData(json)
   }
 
   async createBuildOpengraphImage(buildId: string) {

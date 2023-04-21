@@ -100,7 +100,7 @@ export const Provider = (props: Props) => {
     localStorage.setItem("nextState", _nextState)
     BungieAuthService.redirectToLogin()
   }
-  
+
 
   async function init() {
     if(!isInitDone && !isInitStarted) {
@@ -185,6 +185,11 @@ export const Provider = (props: Props) => {
     try {
       let { ForgeClient } = window.services
       await ForgeClient.completeLogin(code)
+      await ForgeClient.fetchUserData()
+      if(ForgeClient.isPremiumUser()) {
+        setAreAdsDisabled(true)
+      }
+      setIsUserDataLoaded(true)
       setIsLoggedIn(true)
     } catch (err) {
       // TODO: handle me
