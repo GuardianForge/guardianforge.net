@@ -33,9 +33,9 @@ function UserProfile() {
   const [membership, setMembership] = useState<DestinyMembership>({})
   const [guardians, setGuardians] = useState<Array<Guardian>>([])
   const [compState, setCompState] = useState(COMPSTATE.LOADING)
-  
+
   const [displayName, setDisplayName] = useState<string>()
-  
+
   // Forge user stuff
   const [forgeUser, setForgeUser] = useState<User>({})
   const [builds, setBuilds] = useState<BuildSummary[]>()
@@ -58,7 +58,12 @@ function UserProfile() {
       if(code.includes("?")) {
         let spl = code.split("?")
         code = spl[0]
-        setTab(+spl[1])
+        try {
+          let splQuery = spl[1].split("=")
+          setTab(+splQuery[1])
+        } catch (err) {
+          // TODO: handle me
+        }
       }
       const { BungieApiService, ForgeClient, ForgeApiService } = window.services
 
@@ -76,25 +81,25 @@ function UserProfile() {
           dispatchAlert(BungieOfflineAlert)
           return
         }
-  
+
         if(searchRes === undefined) {
           dispatchAlert(BungieOfflineAlert)
           return
         }
-  
+
         // TODO: Handle this better
         if(searchRes && searchRes.length > 0) {
           // @ts-ignore
           let user = searchRes.find(el => el.bungieGlobalDisplayName === username && el.bungieGlobalDisplayNameCode === Number(code))
           setUser(user)
-  
+
           if(user.bungieNetMembershipId) {
             let forgeUser = await ForgeApiService.fetchForgeUser(user.bungieNetMembershipId)
             if(forgeUser) {
               setForgeUser(forgeUser)
             }
           }
-  
+
           // Load guardians
           let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(user)
           setMembership({ type: membershipType, id: membershipId })

@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import React, { useContext, useEffect } from 'react'
-import styled from 'styled-components'
 import Loading from '../components/Loading'
 import { GlobalContext } from '../contexts/GlobalContext'
 import { Helmet } from 'react-helmet'
