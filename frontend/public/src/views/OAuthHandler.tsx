@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import React, { useContext, useEffect } from 'react'
-import styled from 'styled-components'
 import Loading from '../components/Loading'
 import { GlobalContext } from '../contexts/GlobalContext'
 import { Helmet } from 'react-helmet'
@@ -23,12 +22,13 @@ function OAuthHandler() {
         query[split[0]] = split[1]
       })
 
-      let nextState = localStorage.getItem("nextState")
 
       // @ts-ignore
       await completeLogin(query.code)
 
+      let nextState = localStorage.getItem("nextState")
       if(nextState && !nextState.startsWith("/oauth")) {
+        nextState = decodeURIComponent(nextState)
         localStorage.removeItem("nextState")
         navigate(nextState)
       } else {

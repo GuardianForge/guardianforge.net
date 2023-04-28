@@ -31,7 +31,7 @@ import { UserInfo } from '../models/User'
 function Build() {
   const navigate = useNavigate()
   const { id } = useParams()
-  const { isConfigLoaded, dispatchAlert, isLoggedIn } = useContext(GlobalContext)
+  const { isConfigLoaded, dispatchAlert, isLoggedIn, isUserDataLoaded, isClientLoaded } = useContext(GlobalContext)
   const [loginUrl, setLoginUrl] = useState("")
 
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
@@ -75,15 +75,9 @@ function Build() {
 
     async function init() {
       const { ForgeApiService, ForgeClient, BungieApiService } = window.services
-
       if(!isLoggedIn) {
         setDisplayLoginAlert(true)
-      } else {
-        if(ForgeClient?.userBuilds?.find((b: any) => b.id === buildId)) {
-          setIsOwner(true)
-        }
       }
-
       if(ForgeClient.config && ForgeClient.config.loginUrl) {
         setLoginUrl(ForgeClient.config.loginUrl)
       }
@@ -181,7 +175,7 @@ function Build() {
       setCompState(COMP_STATE.DONE)
     }
     init()
-  }, [isConfigLoaded, buildId, navigate, id, isLoggedIn])
+  }, [isConfigLoaded, buildId, navigate])
 
   function copyToClipboard() {
     copy(window.location.href)
@@ -197,7 +191,6 @@ function Build() {
     dispatchAlert(a)
   }
 
-  // TODO: This shouldnt be any
   function onBuildUpdated(updates: UpdateBuildResponse) {
     let _buildData = buildData
 
