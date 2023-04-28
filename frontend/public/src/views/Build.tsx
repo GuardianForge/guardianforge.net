@@ -69,13 +69,9 @@ function Build() {
   const [classItem, setClassItem] = useState<BuildItem>()
 
   useEffect(() => {
-    if(id && buildId === "") {
-      setBuildId(id)
-    }
-
-    if(!isConfigLoaded) {
-      return
-    }
+    if(!id) return
+    if(!isConfigLoaded) return
+    setBuildId(id)
 
     async function init() {
       const { ForgeApiService, ForgeClient, BungieApiService } = window.services
@@ -92,7 +88,7 @@ function Build() {
         setLoginUrl(ForgeClient.config.loginUrl)
       }
 
-      let buildData = await ForgeApiService.fetchBuild(buildId)
+      let buildData = await ForgeApiService.fetchBuild(id)
       setBuildData(buildData)
 
       // Extract items
@@ -109,7 +105,7 @@ function Build() {
       if(buildData.name) {
         setBuildName(buildData.name)
       } else {
-        setBuildName(`Build ${buildId}`)
+        setBuildName(`Build ${id}`)
       }
 
       if(buildData.notes) setNotes(buildData.notes)
@@ -185,7 +181,7 @@ function Build() {
       setCompState(COMP_STATE.DONE)
     }
     init()
-  }, [isConfigLoaded, buildId, navigate])
+  }, [isConfigLoaded, buildId, navigate, id, isLoggedIn])
 
   function copyToClipboard() {
     copy(window.location.href)

@@ -139,15 +139,19 @@ function CreateBuild() {
 
       // TODO: Pull this from ForgeClient user info
       let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(ForgeClient.userData)
-      let token = ForgeClient.getToken()
-
+      
       try {
+        let token = ForgeClient.getToken()
         window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)
         await window.services.InventoryManager.loadInventory(membershipType, membershipId, token)
         setIsInventoryLoaded(true)
-      } catch (err) {
-        dispatchAlert(BungieOfflineAlert)
-        return
+      } catch (err: any) {
+        if(err.message === "NoTokenSet") {
+          redirectToLogin()
+        } else {
+          dispatchAlert(BungieOfflineAlert)
+          return
+        }
       }
 
       if(query && query.get("guardianKey")) {
