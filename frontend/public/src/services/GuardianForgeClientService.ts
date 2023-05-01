@@ -1,4 +1,4 @@
-import { BungieApiService } from "@guardianforge/destiny-data-utils"
+import { BungieApiService } from "../data-utils/Main"
 import posthog from "posthog-js"
 import { AppConfig } from "../models/AppConfig"
 import userUtils from "../utils/userUtils"

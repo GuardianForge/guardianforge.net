@@ -4,7 +4,7 @@ import { GlobalContext } from "../contexts/GlobalContext"
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { imageFixerMap } from '../utils/shims'
 import { BuildItemPlug } from '../models/Build'
-import { Item, SocketItem } from '@guardianforge/destiny-data-utils'
+import { Item, SocketItem } from '../data-utils/Main'
 import colors from '../colors'
 import Highlightable from './Highlightable'
 import Image from './ui/Image'

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Item, Enums, SocketItem, Socket  } from '@guardianforge/destiny-data-utils'
+import { Item, Enums, SocketItem, Socket  } from '../data-utils/Main'
 import ForgeButton from './forms/Button'
 import { BuildItem } from '../models/Build'
 import ItemCard from './ItemCard'

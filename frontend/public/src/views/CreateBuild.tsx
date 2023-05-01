@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import colors from '../colors'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { GlobalContext } from "../contexts/GlobalContext"
-import { InventoryManager, Item, Enums  } from '@guardianforge/destiny-data-utils'
+import { InventoryManager, Item, Enums  } from '../data-utils/Main'
 import EquipmentItem from '../components/EquipmentItem'
 import Subclass from '../components/Subclass'
 import { State } from '../models/Enums'

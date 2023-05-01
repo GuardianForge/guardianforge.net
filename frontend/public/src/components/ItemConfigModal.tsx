@@ -1,5 +1,5 @@
 // @ts-nocheck TODO: fix all the null refs in here
-import { Item, Socket, SocketItem } from '@guardianforge/destiny-data-utils'
+import { Item, Socket, SocketItem } from '../data-utils/Main'
 import React, { useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 import colors from '../colors'

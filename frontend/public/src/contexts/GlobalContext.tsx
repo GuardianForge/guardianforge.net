@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactNode } from 'react'
-import { BungieApiService, ManifestService, BungieAuthService, IndexedDbService, InventoryManager } from "@guardianforge/destiny-data-utils"
+import { BungieApiService, ManifestService, BungieAuthService, IndexedDbService, InventoryManager } from "../data-utils/Main"
 import GuardianForgeClientService from '../services/GuardianForgeClientService'
 import GuardianForgeApiService from '../services/GuardianForgeApiService'
 import AlgoliaService from '../services/AlgoliaService'

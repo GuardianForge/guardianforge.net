@@ -1,4 +1,4 @@
-import { Enums } from '@guardianforge/destiny-data-utils';
+import { Enums } from '../data-utils/Main';
 import React from 'react';
 import styled from 'styled-components';
 import colors from '../colors';

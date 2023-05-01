@@ -1,5 +1,5 @@
-import { BungieApiService, Enums, Item, ManifestService, Socket, SocketItem } from "@guardianforge/destiny-data-utils"
-import { DamageTypeEnum, ItemTypeEnum } from "@guardianforge/destiny-data-utils/dist/models/Enums"
+import { BungieApiService, Enums, Item, ManifestService, Socket, SocketItem } from "../data-utils/Main"
+import { DamageTypeEnum, ItemTypeEnum } from "../data-utils/models/Enums"
 // @ts-ignore
 import buildUtils from "../utils/buildUtils"
 import BuildSummary from "./BuildSummary"

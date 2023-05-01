@@ -1,6 +1,6 @@
 import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Item, Socket } from '@guardianforge/destiny-data-utils';
+import { Item, Socket } from '../data-utils/Main';
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import styled from 'styled-components';
