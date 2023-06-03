@@ -34,10 +34,17 @@ class Build {
         modsByBucket: {}
       }
     }
-    const toLoadoutItem = (item: BuildItem): LoadoutItem | undefined => item?.itemHash !== undefined ? ({hash: item.itemHash, id: item.itemInstanceId}) : undefined
+    const toLoadoutItem = (item: BuildItem): LoadoutItem | undefined => 
+      item?.itemHash !== undefined ? ({hash: item.itemHash, id: item.itemInstanceId}) : undefined
     if (this.items) {
       // Armor mods are in a flat list for DIM to assign best
-      const armor = [this.items.helmet, this.items.arms, this.items.chest, this.items.legs, this.items.classItem]
+      const armor = [
+        this.items.helmet,
+        this.items.arms,
+        this.items.chest,
+        this.items.legs,
+        this.items.classItem
+      ]
       armor.forEach(item => {
         if (item) {
           const mappedItem = toLoadoutItem(item)
@@ -54,7 +61,11 @@ class Build {
 
       // Weapon mods could potentially be part of the weapon item `socketOverrides` in the future,
       // but DIM doesn't support this right now.
-      const weapons = [this.items.kinetic, this.items.energy, this.items.power]
+      const weapons = [
+        this.items.kinetic,
+        this.items.energy,
+        this.items.power
+      ]
       weapons.forEach(item => {
         if (item) {
           const mappedItem = toLoadoutItem(item)
@@ -66,12 +77,21 @@ class Build {
 
       // Subclass configuration is part of the `socketOverrides`
       if (this.items.subclass) {
-        const  subclassItem = toLoadoutItem(this.items.subclass)
+        const subclassItem = toLoadoutItem(this.items.subclass)
         if (subclassItem) {
           subclassItem.socketOverrides = {}
-          const plugs = [this.items.subclass.abilities, this.items.subclass.aspects, this.items.subclass.fragments].flatMap(plugs => plugs ?? [])
+          const plugs = [
+            this.items.subclass.abilities,
+            this.items.subclass.aspects,
+            this.items.subclass.fragments
+          ].flatMap(plugs => plugs ?? [])
           plugs.forEach(p => {
-            if (p.socketIndex !== undefined && p.plugHash !== undefined && p.name !== "Empty Aspect Socket" && p.name !== "Empty Fragment Socket") {
+            if (
+              p.socketIndex !== undefined &&
+              p.plugHash !== undefined && 
+              p.name !== "Empty Aspect Socket" && 
+              p.name !== "Empty Fragment Socket"
+            ) {
               subclassItem.socketOverrides![p.socketIndex] = Number(p.plugHash)
             }
           })
