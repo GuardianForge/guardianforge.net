@@ -1,17 +1,9 @@
+import { Loadout, LoadoutItem } from "@destinyitemmanager/dim-api-types"
 import { BungieApiService, Enums, Item, ManifestService, Socket, SocketItem } from "../data-utils/Main"
 import { DamageTypeEnum, ItemTypeEnum } from "../data-utils/models/Enums"
 // @ts-ignore
 import buildUtils from "../utils/buildUtils"
 import BuildSummary from "./BuildSummary"
-
-type DIMModsByBucket = {
-  [bucket: string]: Array<number>
-}
-
-type DIMLoadoutModel = {
-  mods?: Array<number>
-  modsByBucket?: DIMModsByBucket
-}
 
 class Build {
   primaryActivity?: string
@@ -29,66 +21,85 @@ class Build {
 
 
   toDIMLink(): string {
-    let url = `https://app.destinyitemmanager.com/optimizer?class=${this.class}&p=`
-    let loadout: DIMLoadoutModel = {
-      mods: []
+    let url = `https://app.destinyitemmanager.com/loadouts?loadout=`
+    const loadout: Loadout = {
+      id: "guardianforge", // DIM will replace this with unique ID upon receiving
+      name: this.name ?? "GuardianForge Loadout",
+      classType: this.class,
+      clearSpace: false,
+      equipped: [],
+      unequipped: [],
+      parameters: {
+        mods: [],
+        modsByBucket: {}
+      }
     }
-    if(this.items && this.items.kinetic && this.items.kinetic.mods) {
-      this.items.kinetic.mods.forEach(m => {
-        if(m.plugHash && m.name !== "Empty Mod Socket") {
-          loadout.mods?.push(Number(m.plugHash))
+    const toLoadoutItem = (item: BuildItem): LoadoutItem | undefined => 
+      item?.itemHash !== undefined ? ({hash: item.itemHash, id: item.itemInstanceId}) : undefined
+    if (this.items) {
+      // Armor mods are in a flat list for DIM to assign best
+      const armor = [
+        this.items.helmet,
+        this.items.arms,
+        this.items.chest,
+        this.items.legs,
+        this.items.classItem
+      ]
+      armor.forEach(item => {
+        if (item) {
+          const mappedItem = toLoadoutItem(item)
+          if (mappedItem) {
+            loadout.equipped.push(mappedItem)
+          }
+          item.mods?.forEach(m => {
+            if(m.plugHash && m.name !== "Empty Mod Socket") {
+              loadout.parameters!.mods!.push(Number(m.plugHash))
+            }
+          })
         }
       })
-    }
-    if(this.items && this.items.energy && this.items.energy.mods) {
-      this.items.energy.mods.forEach(m => {
-        if(m.plugHash && m.name !== "Empty Mod Socket") {
-          loadout.mods?.push(Number(m.plugHash))
+
+      // Weapon mods could potentially be part of the weapon item `socketOverrides` in the future,
+      // but DIM doesn't support this right now.
+      const weapons = [
+        this.items.kinetic,
+        this.items.energy,
+        this.items.power
+      ]
+      weapons.forEach(item => {
+        if (item) {
+          const mappedItem = toLoadoutItem(item)
+          if (mappedItem) {
+            loadout.equipped.push(mappedItem)
+          }
         }
       })
-    }
-    if(this.items && this.items.power && this.items.power.mods) {
-      this.items.power.mods.forEach(m => {
-        if(m.plugHash && m.name !== "Empty Mod Socket") {
-          loadout.mods?.push(Number(m.plugHash))
+
+      // Subclass configuration is part of the `socketOverrides`
+      if (this.items.subclass) {
+        const subclassItem = toLoadoutItem(this.items.subclass)
+        if (subclassItem) {
+          subclassItem.socketOverrides = {}
+          const plugs = [
+            this.items.subclass.abilities,
+            this.items.subclass.aspects,
+            this.items.subclass.fragments
+          ].flatMap(plugs => plugs ?? [])
+          plugs.forEach(p => {
+            if (
+              p.socketIndex !== undefined &&
+              p.plugHash !== undefined && 
+              p.name !== "Empty Aspect Socket" && 
+              p.name !== "Empty Fragment Socket"
+            ) {
+              subclassItem.socketOverrides![p.socketIndex] = Number(p.plugHash)
+            }
+          })
+          loadout.equipped.push(subclassItem)
         }
-      })
+      }
     }
-    if(this.items && this.items.helmet && this.items.helmet.mods) {
-      this.items.helmet.mods.forEach(m => {
-        if(m.plugHash && m.name !== "Empty Mod Socket") {
-          loadout.mods?.push(Number(m.plugHash))
-        }
-      })
-    }
-    if(this.items && this.items.arms && this.items.arms.mods) {
-      this.items.arms.mods.forEach(m => {
-        if(m.plugHash && m.name !== "Empty Mod Socket") {
-          loadout.mods?.push(Number(m.plugHash))
-        }
-      })
-    }
-    if(this.items && this.items.chest && this.items.chest.mods) {
-      this.items.chest.mods.forEach(m => {
-        if(m.plugHash && m.name !== "Empty Mod Socket") {
-          loadout.mods?.push(Number(m.plugHash))
-        }
-      })
-    }
-    if(this.items && this.items.legs && this.items.legs.mods) {
-      this.items.legs.mods.forEach(m => {
-        if(m.plugHash && m.name !== "Empty Mod Socket") {
-          loadout.mods?.push(Number(m.plugHash))
-        }
-      })
-    }
-    if(this.items && this.items.classItem && this.items.classItem.mods) {
-      this.items.classItem.mods.forEach(m => {
-        if(m.plugHash && m.name !== "Empty Mod Socket") {
-          loadout.mods?.push(Number(m.plugHash))
-        }
-      })
-    }
+
     url += encodeURIComponent(JSON.stringify(loadout))
     return url
   }
