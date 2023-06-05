@@ -1,6 +1,6 @@
 import { IManifestCache } from "./interfaces/IManifestCache";
 
-export class IndexedDbService implements IManifestCache{
+export class IndexedDbService implements IManifestCache {
   // @ts-ignore TODO: make this nullable and add checks below
   database: IDBDatabase
   dbName: string
@@ -110,24 +110,29 @@ export class IndexedDbService implements IManifestCache{
 
   async get(storeName: string, key: string): Promise<any | null> {
     return new Promise((resolve, reject) => {
-      let trans = this.database.transaction([storeName], 'readwrite')
-
-      trans.oncomplete = e => {
-        resolve(null)
-      }
-
-      trans.onerror = e => {
-        if(e && e.type === "error") {
-          // @ts-ignore
-          console.error("failed to get data", storeName, key, e.srcElement.error)
+      console.log("(InexedDbService) get: ", storeName, key)
+      try {
+        let trans = this.database.transaction([storeName], 'readwrite')
+  
+        trans.oncomplete = e => {
+          resolve(null)
         }
-        reject()
-      }
-
-      let store = trans.objectStore(storeName)
-      let data = store.get(key)
-      data.onsuccess = () => {
-        resolve(data.result)
+  
+        trans.onerror = e => {
+          if(e && e.type === "error") {
+            // @ts-ignore
+            console.error("failed to get data", storeName, key, e.srcElement.error)
+          }
+          reject(e)
+        }
+  
+        let store = trans.objectStore(storeName)
+        let data = store.get(key)
+        data.onsuccess = () => {
+          resolve(data.result)
+        }
+      } catch (err) {
+        reject(err)
       }
     })
   }

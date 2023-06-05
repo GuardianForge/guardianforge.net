@@ -121,11 +121,16 @@ export class BungieApiService {
   }
 
   async fetchManifestComponent(componentName: string, componentPath: string) {
-    let res = await fetch(`${this._bungieNetBase}/${componentPath}`)
-    let data = await res.json()
-    return {
-      componentName,
-      data
+    try {
+      let res = await fetch(`${this._bungieNetBase}/${componentPath}`)
+      let data = await res.json()
+      return {
+        componentName,
+        data
+      }
+    } catch (err) {
+      console.error("(BungieApiService.fetchManifestComponent) failed to fetch:", err, componentName, componentPath)
+      throw err
     }
   }
 
