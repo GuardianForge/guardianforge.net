@@ -537,7 +537,7 @@ function V3SubclassCard(props: Props) {
         <div className="subclass-right">
           <span className="name">{ buildItem.name }</span>
           <div className="sockets">
-            <div className="socket-row">
+            <div className="socket-row flex flex-col md:flex-row gap-2">
               <div className="socket-category">
                 <span>Super</span>
                 <div className="socket-set">
