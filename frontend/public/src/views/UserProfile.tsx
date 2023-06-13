@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import GuardianCard from '../components/GuardianCard'
 import Loading from '../components/Loading'
@@ -16,6 +16,7 @@ import MainLayout from '../layouts/MainLayout'
 import TabGroup from '../components/ui/TabGroup'
 import TabItem from '../components/ui/TabItem'
 import UserProfileInfo from '../components/UserProfileInfo'
+import EditProfileForm from '../components/EditProfileForm'
 
 const COMPSTATE = {
   LOADING: 1,
@@ -216,6 +217,14 @@ function UserProfile() {
     navigate(`/g/${membership.type}-${membership.id}-${guardianId}`)
   }
 
+  function onProfileUpdated(about: string, facebookUrl: string, twitterUrl: string, youtubeUrl: string, twitchUrl: string) {
+    setAbout(about)
+    setFacebookUrl(facebookUrl)
+    setTwitterUrl(twitterUrl)
+    setYoutubeUrl(youtubeUrl)
+    setTwitchUrl(twitchUrl)
+  }
+
   return (
     <MainLayout>
       <Helmet>
@@ -231,7 +240,7 @@ function UserProfile() {
         )}
 
         {compState === COMPSTATE.DONE && (
-          <div className="flex flex-col">
+          <div className="flex flex-col pt-2">
             <UserProfileInfo
               displayName={displayName}
               about={about}
@@ -254,6 +263,9 @@ function UserProfile() {
                   </TabItem>
                   <TabItem onClick={() => setTab(4)} active={tab === 4}>
                     Bookmarks
+                  </TabItem>
+                  <TabItem onClick={() => setTab(5)} active={tab === 5}>
+                    Edit Profile
                   </TabItem>
                 </>
               )}
@@ -296,6 +308,10 @@ function UserProfile() {
                   <BuildSummaryCard key={bs.id} buildSummary={bs} />
                 ))}
               </div>
+            )}
+            
+            {tab === 5 && (
+              <EditProfileForm onUpdated={onProfileUpdated} />
             )}
           </div>
         )}

@@ -12,11 +12,14 @@ import Loading from '../components/Loading'
 import { faCheckCircle, faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { faFacebook, faTwitch, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import ForgeButton from '../components/forms/Button'
-import MainLayout from '../layouts/MainLayout'
 import ButtonBar from '../components/forms/ButtonBar'
 import Input from '../components/forms/Input'
 
-function Profile() {
+type Props = {
+  onUpdated: Function
+}
+
+function EditProfileForm({ onUpdated }: Props) {
   const { isClientLoaded, dispatchAlert, isLoggedIn } = useContext(GlobalContext)
   const [compState, setCompState] = useState(State.LOADING)
   const [about, setAbout] = useState("")
@@ -32,10 +35,7 @@ function Profile() {
 
   useEffect(() => {
     if(!isClientLoaded) return
-    if(!isLoggedIn) {
-      const { BungieAuthService } = window.services
-      BungieAuthService.redirectToLogin()
-    }
+
     function init() {
       const { ForgeClient } = window.services
       if(ForgeClient.userInfo) {
@@ -78,6 +78,7 @@ function Profile() {
       let { ForgeClient, ForgeApiService } = window.services
       let token = ForgeClient.getToken()
       await ForgeApiService.updateMe(token, updates)
+      onUpdated(about, facebook, twitter, youtube, twitch)
       dispatchAlert({
         title: "Updating Profile",
         body: "Profile updated successfully!"
@@ -151,54 +152,48 @@ function Profile() {
   }
 
   return (
-    <MainLayout>
-      <div>
-        <div className='flex'>
-          <h1 className='flex-1'>Edit Profile</h1>
-          <ButtonBar>
-            <ForgeButton onClick={() => saveProfile()} disabled={isLoading}>
-              <FontAwesomeIcon icon={faSave} /> Save
-            </ForgeButton>
-          </ButtonBar>
-        </div>
-        <div className='mb-4'>
-          {subscriptionDetails ? (
-            <Card className="subscription-manager">
-              <h3>💎 Thanks, Oh Supporter Mine!</h3>
-              <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
-              {subscriptionDetails.endDate &&
-                <p><b>Subscription Expires:</b> {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
-              }
-              <p><b>Auto Renew:</b> {subscriptionDetails.autoRenew ? (
-                <span>
-                  <FontAwesomeIcon icon={faCheckCircle} style={{color: "green"}} /> Enabled
-                </span>
-              ) : (
-                <span>
-                  <FontAwesomeIcon icon={faTimesCircle} style={{color: "red"}} /> Disabled
-                </span>
-              )}</p>
-              {subscriptionDetails.autoRenew ? (
-                <Button onClick={() => setShowCancelSubscriptionModal(true)} disabled={isAutoRenewUpdating}>Disable Auto Renew</Button>
-              ) : (
-                <Button onClick={() => reenableSubscription()} disabled={isAutoRenewUpdating}>Enable Auto Renew</Button>
-              )}
-            </Card>
-          ) : (
-            <Card>
-              <h3>💎 Eyes Up Guardian!</h3>
-              <p>Consider becoming a premium GuardianForge user to support the development of the platform!</p>
-              <SubscribeButton />
-            </Card>
-          )}
-        </div>
-        <div className='grid md:grid-cols-2 gap-2'>
-          <h4 className="md:col-span-2">General</h4>
+    <div className="flex flex-col w-full">
+      <div className='mb-4'>
+        {subscriptionDetails ? (
+          <Card className="subscription-manager">
+            <h3>💎 Thanks, Oh Supporter Mine!</h3>
+            <p>Thank you for being a premium GuardianForge user! Your support means the world to me.</p>
+            {subscriptionDetails.endDate &&
+              <p><b>Subscription Expires:</b> {new Date(subscriptionDetails.endDate * 1000).toLocaleDateString()}</p>
+            }
+            <p><b>Auto Renew:</b> {subscriptionDetails.autoRenew ? (
+              <span>
+                <FontAwesomeIcon icon={faCheckCircle} style={{color: "green"}} /> Enabled
+              </span>
+            ) : (
+              <span>
+                <FontAwesomeIcon icon={faTimesCircle} style={{color: "red"}} /> Disabled
+              </span>
+            )}</p>
+            {subscriptionDetails.autoRenew ? (
+              <Button onClick={() => setShowCancelSubscriptionModal(true)} disabled={isAutoRenewUpdating}>Disable Auto Renew</Button>
+            ) : (
+              <Button onClick={() => reenableSubscription()} disabled={isAutoRenewUpdating}>Enable Auto Renew</Button>
+            )}
+          </Card>
+        ) : (
+          <Card>
+            <h3>💎 Eyes Up Guardian!</h3>
+            <p>Consider becoming a premium GuardianForge user to support the development of the platform!</p>
+            <SubscribeButton />
+          </Card>
+        )}
+      </div>
+      <div className='flex flex-col'>
+        <div className="mb-3">
+          <span className="md:col-span-2 font-bold text-xl">General</span>
           <div>
             <span>About</span>
             <Input onChange={(e: any) => setAbout(e.target.value)} value={about} type="text" placeholder="Add a bit about yourself" />
           </div>
-          <h4 className="md:col-span-2">Social Media Links</h4>
+        </div>
+        <div className="mb-3 grid md:grid-cols-2 gap-2">
+        <span className="md:col-span-2 font-bold text-xl">Social Media Links</span>
           <div>
             <span>Twitter</span>
             <Input prefixIcon={faTwitter} onChange={(e: any) => setTwitter(e.target.value)} value={twitter} placeholder="ex: https://twitter.com/destinythegame" aria-label="Twitter" />
@@ -216,16 +211,24 @@ function Profile() {
             <Input prefixIcon={faFacebook} onChange={(e: any)  => setFacebook(e.target.value)} value={facebook} type="text" placeholder="ex: https://www.facebook.com/mypagename" />
           </div>
         </div>
-
-        <ForgeModal show={showCancelSubscriptionModal} onHide={() => setShowCancelSubscriptionModal(false)} title="Cancel Subscription" closeButton>
-          <h3>😢 Sad To See You Go!</h3>
-          <p>If there is something GuardianForge doesn't do for you, please consider sending me a message instead! Otherwise click the button below to disable auto renew on your subscription.</p>
-          <Button variant="danger" disabled={isAutoRenewUpdating} onClick={() => cancelSubscription()}>Disable Auto Renew</Button>
-        </ForgeModal>
       </div>
 
-    </MainLayout>
+
+      <div className='flex justify-end'>
+        <ButtonBar>
+          <ForgeButton onClick={() => saveProfile()} disabled={isLoading}>
+            <FontAwesomeIcon icon={faSave} /> Save
+          </ForgeButton>
+        </ButtonBar>
+      </div>
+
+      <ForgeModal show={showCancelSubscriptionModal} onHide={() => setShowCancelSubscriptionModal(false)} title="Cancel Subscription" closeButton>
+        <h3>😢 Sad To See You Go!</h3>
+        <p>If there is something GuardianForge doesn't do for you, please consider sending me a message instead! Otherwise click the button below to disable auto renew on your subscription.</p>
+        <Button variant="danger" disabled={isAutoRenewUpdating} onClick={() => cancelSubscription()}>Disable Auto Renew</Button>
+      </ForgeModal>
+    </div>
   )
 }
 
-export default Profile
+export default EditProfileForm

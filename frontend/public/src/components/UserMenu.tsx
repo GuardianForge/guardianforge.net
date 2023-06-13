@@ -81,7 +81,10 @@ function UserMenu(props: Props) {
               </Dropdown.Item>
             )}
             <Dropdown.Item className='hover:bg-neutral-600'>
-              <Link className="text-white hover:text-white" to="/edit-profile">Edit Profile</Link>
+              <button className="text-white hover:text-white"
+                onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}?tab=5`)}>
+                  Edit Profile
+              </button>
             </Dropdown.Item>
             <Dropdown.Item className='hover:bg-neutral-600'>
               <button className="text-white hover:text-white"
