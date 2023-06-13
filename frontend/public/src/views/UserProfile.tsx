@@ -78,7 +78,6 @@ function UserProfile() {
           setIsProfileOwner(true)
         }
       } else {
-        console.log("hit 2")
         setIsProfileOwner(false)
         let searchRes: any;
         try {

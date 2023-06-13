@@ -66,7 +66,7 @@ const SelectItemButton = styled(Button)`
 
   img {
     width: 35px;
-    height: 35px;
+    max-height: 35px;
     margin-right: 10px;
   }
 `
