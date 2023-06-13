@@ -8,6 +8,21 @@ import Loading from './Loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
+function UserLoadingAnim() {
+  return (
+    <div className="animate-pulse flex items-center justify-center">
+      <svg className="w-6 h-6 mr-1 text-gray-200 dark:text-gray-700" 
+        aria-hidden="true" 
+        fill="currentColor" 
+        viewBox="0 0 20 20" 
+        xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path>
+      </svg>
+      <div className="w-14 h-2 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
+    </div>
+  )
+}
+
 type Props = {
   onMenuItemClicked?: Function
   onClickMobile?: Function
@@ -67,7 +82,7 @@ function UserMenu(props: Props) {
       <div className="hidden md:flex">
         <Dropdown align="end">
           <Dropdown.Toggle className="user-badge flex gap-1 items-center rounded-none border-none bg-inherit hover:bg-neutral-800">
-            {!iconUrl && !displayName && <Loading small />}
+            {!iconUrl && !displayName && <UserLoadingAnim />}
             {iconUrl && <Image className='h-[20px] w-[20px] border-neutral-600' src={iconUrl} />}
             {displayName && <span className="display-name">{ displayName }</span>}
           </Dropdown.Toggle>
@@ -111,7 +126,7 @@ function UserMenu(props: Props) {
       </div>
       <div className="flex flex-1 items-center justify-end md:hidden">
         <div onClick={onClickMobileMenu} className="user-badge flex gap-1 items-center rounded-none border-none bg-inherit hover:bg-neutral-800 hover:cursor-pointer px-3 py-2">
-          {!iconUrl && !displayName && <Loading small />}
+          {!iconUrl && !displayName && <UserLoadingAnim />}
           {iconUrl && <Image className='h-[20px] w-[20px] border-neutral-600' src={iconUrl} />}
           {displayName && <span className="display-name">{ displayName }</span>}
           <FontAwesomeIcon icon={faBars} />
