@@ -177,6 +177,19 @@ function Build() {
     init()
   }, [isConfigLoaded, buildId, navigate])
 
+  useEffect(() => {
+    if(!isClientLoaded) return
+    if(!isUserDataLoaded) return
+    const { ForgeClient } = window.services
+    if(isLoggedIn) {
+      setDisplayLoginAlert(false)
+      console.log('userBuilds', ForgeClient.userBuilds)
+      if(ForgeClient?.userBuilds?.find((b: any) => b.id === buildId)) {
+        setIsOwner(true)
+      }
+    }
+  }, [buildId, isClientLoaded, isUserDataLoaded, isLoggedIn])
+
   function copyToClipboard() {
     copy(window.location.href)
     let a = new AlertDetail("Link copied to clipboard.", "Link Copied")
