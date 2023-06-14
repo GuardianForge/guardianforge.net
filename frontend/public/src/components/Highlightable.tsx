@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import colors from '../colors'
-import { useHighlightsStore } from '../stores/buildstore'
+import { useHighlightsStore } from '../stores/highlights'
 
 interface IHighlightableStyleProps {
   isHighlighted?: boolean

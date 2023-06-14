@@ -10,7 +10,7 @@ import Highlightable from './Highlightable';
 import ForgeModal from './Modal';
 import Image from './ui/Image';
 import V2SuperTree from './V2SuperTree';
-import { useCreateBuildStore } from '../stores/buildstore';
+import { useCreateBuildStore } from '../stores/createbuild';
 
 
 const Wrapper = styled.div`

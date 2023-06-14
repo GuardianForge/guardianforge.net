@@ -16,7 +16,6 @@ import About from './views/About'
 import React, { useContext, useEffect, useState } from 'react'
 import { GlobalContext } from './contexts/GlobalContext'
 import posthog from 'posthog-js'
-import { useCreateBuildStore, useHighlightsStore } from './stores/buildstore'
 
 type Props = {
   to: string

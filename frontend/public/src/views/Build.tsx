@@ -27,7 +27,7 @@ import { COMP_STATE, activityOptions, inputStyleOptions } from '../constants'
 import copy from "copy-to-clipboard";
 import EditBuildModal, { UpdateBuildResponse } from '../components/EditBuildModal'
 import { UserInfo } from '../models/User'
-import { useHighlightsStore } from '../stores/buildstore'
+import { useHighlightsStore } from '../stores/highlights'
 
 function Build() {
   const navigate = useNavigate()

@@ -31,7 +31,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import Card from '../components/ui/Card'
 import useQuery from '../hooks/useQuery'
-import { useCreateBuildStore, useHighlightsStore } from '../stores/buildstore'
+import { useCreateBuildStore } from '../stores/createbuild'
+import { useHighlightsStore } from '../stores/highlights'
 
 const Wrapper = styled.div`
   padding-bottom: 20px;

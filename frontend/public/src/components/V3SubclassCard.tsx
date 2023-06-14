@@ -8,7 +8,7 @@ import colors from '../colors';
 import { BuildItem } from '../models/Build';
 import ForgeModal from './Modal';
 import Plug from './Plug';
-import { useCreateBuildStore } from '../stores/buildstore';
+import { useCreateBuildStore } from '../stores/createbuild';
 import Image from './ui/Image';
 
 

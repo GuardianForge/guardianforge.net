@@ -18,7 +18,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import ForgeButton from '../components/forms/Button'
 import AlertDetail from '../models/AlertDetail'
-import { useHighlightsStore } from '../stores/buildstore'
+import { useHighlightsStore } from '../stores/highlights'
 
 const COMP_STATE = {
   NONE: 0,

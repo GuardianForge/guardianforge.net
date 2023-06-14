@@ -3,7 +3,7 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import styled from 'styled-components'
 import { imageFixerMap } from "../utils/shims"
 import Highlightable from './Highlightable'
-import { useCreateBuildStore } from '../stores/buildstore'
+import { useCreateBuildStore } from '../stores/createbuild'
 
 const Wrapper = styled.div`
   display: flex;

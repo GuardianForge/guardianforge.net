@@ -9,7 +9,8 @@ import { ItemTierData } from '../data-utils/models/Item'
 import Highlightable from './Highlightable'
 import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import Image from './ui/Image'
-import { useCreateBuildStore } from '../stores/buildstore'
+import { useCreateBuildStore } from '../stores/createbuild'
+import { BucketTypeEnum } from '../data-utils/models/Enums'
 
 const Wrapper = styled(Card)`
   .card-content {
@@ -162,6 +163,13 @@ function ItemCard(props: Props) {
     state.isHighlightModeOn
   ])
 
+  function shouldShowAffinity(): boolean {
+    if(item.slot === "kinetic" || item.slot === "energy" || item.slot === "power") {
+      return true
+    }
+    return false
+  }
+
   return (
     <Wrapper className={`${className}`}>
       <div className="item-card">
@@ -174,7 +182,7 @@ function ItemCard(props: Props) {
                 <Image src={item.ornamentIconUrl ? item.ornamentIconUrl : item.iconUrl} className="item-icon" alt="Item Icon" />
             </Highlightable>
 
-            {item.affinityIcon && (<Image src={item.affinityIcon} className="affinity-icon" alt="Affinity Icon" />)}
+            {shouldShowAffinity() && item.affinityIcon && (<Image src={item.affinityIcon} className="affinity-icon" alt="Affinity Icon" />)}
           </div>
 
           {(itemTierData !== undefined || power !== undefined) && (

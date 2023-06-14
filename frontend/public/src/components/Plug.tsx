@@ -8,7 +8,7 @@ import { Item, SocketItem } from '../data-utils/Main'
 import colors from '../colors'
 import Highlightable from './Highlightable'
 import Image from './ui/Image'
-import { useCreateBuildStore } from '../stores/buildstore'
+import { useCreateBuildStore } from '../stores/createbuild'
 
 const Wrapper = styled.div`
   display: flex;
