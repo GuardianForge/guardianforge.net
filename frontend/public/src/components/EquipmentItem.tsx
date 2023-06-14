@@ -1,30 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { Item, Enums, SocketItem, Socket  } from '../data-utils/Main'
 import ForgeButton from './forms/Button'
 import { BuildItem } from '../models/Build'
 import ItemCard from './ItemCard'
 import ItemConfigModal from './ItemConfigModal'
 import ItemSelectorModal from './ItemSelectorModal'
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;
-  min-height: 100px;
-
-  .card-content {
-    margin-bottom: 0px !important;
-  }
-
-  .select-item-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100px;
-  }
-`
 
 type EquipmentItemProps = {
   buildItem: BuildItem | undefined
@@ -33,10 +13,7 @@ type EquipmentItemProps = {
   onItemUpdated: Function
   onItemClicked?: Function
   onPlugClicked?: Function
-  highlights: Array<string>
   configurable?: boolean
-  isHighlightModeOn?: boolean
-  onHighlightableClicked?: Function
 }
 
 function EquipmentItem(props: EquipmentItemProps) {
@@ -45,10 +22,7 @@ function EquipmentItem(props: EquipmentItemProps) {
     classType,
     onItemUpdated,
     buildItem,
-    highlights,
-    configurable,
-    isHighlightModeOn,
-    onHighlightableClicked } = props
+    configurable } = props
 
   const [isEditingItem, setIsEditingItem] = useState(false)
   const [isSelectingItem, setIsSelectingItem] = useState(false)
@@ -109,10 +83,6 @@ function EquipmentItem(props: EquipmentItemProps) {
     }
   }, [item])
 
-  useEffect(() => {
-    console.log(item)
-  }, [isEditingItem])
-
   function onHideModal() {
     setIsEditingItem(false)
   }
@@ -125,10 +95,6 @@ function EquipmentItem(props: EquipmentItemProps) {
     setItem(itemSelected)
     onItemUpdated(itemSelected)
     setIsSelectingItem(false)
-  }
-
-  function selectItem() {
-    setIsSelectingItem(true)
   }
 
   function setEquippedPlug(socket: Socket, plug: (SocketItem | Item)) {
@@ -144,14 +110,11 @@ function EquipmentItem(props: EquipmentItemProps) {
   return (
     <>
       {buildItem && <ItemCard item={buildItem}
-        highlights={highlights}
         configurable={configurable}
         itemTierData={item ? item.getItemTier() : undefined}
         power={item ? item.getPower() : undefined}
-        onHighlightableClicked={onHighlightableClicked}
         onConfigureItemClicked={() => setIsEditingItem(true)}
-        onSwapItemClicked={() => setIsSelectingItem(true)}
-        isHighlightable={isHighlightModeOn} />}
+        onSwapItemClicked={() => setIsSelectingItem(true)} />}
 
       {!buildItem && (
         <div className="bg-neutral-800 border border-neutral-700 flex items-center justify-center min-h-[150px]">

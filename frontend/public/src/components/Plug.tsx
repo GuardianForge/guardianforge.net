@@ -8,6 +8,7 @@ import { Item, SocketItem } from '../data-utils/Main'
 import colors from '../colors'
 import Highlightable from './Highlightable'
 import Image from './ui/Image'
+import { useCreateBuildStore } from '../stores/buildstore'
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,15 +39,16 @@ type Props = {
   plug?: BuildItemPlug
   item?: Item | SocketItem
   plugType: string
-  highlights?: Array<string>
-  onClick?: Function
   itemInstanceId: string
   socketIndex: number
-  isHighlightable?: boolean
 }
 
 function Plug(props: Props) {
-  const { plug, item, plugType, highlights, onClick, itemInstanceId, socketIndex, isHighlightable } = props
+  const { plug, item, plugType, itemInstanceId, socketIndex } = props
+
+  const [isHighlightModeOn] = useCreateBuildStore((state) => [
+    state.isHighlightModeOn
+  ])
 
   const { isInitDone } = useContext(GlobalContext)
   const [fixedIconUrl, setFixedIconUrl] = useState("")
@@ -98,20 +100,12 @@ function Plug(props: Props) {
     }
   }, [isInitDone])
 
-  function onClickHandler(highlightKey: string) {
-    if(!isEmpty && isHighlightable && onClick) {
-      onClick(highlightKey)
-    }
-  }
-
   return (
     <Wrapper>
       <Highlightable
         highlightKey={`${plugType}-${itemInstanceId}-${socketIndex}-${plugHash}`}
-        isHighlightable={isHighlightable && !isEmpty}
-        highlights={highlights}
-        highlightClass="socket-icon"
-        onClick={onClickHandler}>
+        isHighlightable={isHighlightModeOn && !isEmpty}
+        highlightClass="socket-icon">
         <OverlayTrigger
           placement="bottom"
           delay={{ show: 250, hide: 400 }}

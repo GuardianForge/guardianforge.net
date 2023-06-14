@@ -3,66 +3,22 @@ import { GlobalContext } from '../contexts/GlobalContext'
 import Loading from '../components/Loading'
 import SubclassCard from '../components/SubclassCard'
 import ItemCard from '../components/ItemCard'
-import styled from 'styled-components'
 import { classes } from '../constants'
 import buildUtils from "../utils/buildUtils"
 import { Helmet } from 'react-helmet'
 import StatBar from '../components/StatBar'
 import BuildAd from '../components/ads/BuildAd'
-import { Button, Col, Container, Row } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import User from '../models/User'
 import { BuildItemCollection } from '../models/Build'
 import ButtonBar from '../components/forms/ButtonBar'
 import copy from "copy-to-clipboard";
-import { faCube, faLink, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { faCube, faLink } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import ForgeButton from '../components/forms/Button'
 import AlertDetail from '../models/AlertDetail'
-
-const Wrapper = styled.div`
-  .items {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .video-embed-placeholder {
-    height: 200px;
-    background-color: rgba(0,0,0,0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #aaa;
-    font-style: italic;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    text-align: center;
-  }
-
-  @media (max-width: 576px) {
-    h1, h2, h4 {
-      text-align: center;
-    }
-
-    .guardian-header {
-      flex-wrap: wrap;
-    }
-
-    .items {
-      justify-content: center !important;
-    }
-
-    .stats {
-      margin: 0 auto;
-      max-width: 287px;
-
-      img {
-        margin: 3px;
-      }
-    }
-  }
-`
+import { useHighlightsStore } from '../stores/buildstore'
 
 const COMP_STATE = {
   NONE: 0,
@@ -79,17 +35,13 @@ function Guardian() {
 
   const { isInitDone, dispatchAlert } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
-  const [highlights, setHighlights] = useState([])
   const [items, setItems] = useState<BuildItemCollection>({})
   const [stats, setStats] = useState({})
-  const [isBuildModeActive, setIsBuildModeActive] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<User>()
-  const [characterData, setCharacterData] = useState({})
-  const [isSaving, setIsSaving] = useState(false)
-  const [className, setClassName] = useState("")
-  const [isPrivate, setIsPrivate] = useState(false)
-  const [isCopied, setIsCopied] = useState(false)
   const [guardianName, setGuardianName] = useState<string>()
+
+  const [setHighlights] = useHighlightsStore(state => [
+    state.setHighlights
+  ])
 
   useEffect(() => {
     if(!isInitDone) {
@@ -128,12 +80,10 @@ function Guardian() {
           }
         }
       }
-      setSelectedUser(selectedUser)
 
       // Guardian stuff
       let characterData = res[0]
       let className = classes[characterData.character.classType]
-      setClassName(className)
 
       setGuardianName(`${selectedUser.displayName}'s ${className}`)
 
@@ -148,7 +98,9 @@ function Guardian() {
       let items = buildUtils.lookupItemInstances(characterData, ManifestService, excludedSocketCateogies)
       setItems(items)
 
-      setCharacterData(characterData)
+      // Just in case there are any keys in the store yet
+      setHighlights([])
+
       setCompState(COMP_STATE.DONE)
     }
     init()
@@ -188,27 +140,27 @@ function Guardian() {
             <BuildAd />
 
             <h4>Stats</h4>
-            <StatBar className="mb-2" stats={stats} highlights={highlights}/>
+            <StatBar className="mb-2" stats={stats} />
 
             <h4>Subclass</h4>
             <div className="mb-2">
-              {items.subclass && (<SubclassCard item={items.subclass} highlights={highlights}/>)}
+              {items.subclass && (<SubclassCard item={items.subclass} />)}
             </div>
 
             <h4>Weapons</h4>
             <div className="grid md:grid-cols-3 gap-2 mb-2">
-              {items.kinetic && (<ItemCard item={items.kinetic} highlights={highlights} />)}
-              {items.energy && (<ItemCard item={items.energy} highlights={highlights}  />)}
-              {items.power && (<ItemCard item={items.power} highlights={highlights}  />)}
+              {items.kinetic && (<ItemCard item={items.kinetic}  />)}
+              {items.energy && (<ItemCard item={items.energy} />)}
+              {items.power && (<ItemCard item={items.power} />)}
             </div>
 
             <h4>Armor</h4>
             <div className="grid md:grid-cols-3 gap-2 mb-2">
-              {items.helmet && (<ItemCard item={items.helmet} highlights={highlights}  />)}
-              {items.arms && (<ItemCard item={items.arms} highlights={highlights}  />)}
-              {items.chest && (<ItemCard item={items.chest} highlights={highlights}  />)}
-              {items.legs && (<ItemCard item={items.legs} highlights={highlights}  />)}
-              {items.classItem && (<ItemCard item={items.classItem} highlights={highlights}  />)}
+              {items.helmet && (<ItemCard item={items.helmet} />)}
+              {items.arms && (<ItemCard item={items.arms} />)}
+              {items.chest && (<ItemCard item={items.chest} />)}
+              {items.legs && (<ItemCard item={items.legs} />)}
+              {items.classItem && (<ItemCard item={items.classItem} />)}
             </div>
 
             <BuildAd />

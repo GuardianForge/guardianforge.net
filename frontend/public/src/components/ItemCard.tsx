@@ -9,6 +9,7 @@ import { ItemTierData } from '../data-utils/models/Item'
 import Highlightable from './Highlightable'
 import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import Image from './ui/Image'
+import { useCreateBuildStore } from '../stores/buildstore'
 
 const Wrapper = styled(Card)`
   .card-content {
@@ -140,28 +141,26 @@ const Wrapper = styled(Card)`
 
 type Props = {
   item: BuildItem
-  highlights?: Array<string>
   className?: string
   configurable?: boolean
   onConfigureItemClicked?: Function
   onSwapItemClicked?: Function
   itemTierData?: ItemTierData
   power?: number | null
-  isHighlightable?: boolean
-  onHighlightableClicked?: Function
 }
 
 function ItemCard(props: Props) {
   const { item,
-    highlights,
     className,
     configurable,
     onConfigureItemClicked,
     onSwapItemClicked,
     itemTierData,
-    power,
-    isHighlightable,
-    onHighlightableClicked } = props
+    power } = props
+
+  const [isHighlightModeOn] = useCreateBuildStore((state) => [
+    state.isHighlightModeOn
+  ])
 
   return (
     <Wrapper className={`${className}`}>
@@ -170,10 +169,8 @@ function ItemCard(props: Props) {
           <div className="item-icon-wrapper">
             <Highlightable
               highlightKey={`item-${item.itemInstanceId}`}
-              highlights={highlights}
-              isHighlightable={isHighlightable}
-              highlightClass="item-icon"
-              onClick={onHighlightableClicked}>
+              isHighlightable={isHighlightModeOn}
+              highlightClass="item-icon">
                 <Image src={item.ornamentIconUrl ? item.ornamentIconUrl : item.iconUrl} className="item-icon" alt="Item Icon" />
             </Highlightable>
 
@@ -205,11 +202,8 @@ function ItemCard(props: Props) {
                   <Plug
                     plug={p}
                     plugType="perk"
-                    highlights={highlights}
-                    onClick={onHighlightableClicked}
                     itemInstanceId={item.itemInstanceId ? item.itemInstanceId : ""}
-                    socketIndex={p.socketIndex ? p.socketIndex : 0}
-                    isHighlightable={isHighlightable} />
+                    socketIndex={p.socketIndex ? p.socketIndex : 0} />
                 </div>
               ))}
             </div>
@@ -221,11 +215,8 @@ function ItemCard(props: Props) {
                   <Plug
                     plug={m}
                     plugType="mod"
-                    highlights={highlights}
-                    onClick={onHighlightableClicked}
                     itemInstanceId={item.itemInstanceId !== undefined ? item.itemInstanceId : ""}
-                    socketIndex={m.socketIndex !== undefined ? m.socketIndex : 0}
-                    isHighlightable={isHighlightable} />
+                    socketIndex={m.socketIndex !== undefined ? m.socketIndex : 0} />
                 </div>
               ))}
             </div>

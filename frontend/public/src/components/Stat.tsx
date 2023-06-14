@@ -3,6 +3,7 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import styled from 'styled-components'
 import { imageFixerMap } from "../utils/shims"
 import Highlightable from './Highlightable'
+import { useCreateBuildStore } from '../stores/buildstore'
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,16 +29,14 @@ type Props = {
   iconUrl?: string
   value?: number
   name: string
-  onClick?: Function
-  highlights: Array<string>
-  isHighlightable?: boolean
-  onHighlightableClicked?: Function
 }
 
 function Stat(props: Props) {
-  const { iconUrl, value, name, onClick, highlights, isHighlightable, onHighlightableClicked } = props
-
+  const { iconUrl, value, name } = props
   const [fixedIcon, setFixedIcon] = useState("")
+  const [isHighlightModeOn] = useCreateBuildStore((state) => [
+    state.isHighlightModeOn
+  ])
 
   useEffect(() => {
     // @ts-ignore TODO: Fix me
@@ -50,10 +49,8 @@ function Stat(props: Props) {
   return (
     <Wrapper>
       <Highlightable highlightKey={`stat-${name}-0-0`}
-        isHighlightable={isHighlightable}
-        highlights={highlights}
-        highlightClass="stat-icon"
-        onClick={onHighlightableClicked}>
+        isHighlightable={isHighlightModeOn}
+        highlightClass="stat-icon">
         <OverlayTrigger
           placement="bottom"
           delay={{ show: 250, hide: 400 }}
