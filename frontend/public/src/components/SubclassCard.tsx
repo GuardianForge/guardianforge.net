@@ -6,29 +6,19 @@ import V3SubclassCard from './V3SubclassCard'
 type Props = {
   item: BuildItem
   onPlugClicked?: Function
-  highlights: Array<string>
   className?: string
-  isHighlightable?: boolean
   onHighlightableClicked?: Function
 }
 
 function SubclassCard(props: Props) {
-  const { item, onPlugClicked, highlights, className, isHighlightable, onHighlightableClicked } = props
+  const { item, className } = props
 
   return (
     <Card className={className}>
       {item.isLightSubclass ? (
-        <V2SubclassCard
-          buildItem={item}
-          highlights={highlights}
-          isHighlightModeOn={isHighlightable}
-          onHighlightableClicked={onHighlightableClicked} />
+        <V2SubclassCard buildItem={item} />
       ) : (
-        <V3SubclassCard
-          buildItem={item}
-          highlights={highlights}
-          isHighlightModeOn={isHighlightable}
-          onHighlightableClicked={onHighlightableClicked} />
+        <V3SubclassCard buildItem={item} />
       )}
     </Card>
   )

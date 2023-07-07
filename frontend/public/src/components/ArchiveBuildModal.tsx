@@ -39,7 +39,7 @@ function ArchiveBuildModal({ buildId, show, onHide, onArchived, onArchiveError }
       <p>
         Archiving a build will do the following:
       </p>
-      <ul>
+      <ul className="mb-3">
         <li>Remove from "My Builds"</li>
         <li>Remove from search & other public build lists</li>
         <li>Remove upvote & ownership information</li>

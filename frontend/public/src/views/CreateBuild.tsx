@@ -4,13 +4,13 @@ import styled from 'styled-components'
 import colors from '../colors'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { GlobalContext } from "../contexts/GlobalContext"
-import { InventoryManager, Item, Enums  } from '@guardianforge/destiny-data-utils'
+import { InventoryManager, Item, Enums  } from '../data-utils/Main'
 import EquipmentItem from '../components/EquipmentItem'
 import Subclass from '../components/Subclass'
 import { State } from '../models/Enums'
 import Loading from '../components/Loading'
 import ButtonBar from '../components/forms/ButtonBar'
-import { faBan, faCube, faExchangeAlt, faExclamationTriangle, faEye, faEyeSlash, faMarker, faSave, faStickyNote } from '@fortawesome/free-solid-svg-icons'
+import { faBan, faCube, faExchangeAlt, faExclamationTriangle, faMarker, faSave, faStickyNote } from '@fortawesome/free-solid-svg-icons'
 import Input from '../components/forms/Input'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 import YouTubeEmbed from '../components/YouTubeEmbed'
@@ -31,13 +31,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import Card from '../components/ui/Card'
 import useQuery from '../hooks/useQuery'
+import { useCreateBuildStore } from '../stores/createbuild'
+import { useHighlightsStore } from '../stores/highlights'
 
 const Wrapper = styled.div`
   padding-bottom: 20px;
-
-  .selected-item {
-
-  }
 
   .build-info-card {
     padding: 10px;
@@ -80,15 +78,24 @@ function CreateBuild() {
   const [selectedClass, setSelectedClass] = useState<Enums.ClassEnum>()
   const [selectedUser, setSelectedUser] = useState<any>()
   const [isInventoryLoaded, setIsInventoryLoaded] = useState(false)
-  // const [isPrivate, setIsPrivate] = useState(false)
-  const [highlights, setHighlights] = useState<Array<string>>([])
-  const [isHighlightModeOn, setIsHighlightModeOn] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
   const [visibility, setVisibility] = useState<ModalSelectorOption>({
     iconUrl: "/img/eye.png",
     value: "1",
     display: "Public"
   })
+
+  // Stores
+  const [highlights, setHighlights, resetHighlightState] = useHighlightsStore((state) => [
+    state.highlights,
+    state.setHighlights,
+    state.resetHighlightState
+  ])
+  const [isHighlightModeOn, setHighlightMode, resetCreateBuildState] = useCreateBuildStore((state) => [
+    state.isHighlightModeOn,
+    state.setHighlightMode,
+    state.resetCreateBuildState
+  ])
 
   // Build Items
   const [kinetic, setKinetic] = useState<BuildItem>()
@@ -139,15 +146,19 @@ function CreateBuild() {
 
       // TODO: Pull this from ForgeClient user info
       let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(ForgeClient.userData)
-      let token = ForgeClient.getToken()
-
+      
       try {
+        let token = ForgeClient.getToken()
         window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)
         await window.services.InventoryManager.loadInventory(membershipType, membershipId, token)
         setIsInventoryLoaded(true)
-      } catch (err) {
-        dispatchAlert(BungieOfflineAlert)
-        return
+      } catch (err: any) {
+        if(err.message === "NoTokenSet") {
+          redirectToLogin()
+        } else {
+          dispatchAlert(BungieOfflineAlert)
+          return
+        }
       }
 
       if(query && query.get("guardianKey")) {
@@ -427,6 +438,10 @@ function CreateBuild() {
       let buildSummary = build.toBuildSummary(buildId)
       ForgeClient.userBuilds.push(buildSummary)
 
+      // Reset stores
+      resetHighlightState()
+      resetCreateBuildState()
+
       navigate(`/build/${buildId}`)
     } catch(err) {
       let alert = new AlertDetail("An error occurred while saving this build. Please try again later...", "Saving Build", true, false)
@@ -470,16 +485,6 @@ function CreateBuild() {
       value: Enums.ClassEnum.Warlock
     }
   ]
-
-  function updateHighlights(key: string) {
-    let _highlights = highlights
-    if(_highlights.find(el => el === key)) {
-      _highlights = _highlights.filter(el => el !== key)
-    } else {
-      _highlights.push(key)
-    }
-    setHighlights([..._highlights])
-  }
 
   const inputStyleOptions: Array<ModalSelectorOption> = [
     {
@@ -533,11 +538,11 @@ function CreateBuild() {
                   <FontAwesomeIcon icon={faExchangeAlt} /> Change Class
                 </ForgeButton>
                 {isHighlightModeOn ? (
-                  <ForgeButton onClick={() => setIsHighlightModeOn(false)}>
+                  <ForgeButton onClick={() => setHighlightMode(false)}>
                     <FontAwesomeIcon icon={faBan} /> Exit Highlight Mode
                   </ForgeButton>
                 ) : (
-                  <ForgeButton onClick={() => setIsHighlightModeOn(true)}>
+                  <ForgeButton onClick={() => setHighlightMode(true)}>
                     <FontAwesomeIcon icon={faMarker} /> Highlight Mode
                   </ForgeButton>
                 )}
@@ -660,7 +665,7 @@ function CreateBuild() {
 
                 <div className='md:col-span-2'>
                   <h4>Stats</h4>
-                  <StatBar stats={stats} highlights={highlights} isHighlightable={isHighlightModeOn} onHighlightableClicked={updateHighlights} />
+                  <StatBar stats={stats} />
                 </div>
 
                 <div className='md:col-span-3'>
@@ -670,10 +675,7 @@ function CreateBuild() {
                     buildItem={subclass}
                     onSubclassUpdated={onItemUpdated}
                     selectedClass={selectedClass}
-                    configurable={isOwner}
-                    highlights={highlights}
-                    isHighlightModeOn={isHighlightModeOn}
-                    onHighlightableClicked={updateHighlights} />
+                    configurable={isOwner} />
                 </div>
 
                 <div className='md:col-span-3'>
@@ -685,28 +687,19 @@ function CreateBuild() {
                   slot={Enums.BucketTypeEnum.Kinetic}
                   classType={selectedClass}
                   onItemUpdated={onItemUpdated}
-                  highlights={highlights}
-                  configurable={isOwner}
-                  isHighlightModeOn={isHighlightModeOn}
-                  onHighlightableClicked={updateHighlights} />
+                  configurable={isOwner} />
 
                 <EquipmentItem buildItem={energy}
                   slot={Enums.BucketTypeEnum.Energy}
                   classType={selectedClass}
                   onItemUpdated={onItemUpdated}
-                  highlights={highlights}
-                  onHighlightableClicked={updateHighlights}
-                  configurable={isOwner}
-                  isHighlightModeOn={isHighlightModeOn} />
+                  configurable={isOwner} />
 
                 <EquipmentItem buildItem={power}
                   slot={Enums.BucketTypeEnum.Power}
                   classType={selectedClass}
                   onItemUpdated={onItemUpdated}
-                  highlights={highlights}
-                  onHighlightableClicked={updateHighlights}
-                  configurable={isOwner}
-                  isHighlightModeOn={isHighlightModeOn} />
+                  configurable={isOwner} />
 
                 <div className="md:col-span-3">
                   <h4>Armor</h4>
@@ -717,46 +710,31 @@ function CreateBuild() {
                   slot={Enums.BucketTypeEnum.Helmet}
                   classType={selectedClass}
                   onItemUpdated={onItemUpdated}
-                  highlights={highlights}
-                  onHighlightableClicked={updateHighlights}
-                  configurable={isOwner}
-                  isHighlightModeOn={isHighlightModeOn} />
+                  configurable={isOwner} />
 
                 <EquipmentItem buildItem={arms}
                   slot={Enums.BucketTypeEnum.Arms}
                   classType={selectedClass}
                   onItemUpdated={onItemUpdated}
-                  highlights={highlights}
-                  onHighlightableClicked={updateHighlights}
-                  configurable={isOwner}
-                  isHighlightModeOn={isHighlightModeOn} />
+                  configurable={isOwner} />
 
                 <EquipmentItem buildItem={chest}
                   slot={Enums.BucketTypeEnum.Chest}
                   classType={selectedClass}
                   onItemUpdated={onItemUpdated}
-                  highlights={highlights}
-                  onHighlightableClicked={updateHighlights}
-                  configurable={isOwner}
-                  isHighlightModeOn={isHighlightModeOn} />
+                  configurable={isOwner} />
 
                 <EquipmentItem buildItem={legs}
                   slot={Enums.BucketTypeEnum.Legs}
                   classType={selectedClass}
                   onItemUpdated={onItemUpdated}
-                  highlights={highlights}
-                  onHighlightableClicked={updateHighlights}
-                  configurable={isOwner}
-                  isHighlightModeOn={isHighlightModeOn} />
+                  configurable={isOwner} />
 
                 <EquipmentItem buildItem={classItem}
                   slot={Enums.BucketTypeEnum.ClassItem}
                   classType={selectedClass}
                   onItemUpdated={onItemUpdated}
-                  highlights={highlights}
-                  onHighlightableClicked={updateHighlights}
-                  configurable={isOwner}
-                  isHighlightModeOn={isHighlightModeOn} />
+                  configurable={isOwner} />
               </div>
 
 

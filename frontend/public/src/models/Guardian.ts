@@ -1,4 +1,4 @@
-import { Enums } from "@guardianforge/destiny-data-utils"
+import { Enums } from "../data-utils/Main"
 
 type Guardian = {
   class: Enums.ClassEnum,

@@ -89,3 +89,11 @@ ins.adsbygoogle[data-ad-status="unfilled"] {
 .forge-modal .btn-close {
   color: #eee !important;
 }
+
+ul {
+  margin-left: 20px;
+}
+
+li {
+  list-style: disc;
+}

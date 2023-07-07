@@ -27,6 +27,7 @@ import { COMP_STATE, activityOptions, inputStyleOptions } from '../constants'
 import copy from "copy-to-clipboard";
 import EditBuildModal, { UpdateBuildResponse } from '../components/EditBuildModal'
 import { UserInfo } from '../models/User'
+import { useHighlightsStore } from '../stores/highlights'
 
 function Build() {
   const navigate = useNavigate()
@@ -37,11 +38,16 @@ function Build() {
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
   const [buildData, setBuildData] = useState<any>({})
 
+  // Stores
+  const [setHighlights] = useHighlightsStore((state) => [
+    state.setHighlights
+  ])
+
 
   // Build meta
   const [buildId, setBuildId] = useState("")
   const [buildName, setBuildName] = useState("")
-  const [highlights, setHighlights] = useState([])
+  // const [highlights, setHighlights] = useState([])
   const [notes, setNotes] = useState("")
   const [videoLink, setVideoLink] = useState("")
   const [twitterLink, setTwitterLink] = useState("")
@@ -70,13 +76,8 @@ function Build() {
 
   useEffect(() => {
     if(!id) return
-    if(id && buildId === "") {
-      setBuildId(id)
-    }
-
-    if(!isConfigLoaded) {
-      return
-    }
+    if(!isConfigLoaded) return
+    setBuildId(id)
 
     async function init() {
       const { ForgeApiService, ForgeClient, BungieApiService } = window.services
@@ -87,7 +88,7 @@ function Build() {
         setLoginUrl(ForgeClient.config.loginUrl)
       }
 
-      let buildData = await ForgeApiService.fetchBuild(buildId)
+      let buildData = await ForgeApiService.fetchBuild(id)
       setBuildData(buildData)
 
       // Extract items
@@ -104,7 +105,7 @@ function Build() {
       if(buildData.name) {
         setBuildName(buildData.name)
       } else {
-        setBuildName(`Build ${buildId}`)
+        setBuildName(`Build ${id}`)
       }
 
       if(buildData.notes) setNotes(buildData.notes)
@@ -180,7 +181,7 @@ function Build() {
       setCompState(COMP_STATE.DONE)
     }
     init()
-  }, [id, isConfigLoaded, buildId, navigate, isLoggedIn])
+  }, [isConfigLoaded, buildId, navigate])
 
   useEffect(() => {
     if(!isClientLoaded) return
@@ -342,27 +343,27 @@ function Build() {
           <BuildAd />
 
           <h4>Stats</h4>
-          <StatBar stats={buildData.stats} highlights={highlights} />
+          <StatBar stats={buildData.stats} />
 
           <h4>Subclass</h4>
           <div className="subclass">
-            {subclass && (<SubclassCard item={subclass} highlights={highlights}/>)}
+            {subclass && (<SubclassCard item={subclass} />)}
           </div>
 
           <h4>Weapons</h4>
           <div className="grid md:grid-cols-3 gap-2">
-            {kinetic && (<ItemCard item={kinetic} highlights={highlights} />)}
-            {energy && (<ItemCard item={energy} highlights={highlights}  />)}
-            {power && (<ItemCard item={power} highlights={highlights}  />)}
+            {kinetic && (<ItemCard item={kinetic} />)}
+            {energy && (<ItemCard item={energy} />)}
+            {power && (<ItemCard item={power} />)}
           </div>
 
           <h4>Armor</h4>
           <div className="grid md:grid-cols-3 gap-2">
-            {helmet && (<ItemCard item={helmet} highlights={highlights}  />)}
-            {arms && (<ItemCard item={arms} highlights={highlights}  />)}
-            {chest && (<ItemCard item={chest} highlights={highlights}  />)}
-            {legs && (<ItemCard item={legs} highlights={highlights}  />)}
-            {classItem && (<ItemCard item={classItem} highlights={highlights}  />)}
+            {helmet && (<ItemCard item={helmet} />)}
+            {arms && (<ItemCard item={arms} />)}
+            {chest && (<ItemCard item={chest} />)}
+            {legs && (<ItemCard item={legs} />)}
+            {classItem && (<ItemCard item={classItem} />)}
           </div>
 
           <BuildAd />

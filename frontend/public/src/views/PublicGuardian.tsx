@@ -77,26 +77,11 @@ function Guardian() {
   const navigate = useNavigate()
   const { isInitDone, isClientLoaded, dispatchAlert } = useContext(GlobalContext)
   const [compState, setCompState] = useState(COMP_STATE.LOADING)
-  const [highlights, setHighlights] = useState<Array<string>>([])
-  const [buildName, setBuildName] = useState("")
-  const [buildNotes, setBuildNotes] = useState("")
-  const [videoLink, setVideoLink] = useState("")
-  const [inputStyle, setInputStyle] = useState("0")
-  const [primaryActivity, setPrimaryActivity] = useState<ActivityOption>({
-    value: "1",
-    display: "Any Activity"
-  })
   // TODO: dont use any
   const [items, setItems] = useState<any>({})
   const [stats, setStats] = useState({})
-  const [isBuildModeActive, setIsBuildModeActive] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User>({})
-  // TODO: dont use any
-  const [characterData, setCharacterData] = useState<any>({})
-  const [isSaving, setIsSaving] = useState(false)
   const [className, setClassName] = useState("")
-  const [isPrivate, setIsPrivate] = useState(false)
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
 
   useEffect(() => {
     if(!isInitDone) {
@@ -104,7 +89,7 @@ function Guardian() {
     }
 
     async function init() {
-      const { BungieApiService, ManifestService, ForgeClient } = window.services
+      const { BungieApiService, ManifestService } = window.services
 
       // @ts-ignore TODO: check for null
       let split = guardianKey.split("-")
@@ -161,33 +146,10 @@ function Guardian() {
       let items = buildUtils.lookupItemInstances(characterData, ManifestService, excludedSocketCateogies)
       setItems(items)
 
-      setCharacterData(characterData)
-      setBuildName(`${selectedUser.displayName}'s ${className}`)
       setCompState(COMP_STATE.DONE)
     }
     init()
   }, [isInitDone])
-
-  useEffect(() => {
-    if(!isClientLoaded) return
-    function load() {
-      const { ForgeClient } = window.services
-      if(ForgeClient.isLoggedIn()) {
-        setIsUserLoggedIn(true)
-      }
-    }
-    load()
-  }, [isClientLoaded])
-
-  function updateHighlights(key: string) {
-    let _highlights = highlights
-    if(_highlights.find(el => el === key)) {
-      _highlights = _highlights.filter(el => el !== key)
-    } else {
-      _highlights.push(key)
-    }
-    setHighlights([..._highlights])
-  }
 
   function onCreateBuildClicked() {
     navigate(`/create-build?guardianKey=${guardianKey}`)
@@ -195,7 +157,7 @@ function Guardian() {
 
   return (
     <MainLayout>
-      <Wrapper className={isBuildModeActive ? "build-mode" : ""}>
+      <Wrapper>
         <Helmet>
           <title>GuardianForge</title>
         </Helmet>
@@ -211,27 +173,27 @@ function Guardian() {
 
             <BuildAd />
 
-            <StatBar stats={stats} highlights={highlights} onHighlightableClicked={updateHighlights} isHighlightable={isBuildModeActive} />
+            <StatBar stats={stats} />
 
             <h4>Subclass</h4>
             <div className="grid grid-cols-1">
-              {items.subclass && (<SubclassCard item={items.subclass} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}/>)}
+              {items.subclass && (<SubclassCard item={items.subclass} />)}
             </div>
 
             <h4>Weapons</h4>
             <div className="grid grid-cols-3 gap-2">
-              {items.kinetic && (<ItemCard item={items.kinetic} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}/>)}
-              {items.energy && (<ItemCard item={items.energy} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
-              {items.power && (<ItemCard item={items.power} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+              {items.kinetic && (<ItemCard item={items.kinetic} />)}
+              {items.energy && (<ItemCard item={items.energy} />)}
+              {items.power && (<ItemCard item={items.power} />)}
             </div>
 
             <h4>Armor</h4>
             <div className="grid grid-cols-3 gap-2">
               {items.helmet && (<ItemCard item={items.helmet} />)}
-              {items.arms && (<ItemCard item={items.arms} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
-              {items.chest && (<ItemCard item={items.chest} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
-              {items.legs && (<ItemCard item={items.legs} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive} />)}
-              {items.classItem && (<ItemCard item={items.classItem} onHighlightableClicked={updateHighlights} highlights={highlights} isHighlightable={isBuildModeActive}  />)}
+              {items.arms && (<ItemCard item={items.arms} />)}
+              {items.chest && (<ItemCard item={items.chest} />)}
+              {items.legs && (<ItemCard item={items.legs} />)}
+              {items.classItem && (<ItemCard item={items.classItem} />)}
             </div>
 
             <BuildAd />

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import styled from 'styled-components'
 import colors from '../colors'
-import { Item, Enums  } from '@guardianforge/destiny-data-utils'
-import { ItemTierData } from '@guardianforge/destiny-data-utils/dist/models/Item'
+import { Item, Enums  } from '../data-utils/Main'
+import { ItemTierData } from '../data-utils/models/Item'
 
 const EquipmentItemCardStyles = styled.div`
   width: 100%;

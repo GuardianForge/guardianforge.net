@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // @ts-ignore
 import SiteLogo from "../../images/site-logo.png"
 import { Link, LinkProps, useNavigate } from "react-router-dom"
-import { faCube, faSignInAlt, faBars, faClose, faSearch, faPerson, faCubes, faBookmark, faLock, faDoorClosed, faUser, faPencil } from '@fortawesome/free-solid-svg-icons'
+import { faCube, faSignInAlt, faBars, faClose, faSearch, faCubes, faBookmark, faLock, faDoorClosed, faUser, faPencil } from '@fortawesome/free-solid-svg-icons'
 import { GlobalContext } from '../../contexts/GlobalContext'
 import ForgeButton from '../forms/Button'
 import UserMenu from '../UserMenu'
@@ -103,9 +103,9 @@ function MobileMenu({ open, onClose, loginUrl, onSearchClicked }: MobileMenuProp
             <NavLinkButton className='flex items-center gap-1' onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}`)}>
               <FontAwesomeIcon icon={faUser} /> My Profile
             </NavLinkButton>
-            <NavLink to="/edit-profile">
+            <NavLinkButton className='flex items-center gap-1' onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}?tab=5`)}>
               <FontAwesomeIcon icon={faPencil}/> Edit Profile
-            </NavLink>
+            </NavLinkButton>
             <NavLinkButton className='flex items-center gap-1' onClick={() => navigateTo(`/u/${userData?.bungieNetUser?.uniqueName}?tab=2`)}>
               <FontAwesomeIcon icon={faCubes} /> My Builds
             </NavLinkButton>

@@ -32,13 +32,13 @@ function Input(props: Props) {
           {debounceTimeout ? (
             <DebounceInput
               placeholder="Start typing to search..."
-              className='bg-transparent flex-1'
+              className='bg-transparent flex-1 focus:outline-none focus:border-transparent focus:ring-0 focus-visible:outline-none focus-visible:border-transparent focus-visible:ring-0'
               debounceTimeout={debounceTimeout}
               value={value}
               onChange={onChangeHandler} />
           ) : (
             <input placeholder={placeholder ? placeholder : ""}
-              className='bg-transparent flex-1'
+              className='bg-transparent flex-1 focus:outline-none focus:border-transparent focus:ring-0 focus-visible:outline-none focus-visible:border-transparent focus-visible:ring-0'
               value={value}
               onChange={onChangeHandler}
               type={type} />

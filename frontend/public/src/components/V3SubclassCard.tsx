@@ -1,6 +1,6 @@
 import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Item, Socket } from '@guardianforge/destiny-data-utils';
+import { Item, Socket } from '../data-utils/Main';
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -8,6 +8,9 @@ import colors from '../colors';
 import { BuildItem } from '../models/Build';
 import ForgeModal from './Modal';
 import Plug from './Plug';
+import { useCreateBuildStore } from '../stores/createbuild';
+import Image from './ui/Image';
+
 
 const Wrapper = styled.div`
   display: flex;
@@ -172,16 +175,15 @@ type Props = {
   onSubclassUpdated?: Function
   onChangeSubclassClicked?: React.MouseEventHandler
   configurable?: boolean
-  highlights: Array<string>
-  onCardPlugClicked?: Function
-  isHighlightModeOn?: boolean
-  onHighlightableClicked?: Function
 }
 
 function V3SubclassCard(props: Props) {
-  const { subclass, onSubclassUpdated, onChangeSubclassClicked, configurable, buildItem, highlights, onCardPlugClicked, isHighlightModeOn, onHighlightableClicked } = props
+  const { subclass, onSubclassUpdated, onChangeSubclassClicked, configurable, buildItem } = props
   const [isConfigureSubclassModalShown, setIsConfigureSubclassModalShown] = useState(false)
   const [socketPlugMap, setSocketPlugMap] = useState<Map<number, Item[]>>()
+  const [isHighlightModeOn] = useCreateBuildStore((state) => [
+    state.isHighlightModeOn
+  ])
 
 
   useEffect(() => {
@@ -326,7 +328,7 @@ function V3SubclassCard(props: Props) {
       <Wrapper>
         <div className="subclass-left">
           <div className="subclass-left-top">
-            <img className="icon" src={subclass.iconUrl} />
+            <Image className="icon" src={subclass.iconUrl} />
             {/* <div>
               Stats
               <div className="stats">
@@ -356,11 +358,8 @@ function V3SubclassCard(props: Props) {
                         <Plug key={`socket-super-${s.position}-${subclass._meta.inventoryItem.itemInstanceId}`}
                           plugType="super"
                           item={s.equippedPlug}
-                          highlights={highlights}
                           itemInstanceId={subclass._meta.inventoryItem.itemInstanceId}
-                          socketIndex={Number(s.position)}
-                          isHighlightable={isHighlightModeOn}
-                          onClick={onHighlightableClicked} />
+                          socketIndex={Number(s.position)}/>
                       )}
                     </>
                   ))}
@@ -375,11 +374,8 @@ function V3SubclassCard(props: Props) {
                       <Plug key={`socket-abilities-${s.position}-${subclass._meta.inventoryItem.itemInstanceId}`}
                         plugType="ability"
                         item={s.equippedPlug}
-                        highlights={highlights}
                         itemInstanceId={subclass._meta.inventoryItem.itemInstanceId}
-                        socketIndex={Number(s.position)}
-                        isHighlightable={isHighlightModeOn}
-                        onClick={onHighlightableClicked}  />
+                        socketIndex={Number(s.position)} />
                     )}
                   </>
                 ))}
@@ -394,11 +390,8 @@ function V3SubclassCard(props: Props) {
                       <Plug key={`socket-aspects-${s.position}-${subclass._meta.inventoryItem.itemInstanceId}`}
                         plugType="aspect"
                         item={s.equippedPlug}
-                        highlights={highlights}
                         itemInstanceId={subclass._meta.inventoryItem.itemInstanceId}
-                        socketIndex={Number(s.position)}
-                        isHighlightable={isHighlightModeOn}
-                        onClick={onHighlightableClicked} />
+                        socketIndex={Number(s.position)} />
                     )}
                   </>
                 ))}
@@ -415,11 +408,8 @@ function V3SubclassCard(props: Props) {
                       <Plug key={`socket-fragments-${s.position}-${subclass._meta.inventoryItem.itemInstanceId}`}
                         plugType="fragment"
                         item={s.equippedPlug}
-                        highlights={highlights}
                         itemInstanceId={subclass._meta.inventoryItem.itemInstanceId}
-                        socketIndex={Number(s.position)}
-                        isHighlightable={isHighlightModeOn}
-                        onClick={onHighlightableClicked}  />
+                        socketIndex={Number(s.position)} />
                     )}
                   </>
                 ))}
@@ -524,7 +514,7 @@ function V3SubclassCard(props: Props) {
       <Wrapper>
         <div className="subclass-left">
           <div className="subclass-left-top">
-            <img className="icon" src={buildItem.iconUrl} />
+            <Image className="icon" src={buildItem.iconUrl} />
           </div>
 
           {configurable && (
@@ -537,7 +527,7 @@ function V3SubclassCard(props: Props) {
         <div className="subclass-right">
           <span className="name">{ buildItem.name }</span>
           <div className="sockets">
-            <div className="socket-row">
+            <div className="socket-row flex flex-col md:flex-row gap-2">
               <div className="socket-category">
                 <span>Super</span>
                 <div className="socket-set">
@@ -545,11 +535,8 @@ function V3SubclassCard(props: Props) {
                       <Plug key={`super-${idx}`}
                         plugType="super"
                         plug={_super}
-                        highlights={highlights}
                         itemInstanceId={buildItem.itemInstanceId ? buildItem.itemInstanceId : ""}
-                        socketIndex={_super.socketIndex}
-                        isHighlightable={isHighlightModeOn}
-                        onClick={onHighlightableClicked}  />
+                        socketIndex={_super.socketIndex} />
                   ))}
                 </div>
               </div>
@@ -560,11 +547,8 @@ function V3SubclassCard(props: Props) {
                       <Plug key={`ability-${idx}`}
                         plugType="ability"
                         plug={ability}
-                        highlights={highlights}
                         itemInstanceId={buildItem.itemInstanceId ? buildItem.itemInstanceId : ""}
-                        socketIndex={ability.socketIndex}
-                        isHighlightable={isHighlightModeOn}
-                        onClick={onHighlightableClicked}  />
+                        socketIndex={ability.socketIndex} />
                   ))}
                 </div>
               </div>
@@ -575,11 +559,8 @@ function V3SubclassCard(props: Props) {
                       <Plug key={`aspect-${idx}`}
                         plugType="aspect"
                         plug={aspect}
-                        highlights={highlights}
                         itemInstanceId={buildItem.itemInstanceId ? buildItem.itemInstanceId : ""}
-                        socketIndex={aspect.socketIndex}
-                        isHighlightable={isHighlightModeOn}
-                        onClick={onHighlightableClicked}  />
+                        socketIndex={aspect.socketIndex} />
                   ))}
                 </div>
               </div>
@@ -592,11 +573,8 @@ function V3SubclassCard(props: Props) {
                       <Plug key={`fragment-${idx}`}
                         plugType="fragment"
                         plug={fragment}
-                        highlights={highlights}
                         itemInstanceId={buildItem.itemInstanceId ? buildItem.itemInstanceId : ""}
-                        socketIndex={fragment.socketIndex}
-                        isHighlightable={isHighlightModeOn}
-                        onClick={onHighlightableClicked}  />
+                        socketIndex={fragment.socketIndex} />
                   ))}
                 </div>
               </div>

@@ -4,7 +4,7 @@ import EquipmentItemCard from './EquipmentItemCard'
 import Input from './forms/Input'
 import ForgeModal from './Modal'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { Enums, Item } from '@guardianforge/destiny-data-utils'
+import { Enums, Item } from '../data-utils/Main'
 import ForgeButton from './forms/Button'
 
 

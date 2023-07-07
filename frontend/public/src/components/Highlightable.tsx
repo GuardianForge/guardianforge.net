@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import colors from '../colors'
+import { useHighlightsStore } from '../stores/highlights'
 
 interface IHighlightableStyleProps {
   isHighlighted?: boolean
@@ -48,20 +49,22 @@ const Wrapper = styled.div<IHighlightableStyleProps>`
 type Props = {
   highlightKey: string
   alternateKeys?: Array<string>
-  highlights?: Array<string>
   isHighlightable?: boolean
-  onClick?: Function
   className?: string
   children: ReactNode
   highlightClass?: string
 }
 
 function Highlightable(props: Props) {
-  const { highlightKey, highlights, isHighlightable, onClick, className, children, highlightClass, alternateKeys } = props
+  const { highlightKey, isHighlightable, className, children, highlightClass, alternateKeys } = props
+  const [highlights, updateHighlights] = useHighlightsStore((state) => [
+    state.highlights,
+    state.updateHighlights,
+  ])
 
   function onClickHandler() {
-    if(onClick && isHighlightable) {
-      onClick(highlightKey)
+    if(isHighlightable) {
+      updateHighlights(highlightKey)
     }
   }
 

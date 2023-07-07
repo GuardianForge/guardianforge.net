@@ -1,6 +1,6 @@
 import { faCog, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Item } from '@guardianforge/destiny-data-utils';
+import { Item } from '../data-utils/Main';
 import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -10,6 +10,7 @@ import Highlightable from './Highlightable';
 import ForgeModal from './Modal';
 import Image from './ui/Image';
 import V2SuperTree from './V2SuperTree';
+import { useCreateBuildStore } from '../stores/createbuild';
 
 
 const Wrapper = styled.div`
@@ -149,13 +150,10 @@ type Props = {
   onChangeSubclassClicked?: MouseEventHandler
   onSubclassUpdated?: Function
   configurable?: boolean
-  isHighlightModeOn?: boolean
-  highlights: Array<string>
-  onHighlightableClicked?: Function
 }
 
 function V2SubclassCard(props: Props) {
-  const { subclass, onChangeSubclassClicked, buildItem, onSubclassUpdated, configurable, isHighlightModeOn, highlights, onHighlightableClicked } = props
+  const { subclass, onChangeSubclassClicked, buildItem, configurable } = props
   const [specialty, setSpecialty] = useState<any>()
   const [grenade, setGrenade] = useState<any>()
   const [movement, setMovement] = useState<any>()
@@ -166,6 +164,9 @@ function V2SubclassCard(props: Props) {
   const [availableMovementModes, setAvailableMovementModes] = useState<any>()
   const [availableSuperTress, setAvailableSuperTrees] = useState<any>()
   const [isConfigureSubclassModalShown, setIsConfigureSubclassModalShown] = useState(false)
+  const [isHighlightModeOn] = useCreateBuildStore((state) => [
+    state.isHighlightModeOn
+  ])
 
   useEffect(() => {
     if(subclass) {
@@ -228,18 +229,12 @@ function V2SubclassCard(props: Props) {
     setTree(tree)
   }
 
-  function onHighlightableClickedHandler(highlightKey: string) {
-    if(onHighlightableClicked) {
-      onHighlightableClicked(highlightKey)
-    }
-  }
-
   if(subclass) {
     return (
       <Wrapper>
         <div className="subclass-left">
           <div className="subclass-left-top">
-            <img className="icon" src={subclass.iconUrl} />
+            <Image className="icon" src={subclass.iconUrl} />
           </div>
           {configurable && (
             <div>
@@ -258,9 +253,7 @@ function V2SubclassCard(props: Props) {
                 <div className="perk">
                   <Highlightable highlightKey="subclass-grenade"
                     alternateKeys={["subclass-grenade-0-0"]}
-                    highlights={highlights}
                     isHighlightable={isHighlightModeOn}
-                    onClick={onHighlightableClickedHandler}
                     className="highlightable-wrapper">
                     <Image src={`https://www.bungie.net${grenade.icon}`} />
                   </Highlightable>
@@ -271,9 +264,7 @@ function V2SubclassCard(props: Props) {
                 <div className="perk">
                 <Highlightable highlightKey="subclass-specialty"
                   alternateKeys={["subclass-specialty-0-0"]}
-                  highlights={highlights}
                   isHighlightable={isHighlightModeOn}
-                  onClick={onHighlightableClickedHandler}
                   className="highlightable-wrapper">
                   <Image src={`https://www.bungie.net${specialty.icon}`} />
                 </Highlightable>
@@ -285,9 +276,7 @@ function V2SubclassCard(props: Props) {
                 <div className="perk">
                   <Highlightable highlightKey="subclass-movement"
                     alternateKeys={["subclass-movement-0-0"]}
-                    highlights={highlights}
                     isHighlightable={isHighlightModeOn}
-                    onClick={onHighlightableClickedHandler}
                     className="highlightable-wrapper">
                     <Image src={`https://www.bungie.net${movement.icon}`} />
                   </Highlightable>
@@ -298,10 +287,8 @@ function V2SubclassCard(props: Props) {
             {tree &&
               <Highlightable highlightKey="subclass-super"
                 alternateKeys={["subclass-super-0-0"]}
-                highlights={highlights}
                 isHighlightable={isHighlightModeOn}
-                highlightClass="tree-diamond"
-                onClick={onHighlightableClickedHandler}>
+                highlightClass="tree-diamond">
                 <V2SuperTree className="equipped-tree"
                   tree={tree}
                   affinity={affinity}
@@ -384,7 +371,7 @@ function V2SubclassCard(props: Props) {
       <Wrapper>
         <div className="subclass-left">
           <div className="subclass-left-top">
-            <img className="icon" src={buildItem.iconUrl} />
+            <Image className="icon" src={buildItem.iconUrl} />
           </div>
           {configurable && (
             <div>
@@ -403,9 +390,7 @@ function V2SubclassCard(props: Props) {
                 <div className="perk flex items-center">
                   <Highlightable highlightKey="subclass-grenade"
                     alternateKeys={["subclass-grenade-0-0"]}
-                    highlights={highlights}
                     isHighlightable={isHighlightModeOn}
-                    onClick={onHighlightableClickedHandler}
                     className="highlightable-wrapper">
                     <Image src={grenade.iconUrl.startsWith("http") ? grenade.iconUrl : `https://www.bungie.net${grenade.iconUrl}`} />
                   </Highlightable>
@@ -416,9 +401,7 @@ function V2SubclassCard(props: Props) {
                 <div className="perk flex items-center">
                 <Highlightable highlightKey="subclass-specialty"
                   alternateKeys={["subclass-specialty-0-0"]}
-                  highlights={highlights}
                   isHighlightable={isHighlightModeOn}
-                  onClick={onHighlightableClickedHandler}
                   className="highlightable-wrapper">
                   <Image src={specialty.iconUrl.startsWith("http") ? specialty.iconUrl : `https://www.bungie.net${specialty.iconUrl}`} />
                 </Highlightable>
@@ -430,9 +413,7 @@ function V2SubclassCard(props: Props) {
                 <div className="perk flex items-center">
                   <Highlightable highlightKey="subclass-movement"
                     alternateKeys={["subclass-movement-0-0"]}
-                    highlights={highlights}
                     isHighlightable={isHighlightModeOn}
-                    onClick={onHighlightableClickedHandler}
                     className="highlightable-wrapper">
                     <Image src={movement.iconUrl.startsWith("http") ? movement.iconUrl : `https://www.bungie.net${movement.iconUrl}`} />
                   </Highlightable>
@@ -443,10 +424,8 @@ function V2SubclassCard(props: Props) {
             {tree &&
               <Highlightable highlightKey="subclass-super"
                 alternateKeys={["subclass-super-0-0"]}
-                highlights={highlights}
                 isHighlightable={isHighlightModeOn}
-                highlightClass="tree-diamond"
-                onClick={onHighlightableClickedHandler}>
+                highlightClass="tree-diamond">
                 <V2SuperTree className="equipped-tree"
                   tree={tree}
                   affinity={affinity}
