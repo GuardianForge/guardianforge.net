@@ -23,7 +23,7 @@ jobs:
           npm run build
       - name: Transform configs
         shell: bash
-        working-directory: scripts/transform-configs
+        working-directory: scripts/transform-json
         env:
           API_BASE: ${{ secrets.API_BASE }}
           LOGIN_URL: ${{ secrets.LOGIN_URL }}
