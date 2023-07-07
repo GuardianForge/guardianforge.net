@@ -1,0 +1,35 @@
+name: Deploy to QA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-to-qa:
+    name: Deploy frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build shared library
+        shell: bash
+        working-directory: frontend/shared
+        run: |
+          npm ci
+          npm run build
+
+      # - name: Swap configs
+      # - name: NPM install/build
+      # - name: Clean deploy directory
+      # - name: Copy to S3
+      # - name: Invalidate cache
+  # deploy-backend:
+  #   name: Deploy backend
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Swap configs
+  #     - name: Transform params
+  #     - name: Build & deploy
+
+
