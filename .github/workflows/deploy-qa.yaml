@@ -42,7 +42,7 @@ jobs:
       - name: Copy to S3
         working-directory: frontend/public
         run: |
-          aws s3 sync public s3://guardianforge-qa-site/app --no-progress
+          aws s3 sync public s3://guardianforge-qa-site/app --no-progress --acl public-read
       - name: Invalidate cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} --paths "/*"
