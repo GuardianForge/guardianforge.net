@@ -1,0 +1,5 @@
+{
+  "apiBase": "API_BASE",
+  "loginUrl": "LOGIN_URL",
+  "oauthClientId": "OAUTH_CLIENT_ID"
+}

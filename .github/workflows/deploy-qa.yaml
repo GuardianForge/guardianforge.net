@@ -3,6 +3,11 @@ name: Deploy to QA
 on:
   workflow_dispatch:
 
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: 'us-west-1'
+
 jobs:
   deploy-to-qa:
     name: Deploy frontend
@@ -16,12 +21,31 @@ jobs:
         run: |
           npm ci
           npm run build
-
-      # - name: Swap configs
-      # - name: NPM install/build
-      # - name: Clean deploy directory
-      # - name: Copy to S3
-      # - name: Invalidate cache
+      - name: Transform configs
+        shell: bash
+        working-directory: scripts/transform-configs
+        env:
+          API_BASE: ${{ secrets.API_BASE }}
+          LOGIN_URL: ${{ secrets.LOGIN_URL }}
+          OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+        run: |
+          go run main.go --mapfile ../../frontend/public/transform_map.json --configfile ../../frontend/public/public/config.json
+      - name: NPM install/build
+        shell: bash
+        working-directory: frontend/public
+        run: |
+          npm ci
+          npm run build
+      - name: Clean deploy directory
+        run: |
+          aws s3 rm --recursive s3://guardianforge-qa-site/app/
+      - name: Copy to S3
+        working-directory: frontend/public
+        run: |
+          aws s3 sync public s3://guardianforge-qa-site/app --no-progress
+      - name: Invalidate cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} --paths "/*"
   # deploy-backend:
   #   name: Deploy backend
   #   runs-on: ubuntu-latest
