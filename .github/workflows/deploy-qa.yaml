@@ -35,7 +35,7 @@ jobs:
         working-directory: frontend/public
         run: |
           npm ci
-          npm run build
+          CI= npm run build
       - name: Clean deploy directory
         run: |
           aws s3 rm --recursive s3://guardianforge-qa-site/app/
