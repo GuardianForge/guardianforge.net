@@ -10,6 +10,7 @@ env:
 
 jobs:
   deploy-to-qa:
+    if: false
     name: Deploy frontend
     runs-on: ubuntu-latest
     steps:
@@ -49,14 +50,36 @@ jobs:
       - name: Invalidate cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} --paths "/*"
-  # deploy-backend:
-  #   name: Deploy backend
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Swap configs
-  #     - name: Transform params
-  #     - name: Build & deploy
+  deploy-backend:
+    name: Deploy backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+      - name: Write default params.json file
+        shell: bash
+        working-directory: backend/stack
+        run: |
+          echo "${{ secrets.PARAMS_JSON }}" >> params_enc.tmp
+          base64 -d -i params_enc.tmp -o params.json
+          cat params.json
+      # - name: Transform configs
+      #   shell: bash
+      #   working-directory: scripts/transform-json
+      #   env:
+      #     API_BASE: ${{ secrets.API_BASE }}
+      #     LOGIN_URL: ${{ secrets.LOGIN_URL }}
+      #     OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+      #     BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+      #   run: |
+      #     go run main.go \
+      #       --mapfile ../../backend/stack/transform_map.json \
+      #       --configfile ../../backend/stack/params.json
+
+      # - name: Transform params
+      # - name: Build & deploy
 
 
