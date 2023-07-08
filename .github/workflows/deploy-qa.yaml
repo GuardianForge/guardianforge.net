@@ -79,6 +79,7 @@ jobs:
           STRIPE_SUCCESS_CB: ${{ secrets.STRIPE_SUCCESS_CB }}
           STRIPE_WEBHOOK_KEY: ${{ secrets.STRIPE_WEBHOOK_KEY }}
         run: |
+          ls ../../backend/stack
           go run main.go \
             --mapfile ../../backend/stack/transform_map.json \
             --configfile ../../backend/stack/params.json
