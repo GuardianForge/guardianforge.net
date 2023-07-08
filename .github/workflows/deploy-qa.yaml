@@ -63,9 +63,9 @@ jobs:
         shell: bash
         working-directory: backend/stack
         run: |
-          echo "${{ secrets.PARAMS_JSON }}" >> params_enc.tmp
-          base64 -d -i params_enc.tmp -o params.json
-          cat params.json
+          echo "${{ secrets.PARAMS_JSON_ENCODED }}" >> params.encoded
+          base64 -d -i params.encoded >> backend/stack/params.json
+          cat backend/stack/params.json
       # - name: Transform configs
       #   shell: bash
       #   working-directory: scripts/transform-json
