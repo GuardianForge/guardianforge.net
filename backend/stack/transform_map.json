@@ -4,7 +4,7 @@
   "OAuthClientIdParam": "OAUTH_CLIENT_ID",
   "OAuthClientSecretParam": "OAUTH_CLIENT_SECRET",
   "StripeErrorCallbackParam": "STRIPE_ERROR_CB",
-  "StripeSecretKeyParam": "STRIPE_SECRET_KEY",
+  "StripeSecretKeyParam": "STRIPE_KEY",
   "StripeSuccessCallbackParam": "STRIPE_SUCCESS_CB",
   "StripeWebhookSecretParam": "STRIPE_WEBHOOK_KEY"
 }
