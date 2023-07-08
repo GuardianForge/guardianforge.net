@@ -65,6 +65,7 @@ jobs:
         run: |
           echo "${{ secrets.PARAMS_JSON_ENCODED }}" >> params.encoded
           base64 -d -i params.encoded >> params.json
+          cat params.json
       - name: Transform configs
         shell: bash
         working-directory: scripts/transform-json
