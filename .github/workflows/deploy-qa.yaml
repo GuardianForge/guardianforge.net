@@ -28,6 +28,7 @@ jobs:
           API_BASE: ${{ secrets.API_BASE }}
           LOGIN_URL: ${{ secrets.LOGIN_URL }}
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+          BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
         run: |
           go run main.go \
             --mapfile ../../frontend/public/transform_map.json \
