@@ -1,5 +1,6 @@
 {
   "apiBase": "API_BASE",
   "loginUrl": "LOGIN_URL",
-  "oauthClientId": "OAUTH_CLIENT_ID"
+  "oauthClientId": "OAUTH_CLIENT_ID",
+  "bungieApiKey": "BUNGIE_API_KEY"
 }

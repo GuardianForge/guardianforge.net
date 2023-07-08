@@ -29,7 +29,9 @@ jobs:
           LOGIN_URL: ${{ secrets.LOGIN_URL }}
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
         run: |
-          go run main.go --mapfile ../../frontend/public/transform_map.json --configfile ../../frontend/public/public/config.json
+          go run main.go \
+            --mapfile ../../frontend/public/transform_map.json \
+            --configfile ../../frontend/public/public/config.json
       - name: NPM install/build
         shell: bash
         working-directory: frontend/public
