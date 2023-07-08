@@ -65,19 +65,23 @@ jobs:
         run: |
           echo "${{ secrets.PARAMS_JSON_ENCODED }}" >> params.encoded
           base64 -d -i params.encoded >> params.json
+      - name: Transform configs
+        shell: bash
+        working-directory: scripts/transform-json
+        env:
+          BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+          DISCORD_FEEDBACK_WEBHOOK: ${{ secrets.DISCORD_FEEDBACK_WEBHOOK }}
+          OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+          OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
+          STRIPE_ERROR_CB: ${{ secrets.STRIPE_ERROR_CB }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_SUCCESS_CB: ${{ secrets.STRIPE_SUCCESS_CB }}
+          STRIPE_WEBHOOK_KEY: ${{ secrets.STRIPE_WEBHOOK_KEY }}
+        run: |
+          go run main.go \
+            --mapfile ../../backend/stack/transform_map.json \
+            --configfile ../../backend/stack/params.json
           cat params.json
-      # - name: Transform configs
-      #   shell: bash
-      #   working-directory: scripts/transform-json
-      #   env:
-      #     API_BASE: ${{ secrets.API_BASE }}
-      #     LOGIN_URL: ${{ secrets.LOGIN_URL }}
-      #     OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
-      #     BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
-      #   run: |
-      #     go run main.go \
-      #       --mapfile ../../backend/stack/transform_map.json \
-      #       --configfile ../../backend/stack/params.json
 
       # - name: Transform params
       # - name: Build & deploy
