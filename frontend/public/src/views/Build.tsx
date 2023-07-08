@@ -121,7 +121,7 @@ function Build() {
       }
 
       if(buildData.secondaryActivity) {
-        let activity = activityOptions.find(el => el.value === buildData.primaryActivity)
+        let activity = activityOptions.find(el => el.value === buildData.secondaryActivity)
         if(activity && activity.value !== '1') {
           setSecondaryActivity(activity)
         }
