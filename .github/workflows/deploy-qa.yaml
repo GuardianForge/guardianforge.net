@@ -81,7 +81,7 @@ jobs:
           go run main.go \
             --mapfile ../../backend/stack/transform_map.json \
             --configfile ../../backend/stack/params.json
-          cat ../backend/stack/params.json
+          cat ../../backend/stack/params.json
 
       # - name: Transform params
       # - name: Build & deploy
