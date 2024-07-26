@@ -16,18 +16,16 @@ Parameters:
   EnvironmentParam:
     Type: String
     Default: qa
-    AllowedValues:
-      - qa
-      - prod
-    Description: Enter 'qa' or 'prod'
-  SiteDomainNameParam:
+  SiteAliasParam:
     Type: String
-    Default: qa.guardianforge.net
-    Description: The CName used for the CloudFormation deployment.
-  ApiDomainNameParam:
-    Type: String
-    Default: qa-api.guardianforge.net
-    Description: The CName used for API Gateway & the CloudFront API Origin.
+  # SiteDomainNameParam:
+  #   Type: String
+  #   Default: qa.guardianforge.net
+  #   Description: The CName used for the CloudFormation deployment.
+  # ApiDomainNameParam:
+  #   Type: String
+  #   Default: qa-api.guardianforge.net
+  #   Description: The CName used for API Gateway & the CloudFront API Origin.
   CertArnParam:
     Type: String
   SiteBucketNameParam:
@@ -64,11 +62,34 @@ Parameters:
     Type: String
 
 Resources:
+  Subdomain:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: Z04847192KADNUAMJT9ZV
+      Name: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
+      Type: CNAME
+      TTL: 900
+      ResourceRecords:
+        - !GetAtt CloudfrontCdn.DomainName
+  ApiSubdomain:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: Z04847192KADNUAMJT9ZV
+      Name: !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
+      Type: CNAME
+      TTL: 900
+      ResourceRecords:
+        - !GetAtt ApiDomainName.DistributionDomainName
+
   DataBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref DataBucketNameParam
-      AccessControl: PublicRead
+      BucketName: !Join [ "-", ["guardianforge", !Ref EnvironmentParam, "data"]]
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
       VersioningConfiguration:
         Status: Enabled
       CorsConfiguration:
@@ -85,7 +106,12 @@ Resources:
   SiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref SiteBucketNameParam
+      BucketName: !Join [ "-", ["guardianforge", !Ref EnvironmentParam, "site"]]
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
@@ -95,7 +121,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Ref SiteDomainNameParam
+          - !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
         DefaultRootObject: index.html
         Origins:
           - Id: !Join ["-", ["S3-GuardianForge", !Ref EnvironmentParam]]
@@ -104,7 +130,7 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: ''
           - Id: !Join ["-", ["API-GuardianForge", !Ref EnvironmentParam]]
-            DomainName: !Ref ApiDomainNameParam
+            DomainName: !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
               OriginReadTimeout: 30
@@ -183,15 +209,17 @@ Resources:
     Type: AWS::ApiGateway::DomainName
     Properties:
       CertificateArn: !Ref CertArnParam
-      DomainName: !Ref ApiDomainNameParam
+      DomainName: !Join ["", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
 
   ApiDomainNameMapping:
     Type: AWS::ApiGateway::BasePathMapping
     Properties:
       BasePath: ""
-      DomainName: !Ref ApiDomainNameParam
+      DomainName: !Join ["", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
       RestApiId: !Ref ServerlessRestApi
       Stage: Prod
+    DependsOn:
+      - ApiDomainName
 
   DbTable:
     Type: AWS::DynamoDB::Table
@@ -254,10 +282,12 @@ Resources:
 #region Functions ======================================================================
   OAuthCodeHandlerFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/oauth/code/_post
-      Handler: _post
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -271,10 +301,12 @@ Resources:
 
   RefreshTokenHandlerFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/oauth/refresh/_post
-      Handler: _post
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -289,10 +321,12 @@ Resources:
 
   NewBuildsQueueHandlerFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: sqs-handlers/new-build-handler/
-      Handler: new-build-handler
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         SqsEvent:
           Type: SQS
@@ -308,14 +342,16 @@ Resources:
           ALGOLIA_WORKSPACE: !Ref AlgoliaWorkspaceParam
           ALGOLIA_KEY: !Ref AlgoliaKeyParam
           ALGOLIA_INDEX: !Ref AlgoliaIndexParam
-          PUBLIC_PATH: !Sub "https://${SiteDomainNameParam}"
+          PUBLIC_PATH: !Sub "https://${SiteAliasParam}.guardianforge-r53.net"
 
   UpvoteBuildQueueHandlerFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: sqs-handlers/upvote-build-handler/
-      Handler: upvote-build-handler
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         SqsEvent:
           Type: SQS
@@ -331,10 +367,12 @@ Resources:
 
   BookmarkBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/bookmarks/_put
-      Handler: _put
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -352,10 +390,12 @@ Resources:
 
   FetchBookmarksFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/bookmarks/_get/
-      Handler: _get
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -373,10 +413,12 @@ Resources:
 
   FetchUpvotesFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/upvotes/_get/
-      Handler: _get
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -394,10 +436,12 @@ Resources:
 
   GetUserFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/users/username/_get
-      Handler: _get
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -417,10 +461,12 @@ Resources:
 
   GetMeFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/_get
-      Handler: _get
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -438,10 +484,12 @@ Resources:
 
   PutMeFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/_put
-      Handler: _put
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -459,10 +507,12 @@ Resources:
 
   UpvoteBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/upvotes/_put/
-      Handler: _put
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -483,10 +533,12 @@ Resources:
 
   FetchMyBuildsFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/builds/_get
-      Handler: _get
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -504,10 +556,12 @@ Resources:
 
   RecreateCreateOgImageFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/admin/create-og-image/_post
-      Handler: _post
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref DataBucket
@@ -524,10 +578,12 @@ Resources:
 
   CreateBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/_post
-      Handler: _post
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref DataBucket
@@ -550,7 +606,7 @@ Resources:
           BUCKET_NAME: !Ref DataBucket
           BUNGIE_API_KEY: !Ref BungieApiKeyParam
           DISCORD_BUILD_WEBHOOK: !Ref DiscordBuildWebhookParam
-          PUBLIC_PATH: !Sub "https://${SiteDomainNameParam}"
+          PUBLIC_PATH: !Sub "https://${SiteAliasParam}.guardianforge-r53.net"
           NEW_BUILDS_QUEUE: !Ref NewBuildsQueue
           ALGOLIA_WORKSPACE: !Ref AlgoliaWorkspaceParam
           ALGOLIA_KEY: !Ref AlgoliaKeyParam
@@ -558,10 +614,12 @@ Resources:
 
   UpdateBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/_put
-      Handler: _put
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Timeout: 10
       Policies:
         - S3CrudPolicy:
@@ -587,10 +645,12 @@ Resources:
 
   ArchiveBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/_delete
-      Handler: _delete
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -611,10 +671,11 @@ Resources:
 
   FetchLatestBuildsFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/latest/_get
-      Handler: _get
-      Runtime: go1.x
+      Handler: bootstrap
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -624,16 +685,21 @@ Resources:
           Properties:
             Path: /builds/latest
             Method: GET
+      Runtime: provided.al2
+      # Architectures:
+      #   - x86_64
       Environment:
         Variables:
           TABLE_NAME: !Ref DbTable
 
   FetchBuildUpvoteCountFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/upvotes/_get
-      Handler: _get
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -652,10 +718,12 @@ Resources:
 # region Subscriptions =================
   CreatePaymentIntentFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/subscriptions/create-intent/_post
-      Handler: _post
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -671,10 +739,12 @@ Resources:
 
   CancelSubscriptionFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/subscriptions/_delete
-      Handler: _delete
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -689,10 +759,12 @@ Resources:
 
   ReEnableSubscriptionFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/subscriptions/_put
-      Handler: _put
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -707,10 +779,12 @@ Resources:
 
   StripeWebhookFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/webhooks/stripe
-      Handler: stripe
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -730,10 +804,12 @@ Resources:
 
   BuildsOgProxy:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: proxy/builds-og-proxy/
-      Handler: builds-og-proxy
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -742,15 +818,17 @@ Resources:
             Method: GET
       Environment:
         Variables:
-          PUBLIC_PATH: !Sub "https://${SiteDomainNameParam}"
+          PUBLIC_PATH: !Sub "https://${SiteAliasParam}.guardianforge-r53.net"
           DATA_BUCKET_NAME: !Ref DataBucketNameParam
 
   ReportErrorProxy:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/report/error/_post
-      Handler: _post
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -763,10 +841,12 @@ Resources:
 
   CreateOgImageFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: s3-handlers/create-og-image/
-      Handler: create-og-image
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - S3CrudPolicy:
             BucketName: !Join ["-", ["guardianforge", !Ref EnvironmentParam, "data"]]

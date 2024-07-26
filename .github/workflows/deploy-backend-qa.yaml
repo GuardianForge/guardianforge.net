@@ -1,4 +1,4 @@
-name: Deploy backend (QA)
+name: Deploy backend
 
 on:
   workflow_dispatch:
@@ -18,22 +18,32 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
       - name: Checkout
         uses: actions/checkout@v3
       - uses: aws-actions/setup-sam@v2
         with:
           use-installer: true
+      - name: Sam version
+        run: |
+          sam --version
       - name: Write default params.json file
         shell: bash
         working-directory: backend/stack
         run: |
           echo "${{ secrets.PARAMS_JSON_ENCODED }}" >> params.encoded
           base64 -d -i params.encoded >> params.json
+          cat params.json
       - name: Transform configs
         shell: bash
         working-directory: scripts/transform-json
         env:
+          SITE_ALIAS: ${{ steps.extract_branch.outputs.branch }}
           BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+          CERT_ARN: ${{ secrets.CERT_ARN }}
           DISCORD_FEEDBACK_WEBHOOK: ${{ secrets.DISCORD_FEEDBACK_WEBHOOK }}
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
           OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
@@ -53,7 +63,8 @@ jobs:
           GOOS: linux
           GOARCH: amd64
           CGO_ENABLED: 0
-        run: make deploy-qa
+          SITE_ALIAS: ${{ steps.extract_branch.outputs.branch }}
+        run: make deploy-branch
 
 
 
