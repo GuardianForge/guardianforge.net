@@ -282,10 +282,12 @@ Resources:
 #region Functions ======================================================================
   OAuthCodeHandlerFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/oauth/code/_post
-      Handler: _post
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -299,10 +301,12 @@ Resources:
 
   RefreshTokenHandlerFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/oauth/refresh/_post
-      Handler: _post
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -317,10 +321,12 @@ Resources:
 
   NewBuildsQueueHandlerFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: sqs-handlers/new-build-handler/
-      Handler: new-build-handler
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         SqsEvent:
           Type: SQS
@@ -340,10 +346,12 @@ Resources:
 
   UpvoteBuildQueueHandlerFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: sqs-handlers/upvote-build-handler/
-      Handler: upvote-build-handler
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         SqsEvent:
           Type: SQS
@@ -359,10 +367,12 @@ Resources:
 
   BookmarkBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/bookmarks/_put
-      Handler: _put
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -380,10 +390,12 @@ Resources:
 
   FetchBookmarksFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/bookmarks/_get/
-      Handler: _get
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -401,10 +413,12 @@ Resources:
 
   FetchUpvotesFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/upvotes/_get/
-      Handler: _get
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -422,10 +436,12 @@ Resources:
 
   GetUserFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/users/username/_get
-      Handler: _get
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -445,10 +461,12 @@ Resources:
 
   GetMeFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/_get
-      Handler: _get
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -466,10 +484,12 @@ Resources:
 
   PutMeFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/_put
-      Handler: _put
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -487,10 +507,12 @@ Resources:
 
   UpvoteBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/upvotes/_put/
-      Handler: _put
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -511,10 +533,12 @@ Resources:
 
   FetchMyBuildsFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/me/builds/_get
-      Handler: _get
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -532,10 +556,12 @@ Resources:
 
   RecreateCreateOgImageFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/admin/create-og-image/_post
-      Handler: _post
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref DataBucket
@@ -552,10 +578,12 @@ Resources:
 
   CreateBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/_post
-      Handler: _post
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref DataBucket
@@ -586,10 +614,12 @@ Resources:
 
   UpdateBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/_put
-      Handler: _put
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Timeout: 10
       Policies:
         - S3CrudPolicy:
@@ -615,10 +645,12 @@ Resources:
 
   ArchiveBuildFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/_delete
-      Handler: _delete
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -640,7 +672,7 @@ Resources:
   FetchLatestBuildsFn:
     Type: AWS::Serverless::Function
     Metadata:
-      BuildMethod: makefile
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/latest/_get
       Handler: bootstrap
@@ -662,10 +694,12 @@ Resources:
 
   FetchBuildUpvoteCountFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/upvotes/_get
-      Handler: _get
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -684,10 +718,12 @@ Resources:
 # region Subscriptions =================
   CreatePaymentIntentFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/subscriptions/create-intent/_post
-      Handler: _post
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -703,10 +739,12 @@ Resources:
 
   CancelSubscriptionFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/subscriptions/_delete
-      Handler: _delete
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -721,10 +759,12 @@ Resources:
 
   ReEnableSubscriptionFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/subscriptions/_put
-      Handler: _put
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -739,10 +779,12 @@ Resources:
 
   StripeWebhookFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/webhooks/stripe
-      Handler: stripe
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -762,10 +804,12 @@ Resources:
 
   BuildsOgProxy:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: proxy/builds-og-proxy/
-      Handler: builds-og-proxy
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -779,10 +823,12 @@ Resources:
 
   ReportErrorProxy:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/report/error/_post
-      Handler: _post
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Events:
         CatchAll:
           Type: Api
@@ -795,10 +841,12 @@ Resources:
 
   CreateOgImageFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: s3-handlers/create-og-image/
-      Handler: create-og-image
-      Runtime: provided.al2023
+      Handler: bootstrap
+      Runtime: provided.al2
       Policies:
         - S3CrudPolicy:
             BucketName: !Join ["-", ["guardianforge", !Ref EnvironmentParam, "data"]]

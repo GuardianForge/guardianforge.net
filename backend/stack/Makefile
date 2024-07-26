@@ -5,7 +5,10 @@ region = us-west-1
 stack_name = GuardianForge-$(SITE_ALIAS)
 artifacts_bucket = guardianforge-$(SITE_ALIAS)-samartifacts
 
-build:
+vendor:
+	./scripts/vendor.sh
+
+build: vendor
 	sam build
 
 run: build
@@ -14,7 +17,7 @@ run: build
 transform-params:
 	go run scripts/transform-params.go
 
-deploy-branch: transform-params
+deploy-branch: build transform-params
 	@if aws s3api list-buckets | grep \"Name\":\ \"$(artifacts_bucket)\"; then \
 		echo "Bucket '$(artifacts_bucket)' already exists."; \
 	else \
