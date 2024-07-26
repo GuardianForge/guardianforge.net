@@ -3,8 +3,8 @@ name: Deploy backend (QA)
 on:
   workflow_dispatch:
   push:
-    branches:
-      - qa
+    # branches:
+    #   - qa
     paths:
       - backend/**
 

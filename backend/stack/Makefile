@@ -25,6 +25,8 @@ deploy-branch: build transform-params
 		echo "Bucket created!"; \
 	fi
 
+	# go run ./scripts/deploy.go GuardianForge-${SITE_ALIAS} guardianforge-${SITE_ALIAS}-samartifacts $(region) "$(shell cat sam.params)"
+
 deploy-qa: build transform-params
 	@if aws s3api list-buckets | grep \"Name\":\ \"$(qa_artifacts_bucket)\"; then \
 		echo "Bucket '$(qa_artifacts_bucket)' already exists."; \
