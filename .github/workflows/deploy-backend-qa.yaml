@@ -18,6 +18,10 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
       - name: Checkout
         uses: actions/checkout@v3
       - uses: aws-actions/setup-sam@v2
@@ -34,7 +38,7 @@ jobs:
         shell: bash
         working-directory: scripts/transform-json
         env:
-          SITE_ALIAS: ${{ github.head_ref }}
+          SITE_ALIAS: ${{ steps.extract_branch.outputs.branch }}
           BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
           DISCORD_FEEDBACK_WEBHOOK: ${{ secrets.DISCORD_FEEDBACK_WEBHOOK }}
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
@@ -55,7 +59,7 @@ jobs:
           GOOS: linux
           GOARCH: amd64
           CGO_ENABLED: 0
-          SITE_ALIAS: ${{ github.head_ref }}
+          SITE_ALIAS: ${{ steps.extract_branch.outputs.branch }}
         run: |
           printenv
           make deploy-branch
