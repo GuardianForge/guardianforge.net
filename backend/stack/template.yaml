@@ -644,7 +644,6 @@ Resources:
     Properties:
       CodeUri: api/builds/latest/_get
       Handler: bootstrap
-      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -654,8 +653,9 @@ Resources:
           Properties:
             Path: /builds/latest
             Method: GET
-      # Architectures:
-      #   - x64_64
+      Runtime: provided.al2
+      Architectures:
+        - x86_64
       Environment:
         Variables:
           TABLE_NAME: !Ref DbTable
