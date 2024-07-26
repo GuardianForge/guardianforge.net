@@ -187,14 +187,14 @@ Resources:
         Enabled: true
         HttpVersion: http2
         ViewerCertificate:
-          AcmCertificateArn: !Ref CertArnParam
+          AcmCertificateArn: !Ref AcmCertificate
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1.2_2019
 
   ApiDomainName:
     Type: AWS::ApiGateway::DomainName
     Properties:
-      CertificateArn: !Ref CertArnParam
+      CertificateArn: !Ref AcmCertificate
       DomainName: !Join ["", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
 
   ApiDomainNameMapping:
