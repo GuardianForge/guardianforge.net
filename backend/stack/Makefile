@@ -2,10 +2,8 @@
 
 # Globals
 region = us-west-1
-
-# QA
-qa_stack_name = GuardianForge-qa
-qa_artifacts_bucket = guardianforge-qa-samartifacts2
+stack_name = GuardianForge-$(SITE_ALIAS)
+artifacts_bucket = guardianforge-$(SITE_ALIAS)-samartifacts
 
 build:
 	sam build
@@ -17,17 +15,15 @@ transform-params:
 	go run scripts/transform-params.go
 
 deploy-branch: transform-params
-	echo "Bucket 'guardianforge-$(SITE_ALIAS)-samartifacts'"
+	@if aws s3api list-buckets | grep \"Name\":\ \"$(artifacts_bucket)\"; then \
+		echo "Bucket '$(artifacts_bucket)' already exists."; \
+	else \
+		echo "Creating bucket '$(artifacts_bucket)'..."; \
+		aws s3api create-bucket --bucket $(artifacts_bucket) --region $(region) --create-bucket-configuration LocationConstraint=$(region); \
+		echo "Bucket created!"; \
+	fi
 
-	# @if aws s3api list-buckets | grep \"Name\":\ \"guardianforge-$(SITE_ALIAS)-samartifacts\"; then \
-	# 	echo "Bucket 'guardianforge-$(SITE_ALIAS)-samartifacts' already exists."; \
-	# else \
-	# 	echo "Creating bucket 'guardianforge-$(SITE_ALIAS)-samartifacts'..."; \
-	# 	aws s3api create-bucket --bucket guardianforge-$(SITE_ALIAS)-samartifacts --region $(region) --create-bucket-configuration LocationConstraint=$(region); \
-	# 	echo "Bucket created!"; \
-	# fi
-
-	# go run ./scripts/deploy.go GuardianForge-$(SITE_ALIAS) guardianforge-$(SITE_ALIAS)-samartifacts $(region) "$(shell cat sam.params)"
+	# go run ./scripts/deploy.go $(stack_name) $(artifacts_bucket) $(region) "$(shell cat sam.params)"
 
 deploy-qa: build transform-params
 	@if aws s3api list-buckets | grep \"Name\":\ \"$(qa_artifacts_bucket)\"; then \
