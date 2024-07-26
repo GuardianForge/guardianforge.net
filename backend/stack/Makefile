@@ -23,7 +23,7 @@ deploy-branch: transform-params
 		echo "Bucket created!"; \
 	fi
 
-	# go run ./scripts/deploy.go $(stack_name) $(artifacts_bucket) $(region) "$(shell cat sam.params)"
+	∂go run ./scripts/deploy.go $(stack_name) $(artifacts_bucket) $(region) "$(shell cat sam.params)"
 
 deploy-qa: build transform-params
 	@if aws s3api list-buckets | grep \"Name\":\ \"$(qa_artifacts_bucket)\"; then \
