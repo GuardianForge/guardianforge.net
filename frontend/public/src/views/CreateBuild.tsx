@@ -642,7 +642,6 @@ function CreateBuild() {
                     className="mb-3"
                     value={activity}
                     onChange={(opt: ActivityOption) => setActivity(opt)} />
-                  <span>Secondary Activity</span>
                   <ActivitySelector
                     className="mb-3"
                     value={secondaryActivity}
