@@ -639,7 +639,7 @@ Resources:
 
   FetchLatestBuildsFn:
     Type: AWS::Serverless::Function
-    BuildMethod:
+    Metadata:
       BuildMethod: makefile
     Properties:
       CodeUri: api/builds/latest/_get
