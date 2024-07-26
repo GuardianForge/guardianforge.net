@@ -55,6 +55,7 @@ jobs:
           GOOS: linux
           GOARCH: amd64
           CGO_ENABLED: 0
+          SITE_ALIAS: ${{ github.head_ref }}
         run: make deploy-branch
 
 
