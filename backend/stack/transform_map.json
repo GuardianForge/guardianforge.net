@@ -1,4 +1,6 @@
 {
+  "SiteAliasParam": "SITE_ALIAS",
+  "EnvironmentParam": "SITE_ALIAS",
   "BungieApiKeyParam": "BUNGIE_API_KEY",
   "DiscordFeedbackWebhookParam": "DISCORD_FEEDBACK_WEBHOOK",
   "OAuthClientIdParam": "OAUTH_CLIENT_ID",

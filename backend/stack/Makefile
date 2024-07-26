@@ -7,11 +7,6 @@ region = us-west-1
 qa_stack_name = GuardianForge-qa
 qa_artifacts_bucket = guardianforge-qa-samartifacts2
 
-# Prod
-prod_stack_name = GuardianForge-prod
-prod_artifacts_bucket = guardianforge-prod-samartifacts
-prod_profile = prod_devops_svc
-
 build:
 	sam build
 
@@ -20,6 +15,15 @@ run: build
 
 transform-params:
 	go run scripts/transform-params.go
+
+deploy-branch: build transform-params
+	@if aws s3api list-buckets | grep \"Name\":\ \"guardianforge-${SITE_ALIAS}-samartifacts\"; then \
+		echo "Bucket 'guardianforge-${SITE_ALIAS}-samartifacts' already exists."; \
+	else \
+		echo "Creating bucket 'guardianforge-${SITE_ALIAS}-samartifacts'..."; \
+		aws s3api create-bucket --bucket guardianforge-${SITE_ALIAS}-samartifacts --region $(region) --create-bucket-configuration LocationConstraint=$(region); \
+		echo "Bucket created!"; \
+	fi
 
 deploy-qa: build transform-params
 	@if aws s3api list-buckets | grep \"Name\":\ \"$(qa_artifacts_bucket)\"; then \

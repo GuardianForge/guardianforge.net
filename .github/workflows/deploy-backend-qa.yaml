@@ -34,6 +34,7 @@ jobs:
         shell: bash
         working-directory: scripts/transform-json
         env:
+          SITE_ALIAS: ${{ github.head_ref }}
           BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
           DISCORD_FEEDBACK_WEBHOOK: ${{ secrets.DISCORD_FEEDBACK_WEBHOOK }}
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
@@ -54,7 +55,7 @@ jobs:
           GOOS: linux
           GOARCH: amd64
           CGO_ENABLED: 0
-        run: make deploy-qa
+        run: make deploy-branch
 
 
 
