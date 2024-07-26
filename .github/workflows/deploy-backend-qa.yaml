@@ -60,9 +60,7 @@ jobs:
           GOARCH: amd64
           CGO_ENABLED: 0
           SITE_ALIAS: ${{ steps.extract_branch.outputs.branch }}
-        run: |
-          printenv
-          make deploy-branch
+        run: make deploy-branch
 
 
 
