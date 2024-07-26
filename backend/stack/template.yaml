@@ -79,7 +79,7 @@ Resources:
   DataBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref DataBucketNameParam
+      BucketName: !Join [ "-", ["guardianforge", !Ref EnvironmentParam, "data"]]
       AccessControl: PublicRead
       VersioningConfiguration:
         Status: Enabled
@@ -97,7 +97,7 @@ Resources:
   SiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref SiteBucketNameParam
+      BucketName: !Join [ "-", ["guardianforge", !Ref EnvironmentParam, "site"]]
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
