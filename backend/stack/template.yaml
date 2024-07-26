@@ -66,14 +66,14 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: guardianforge-r53.net
-      Name: !Join [!Ref EnvironmentParam, ".guardianforge-r53.net"]
+      Name: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
       Type: CNAME
       ResourceRecords:
         - !GetAtt CloudfrontCdn.DomainName
   AcmCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: !Join [!Ref EnvironmentParam, ".guardianforge-r53.net"]
+      DomainName: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
       ValidationMethod: DNS
 
   DataBucket:
@@ -107,7 +107,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join [!Ref EnvironmentParam, ".guardianforge-r53.net"]
+          - !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
         DefaultRootObject: index.html
         Origins:
           - Id: !Join ["-", ["S3-GuardianForge", !Ref EnvironmentParam]]
@@ -116,7 +116,7 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: ''
           - Id: !Join ["-", ["API-GuardianForge", !Ref EnvironmentParam]]
-            DomainName: !Join [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]
+            DomainName: !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
               OriginReadTimeout: 30
@@ -195,13 +195,13 @@ Resources:
     Type: AWS::ApiGateway::DomainName
     Properties:
       CertificateArn: !Ref CertArnParam
-      DomainName: !Join [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]
+      DomainName: !Join ["", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
 
   ApiDomainNameMapping:
     Type: AWS::ApiGateway::BasePathMapping
     Properties:
       BasePath: ""
-      DomainName: !Join [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]
+      DomainName: !Join ["", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
       RestApiId: !Ref ServerlessRestApi
       Stage: Prod
 
