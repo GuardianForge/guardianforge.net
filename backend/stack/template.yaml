@@ -78,16 +78,16 @@ Resources:
       Type: CNAME
       ResourceRecords:
         - !GetAtt ApiDomainName.DistributionDomainName
-  AcmCertificate:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
-      SubjectAlternativeNames:
-        - !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
-      ValidationMethod: DNS
-    DependsOn:
-      - ApiSubdomain
-      - Subdomain
+  # AcmCertificate:
+  #   Type: AWS::CertificateManager::Certificate
+  #   Properties:
+  #     DomainName: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
+  #     SubjectAlternativeNames:
+  #       - !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
+  #     ValidationMethod: DNS
+  #   DependsOn:
+  #     - ApiSubdomain
+  #     - Subdomain
 
   DataBucket:
     Type: AWS::S3::Bucket
@@ -204,14 +204,14 @@ Resources:
         Enabled: true
         HttpVersion: http2
         ViewerCertificate:
-          AcmCertificateArn: !Ref AcmCertificate
+          AcmCertificateArn: !Ref CertArnParam
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1.2_2019
 
   ApiDomainName:
     Type: AWS::ApiGateway::DomainName
     Properties:
-      CertificateArn: !Ref AcmCertificate
+      CertificateArn: !Ref CertArnParam
       DomainName: !Join ["", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
 
   ApiDomainNameMapping:

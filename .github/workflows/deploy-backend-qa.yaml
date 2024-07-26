@@ -40,6 +40,7 @@ jobs:
         env:
           SITE_ALIAS: ${{ steps.extract_branch.outputs.branch }}
           BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+          CERT_ARN: ${{ secrets.CERT_ARN }}
           DISCORD_FEEDBACK_WEBHOOK: ${{ secrets.DISCORD_FEEDBACK_WEBHOOK }}
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
           OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
