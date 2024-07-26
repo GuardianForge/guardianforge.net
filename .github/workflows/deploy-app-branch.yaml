@@ -1,0 +1,54 @@
+name: Deploy app (QA)
+
+on:
+  workflow_dispatch:
+  # push:
+  #   paths:
+  #     - frontend/public/**
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: 'us-west-1'
+
+jobs:
+  deploy-app-qa:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build shared library
+        shell: bash
+        working-directory: frontend/shared
+        run: |
+          npm ci
+          npm run build
+      - name: Transform configs
+        shell: bash
+        working-directory: scripts/transform-json
+        env:
+          API_BASE: ${{ secrets.API_BASE }}
+          LOGIN_URL: ${{ secrets.LOGIN_URL }}
+          OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+          BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+        run: |
+          go run main.go \
+            --mapfile ../../frontend/public/transform_map.json \
+            --configfile ../../frontend/public/public/config.json
+      - name: NPM install/build
+        shell: bash
+        working-directory: frontend/public
+        run: |
+          npm ci
+          CI= npm run build
+      - name: Clean deploy directory
+        run: |
+          aws s3 rm --recursive s3://guardianforge-qa-site/app/
+      - name: Copy to S3
+        working-directory: frontend/public
+        run: |
+          aws s3 sync build s3://guardianforge-qa-site/app --no-progress --acl public-read
+      - name: Invalidate cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} --paths "/*"
