@@ -80,7 +80,11 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join [ "-", ["guardianforge", !Ref EnvironmentParam, "data"]]
-      AccessControl: PublicRead
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
       VersioningConfiguration:
         Status: Enabled
       CorsConfiguration:
