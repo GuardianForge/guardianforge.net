@@ -3,8 +3,8 @@ name: Deploy app (QA)
 on:
   workflow_dispatch:
   push:
-    branches:
-      - qa
+    # branches:
+    #   - qa
     paths:
       - frontend/public/**
 
@@ -18,6 +18,10 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build shared library
@@ -30,7 +34,7 @@ jobs:
         shell: bash
         working-directory: scripts/transform-json
         env:
-          API_BASE: ${{ secrets.API_BASE }}
+          API_BASE: ${{ steps.extract_branch.outputs.branch }}-api.guardianforge-r3.net
           LOGIN_URL: ${{ secrets.LOGIN_URL }}
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
           BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
@@ -46,11 +50,11 @@ jobs:
           CI= npm run build
       - name: Clean deploy directory
         run: |
-          aws s3 rm --recursive s3://guardianforge-qa-site/app/
+          aws s3 rm --recursive s3://guardianforge-${{ steps.extract_branch.outputs.branch }}-site/app/
       - name: Copy to S3
         working-directory: frontend/public
         run: |
-          aws s3 sync build s3://guardianforge-qa-site/app --no-progress --acl public-read
+          aws s3 sync build s3://guardianforge-${{ steps.extract_branch.outputs.branch }}-site/app --no-progress --acl public-read
       - name: Invalidate cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} --paths "/*"
