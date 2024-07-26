@@ -65,7 +65,7 @@ Resources:
   Subdomain:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: guardianforge-r53.net
+      HostedZoneId: Z04847192KADNUAMJT9ZV
       Name: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
       Type: CNAME
       ResourceRecords:
@@ -73,7 +73,7 @@ Resources:
   ApiSubdomain:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: guardianforge-r53.net
+      HostedZoneId: Z04847192KADNUAMJT9ZV
       Name: !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
       Type: CNAME
       ResourceRecords:
