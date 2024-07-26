@@ -2,12 +2,9 @@ name: Deploy app
 
 on:
   workflow_dispatch:
-  # pull_request:
-  push:
-    # branches:
-    #   - qa
-    paths:
-      - frontend/public/**
+  # push:
+  #   paths:
+  #     - frontend/public/**
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

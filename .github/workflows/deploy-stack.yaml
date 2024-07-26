@@ -3,11 +3,6 @@ name: Deploy stack
 on:
   workflow_dispatch:
   pull_request:
-  # push:
-  #   # branches:
-  #   #   - qa
-  #   paths:
-  #     - backend/**
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -16,7 +11,7 @@ env:
 
 jobs:
   deploy-backend:
-    name: Deploy
+    name: Deploy backend
     runs-on: ubuntu-latest
     steps:
       - name: Extract branch name
@@ -63,6 +58,52 @@ jobs:
           CGO_ENABLED: 0
           SITE_ALIAS: ${{ steps.extract_branch.outputs.branch }}
         run: make deploy-branch
-
+  deploy-app:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    needs: [deploy-backend]
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build shared library
+        shell: bash
+        working-directory: frontend/shared
+        run: |
+          npm ci
+          npm run build
+      - name: Transform configs
+        shell: bash
+        working-directory: scripts/transform-json
+        env:
+          API_BASE: https://${{ steps.extract_branch.outputs.branch }}-api.guardianforge-r53.net
+          LOGIN_URL: ${{ secrets.LOGIN_URL }}
+          OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+          BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+        run: |
+          go run main.go \
+            --mapfile ../../frontend/public/transform_map.json \
+            --configfile ../../frontend/public/public/config.json
+      - name: NPM install/build
+        shell: bash
+        working-directory: frontend/public
+        run: |
+          npm ci
+          CI= npm run build
+      - name: Clean deploy directory
+        run: |
+          aws s3 rm --recursive s3://guardianforge-${{ steps.extract_branch.outputs.branch }}-site/app/
+      - name: Copy to S3
+        working-directory: frontend/public
+        run: |
+          aws s3 sync build s3://guardianforge-${{ steps.extract_branch.outputs.branch }}-site/app --no-progress --acl public-read
+      - name: Invalidate cache
+        run: |
+          CFDISTID=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,comment:Comment}[?comment=='GuardianForge-${{ steps.extract_branch.outputs.branch }}'].id" --output text)
+          echo "Invalidating $CFDISTID"
+          aws cloudfront create-invalidation --distribution-id $CFDISTID --paths "/*"
 
 
