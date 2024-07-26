@@ -70,10 +70,20 @@ Resources:
       Type: CNAME
       ResourceRecords:
         - !GetAtt CloudfrontCdn.DomainName
+  ApiSubdomain:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: guardianforge-r53.net
+      Name: !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
+      Type: CNAME
+      ResourceRecords:
+        - !GetAtt ApiDomainName.DistributionDomainName
   AcmCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
       DomainName: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
+      SubjectAlternativeNames:
+        - !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
       ValidationMethod: DNS
 
   DataBucket:
