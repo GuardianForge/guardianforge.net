@@ -639,9 +639,11 @@ Resources:
 
   FetchLatestBuildsFn:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
     Properties:
       CodeUri: api/builds/latest/_get
-      Handler: _get
+      Handler: bootstrap
       Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
@@ -652,6 +654,8 @@ Resources:
           Properties:
             Path: /builds/latest
             Method: GET
+      # Architectures:
+      #   - x64_64
       Environment:
         Variables:
           TABLE_NAME: !Ref DbTable
