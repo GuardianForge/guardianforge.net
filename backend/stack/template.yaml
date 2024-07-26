@@ -85,6 +85,9 @@ Resources:
       SubjectAlternativeNames:
         - !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
       ValidationMethod: DNS
+    DependsOn:
+      - ApiSubdomain
+      - Subdomain
 
   DataBucket:
     Type: AWS::S3::Bucket
