@@ -1,4 +1,4 @@
-name: Deploy backend (QA)
+name: Deploy backend
 
 on:
   workflow_dispatch:

@@ -16,14 +16,16 @@ run: build
 transform-params:
 	go run scripts/transform-params.go
 
-deploy-branch: build transform-params
-	@if aws s3api list-buckets | grep \"Name\":\ \"guardianforge-${SITE_ALIAS}-samartifacts\"; then \
-		echo "Bucket 'guardianforge-${SITE_ALIAS}-samartifacts' already exists."; \
-	else \
-		echo "Creating bucket 'guardianforge-${SITE_ALIAS}-samartifacts'..."; \
-		aws s3api create-bucket --bucket guardianforge-${SITE_ALIAS}-samartifacts --region $(region) --create-bucket-configuration LocationConstraint=$(region); \
-		echo "Bucket created!"; \
-	fi
+deploy-branch: transform-params
+	echo "Bucket 'guardianforge-${SITE_ALIAS}-samartifacts'"
+
+	# @if aws s3api list-buckets | grep \"Name\":\ \"guardianforge-${SITE_ALIAS}-samartifacts\"; then \
+	# 	echo "Bucket 'guardianforge-${SITE_ALIAS}-samartifacts' already exists."; \
+	# else \
+	# 	echo "Creating bucket 'guardianforge-${SITE_ALIAS}-samartifacts'..."; \
+	# 	aws s3api create-bucket --bucket guardianforge-${SITE_ALIAS}-samartifacts --region $(region) --create-bucket-configuration LocationConstraint=$(region); \
+	# 	echo "Bucket created!"; \
+	# fi
 
 	# go run ./scripts/deploy.go GuardianForge-${SITE_ALIAS} guardianforge-${SITE_ALIAS}-samartifacts $(region) "$(shell cat sam.params)"
 
