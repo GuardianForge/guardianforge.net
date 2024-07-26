@@ -106,7 +106,7 @@ function Home() {
 
 
         <div className="my-8 mx-4">
-          <h2>Latest Builds (asdfadsfasfasd)</h2>
+          <h2>Latest Builds</h2>
           {isLoading ? (
             <Loading />
           ) : (
