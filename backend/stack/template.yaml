@@ -640,7 +640,7 @@ Resources:
   FetchLatestBuildsFn:
     Type: AWS::Serverless::Function
     Metadata:
-      BuildMethod: go1.x
+      BuildMethod: makefile
     Properties:
       CodeUri: api/builds/latest/_get
       Handler: bootstrap
@@ -654,8 +654,8 @@ Resources:
             Path: /builds/latest
             Method: GET
       Runtime: provided.al2
-      Architectures:
-        - x86_64
+      # Architectures:
+      #   - x86_64
       Environment:
         Variables:
           TABLE_NAME: !Ref DbTable
