@@ -57,4 +57,5 @@ jobs:
           aws s3 sync build s3://guardianforge-${{ steps.extract_branch.outputs.branch }}-site/app --no-progress --acl public-read
       - name: Invalidate cache
         run: |
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} --paths "/*"
+          CFDISTID=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,comment:Comment}[?comment=='GuardianForge-${{ steps.extract_branch.outputs.branch }}'].id" --output text)
+          aws cloudfront create-invalidation --distribution-id $CFDISTID --paths "/*"
