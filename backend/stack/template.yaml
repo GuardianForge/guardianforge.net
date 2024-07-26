@@ -218,6 +218,8 @@ Resources:
       DomainName: !Join ["", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
       RestApiId: !Ref ServerlessRestApi
       Stage: Prod
+    DependsOn:
+      - ApiDomainName
 
   DbTable:
     Type: AWS::DynamoDB::Table
