@@ -2,8 +2,6 @@ name: Deploy stack
 
 on:
   workflow_dispatch:
-  create:
-    branches:
   push:
     branches-ignore:
       - qa
