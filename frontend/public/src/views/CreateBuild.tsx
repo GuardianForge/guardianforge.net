@@ -642,10 +642,6 @@ function CreateBuild() {
                     className="mb-3"
                     value={activity}
                     onChange={(opt: ActivityOption) => setActivity(opt)} />
-                  <ActivitySelector
-                    className="mb-3"
-                    value={secondaryActivity}
-                    onChange={(opt: ActivityOption) => setSecondaryActivity(opt)} />
                   <span>Input Style</span>
                   <ModalSelector
                     title="Input Style"
