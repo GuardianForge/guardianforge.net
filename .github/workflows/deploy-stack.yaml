@@ -6,6 +6,9 @@ on:
     branches-ignore:
       - qa
       - main
+    paths:
+      - backend/**
+      - frontend/public/**
   pull_request:
     paths:
       - backend/**
