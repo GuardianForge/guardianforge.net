@@ -80,16 +80,6 @@ Resources:
       TTL: 900
       ResourceRecords:
         - !GetAtt ApiDomainName.DistributionDomainName
-  # AcmCertificate:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
-  #     SubjectAlternativeNames:
-  #       - !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
-  #     ValidationMethod: DNS
-  #   DependsOn:
-  #     - ApiSubdomain
-  #     - Subdomain
 
   DataBucket:
     Type: AWS::S3::Bucket
@@ -117,6 +107,11 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join [ "-", ["guardianforge", !Ref EnvironmentParam, "site"]]
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html

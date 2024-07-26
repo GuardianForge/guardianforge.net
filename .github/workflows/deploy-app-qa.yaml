@@ -34,7 +34,7 @@ jobs:
         shell: bash
         working-directory: scripts/transform-json
         env:
-          API_BASE: ${{ steps.extract_branch.outputs.branch }}-api.guardianforge-r3.net
+          API_BASE: ${{ steps.extract_branch.outputs.branch }}-api.guardianforge-r53.net
           LOGIN_URL: ${{ secrets.LOGIN_URL }}
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
           BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
