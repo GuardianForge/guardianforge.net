@@ -269,7 +269,7 @@ Resources:
     Properties:
       CodeUri: api/oauth/code/_post
       Handler: _post
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         CatchAll:
           Type: Api
@@ -286,7 +286,7 @@ Resources:
     Properties:
       CodeUri: api/oauth/refresh/_post
       Handler: _post
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         CatchAll:
           Type: Api
@@ -304,7 +304,7 @@ Resources:
     Properties:
       CodeUri: sqs-handlers/new-build-handler/
       Handler: new-build-handler
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         SqsEvent:
           Type: SQS
@@ -327,7 +327,7 @@ Resources:
     Properties:
       CodeUri: sqs-handlers/upvote-build-handler/
       Handler: upvote-build-handler
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         SqsEvent:
           Type: SQS
@@ -346,7 +346,7 @@ Resources:
     Properties:
       CodeUri: api/me/bookmarks/_put
       Handler: _put
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -367,7 +367,7 @@ Resources:
     Properties:
       CodeUri: api/me/bookmarks/_get/
       Handler: _get
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -388,7 +388,7 @@ Resources:
     Properties:
       CodeUri: api/me/upvotes/_get/
       Handler: _get
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -409,7 +409,7 @@ Resources:
     Properties:
       CodeUri: api/users/username/_get
       Handler: _get
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -432,7 +432,7 @@ Resources:
     Properties:
       CodeUri: api/me/_get
       Handler: _get
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -453,7 +453,7 @@ Resources:
     Properties:
       CodeUri: api/me/_put
       Handler: _put
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -474,7 +474,7 @@ Resources:
     Properties:
       CodeUri: api/me/upvotes/_put/
       Handler: _put
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -498,7 +498,7 @@ Resources:
     Properties:
       CodeUri: api/me/builds/_get
       Handler: _get
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -519,7 +519,7 @@ Resources:
     Properties:
       CodeUri: api/admin/create-og-image/_post
       Handler: _post
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref DataBucket
@@ -539,7 +539,7 @@ Resources:
     Properties:
       CodeUri: api/builds/_post
       Handler: _post
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref DataBucket
@@ -573,7 +573,7 @@ Resources:
     Properties:
       CodeUri: api/builds/_put
       Handler: _put
-      Runtime: go1.x
+      Runtime: provided.al2023
       Timeout: 10
       Policies:
         - S3CrudPolicy:
@@ -602,7 +602,7 @@ Resources:
     Properties:
       CodeUri: api/builds/_delete
       Handler: _delete
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -626,7 +626,7 @@ Resources:
     Properties:
       CodeUri: api/builds/latest/_get
       Handler: _get
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -645,7 +645,7 @@ Resources:
     Properties:
       CodeUri: api/builds/upvotes/_get
       Handler: _get
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -667,7 +667,7 @@ Resources:
     Properties:
       CodeUri: api/subscriptions/create-intent/_post
       Handler: _post
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         CatchAll:
           Type: Api
@@ -686,7 +686,7 @@ Resources:
     Properties:
       CodeUri: api/subscriptions/_delete
       Handler: _delete
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         CatchAll:
           Type: Api
@@ -704,7 +704,7 @@ Resources:
     Properties:
       CodeUri: api/subscriptions/_put
       Handler: _put
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         CatchAll:
           Type: Api
@@ -722,7 +722,7 @@ Resources:
     Properties:
       CodeUri: api/webhooks/stripe
       Handler: stripe
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DbTable
@@ -745,7 +745,7 @@ Resources:
     Properties:
       CodeUri: proxy/builds-og-proxy/
       Handler: builds-og-proxy
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         CatchAll:
           Type: Api
@@ -762,7 +762,7 @@ Resources:
     Properties:
       CodeUri: api/report/error/_post
       Handler: _post
-      Runtime: go1.x
+      Runtime: provided.al2023
       Events:
         CatchAll:
           Type: Api
@@ -778,7 +778,7 @@ Resources:
     Properties:
       CodeUri: s3-handlers/create-og-image/
       Handler: create-og-image
-      Runtime: go1.x
+      Runtime: provided.al2023
       Policies:
         - S3CrudPolicy:
             BucketName: !Join ["-", ["guardianforge", !Ref EnvironmentParam, "data"]]
