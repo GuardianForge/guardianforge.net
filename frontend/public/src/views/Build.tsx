@@ -52,7 +52,6 @@ function Build() {
   const [videoLink, setVideoLink] = useState("")
   const [twitterLink, setTwitterLink] = useState("")
   const [activity, setActivity] = useState<ActivityOption>(activityOptions[0])
-  const [secondaryActivity, setSecondaryActivity] = useState<ActivityOption>(activityOptions[0])
   const [inputStyle, setInputStyle] = useState<ModalSelectorOption>({ value: "0", display: "None"})
   const [isOwner, setIsOwner] = useState(false)
   const [isArchived, setIsArchived] = useState(false)
@@ -117,13 +116,6 @@ function Build() {
         let activity = activityOptions.find(el => el.value === buildData.primaryActivity)
         if(activity && activity.value !== '1') {
           setActivity(activity)
-        }
-      }
-
-      if(buildData.secondaryActivity) {
-        let activity = activityOptions.find(el => el.value === buildData.primaryActivity)
-        if(activity && activity.value !== '1') {
-          setSecondaryActivity(activity)
         }
       }
 
@@ -341,7 +333,6 @@ function Build() {
       {/* /Buttons */}
         <BuildMetaPanel
           primaryActivity={activity}
-          secondaryActivity={secondaryActivity}
           createdBy={createdBy}
           guardianOf={guardianOf}
           notes={notes}
@@ -388,8 +379,7 @@ function Build() {
             activity={activity}
             inputStyle={inputStyle}
             onUpdateFailed={onBuildUpdateFailed}
-            onUpdated={onBuildUpdated}
-            secondaryActivity={secondaryActivity} />
+            onUpdated={onBuildUpdated} />
 
 
           {/* Archive modal */}
