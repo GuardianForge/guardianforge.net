@@ -2,11 +2,11 @@ name: Deploy backend
 
 on:
   workflow_dispatch:
-  # push:
-  #   # branches:
-  #   #   - qa
-  #   paths:
-  #     - backend/**
+  push:
+    branches:
+      - qa
+    paths:
+      - backend/**
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
