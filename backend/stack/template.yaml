@@ -68,6 +68,7 @@ Resources:
       HostedZoneId: Z04847192KADNUAMJT9ZV
       Name: !Join [ "", [!Ref EnvironmentParam, ".guardianforge-r53.net"]]
       Type: CNAME
+      TTL: 900
       ResourceRecords:
         - !GetAtt CloudfrontCdn.DomainName
   ApiSubdomain:
@@ -76,6 +77,7 @@ Resources:
       HostedZoneId: Z04847192KADNUAMJT9ZV
       Name: !Join [ "", [!Ref EnvironmentParam, "-api.guardianforge-r53.net"]]
       Type: CNAME
+      TTL: 900
       ResourceRecords:
         - !GetAtt ApiDomainName.DistributionDomainName
   # AcmCertificate:
