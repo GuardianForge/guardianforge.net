@@ -1,4 +1,4 @@
-name: Deploy app (QA)
+name: Deploy app
 
 on:
   workflow_dispatch:
