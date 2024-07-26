@@ -178,7 +178,7 @@ function BuildMetaPanel({ createdBy, guardianOf, notes, videoLink, className, in
           {((primaryActivity && primaryActivity.iconUrl) || inputStyle) && (<div className="build-info-header mt-3">Works Best With</div>)}
           <div className="build-info-icons">
             {primaryActivity && primaryActivity.iconUrl && <img src={primaryActivity.iconUrl} alt="Primary Activity Icon" />}
-            {secondaryActivity && secondaryActivity.iconUrl && <img src={secondaryActivity.iconUrl} alt="Secondary Activity Icon" />}
+            {secondaryActivity && secondaryActivity.iconUrl && <img src={secondaryActivity.iconUrl} alt="Primary Activity Icon" />}
             {inputStyle === '1' && (<img src="/img/input-icons/mnk.png" alt="Mouse and Keyboard" />)}
             {inputStyle === '2' && (<img src="/img/input-icons/controller.png" alt="Controller" />)}
           </div>
