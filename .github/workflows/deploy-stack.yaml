@@ -67,6 +67,7 @@ jobs:
         run: make deploy-branch
   deploy-app:
     name: Deploy app
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
     runs-on: ubuntu-latest
     needs: [deploy-backend]
     steps:
