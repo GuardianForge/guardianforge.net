@@ -91,6 +91,7 @@ jobs:
           LOGIN_URL: https://www.bungie.net/en/oauth/authorize?client_id=${{ secrets.OAUTH_CLIENT_ID }}&response_type=code
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
           BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+          BUILD_S3_BUCKET: guardianforge-${{ steps.extract_branch.outputs.branch }}-data
         run: |
           go run main.go \
             --mapfile ../../frontend/public/transform_map.json \
