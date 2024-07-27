@@ -7,6 +7,7 @@ import BuildSummary from "./BuildSummary"
 
 class Build {
   primaryActivity?: string
+  secondaryActivity?: string
   inputStyle?: string
   notes?: string
   stats?: BuildStatCollection
@@ -34,7 +35,7 @@ class Build {
         modsByBucket: {}
       }
     }
-    const toLoadoutItem = (item: BuildItem): LoadoutItem | undefined => 
+    const toLoadoutItem = (item: BuildItem): LoadoutItem | undefined =>
       item?.itemHash !== undefined ? ({hash: item.itemHash, id: item.itemInstanceId}) : undefined
     if (this.items) {
       // Armor mods are in a flat list for DIM to assign best
@@ -88,8 +89,8 @@ class Build {
           plugs.forEach(p => {
             if (
               p.socketIndex !== undefined &&
-              p.plugHash !== undefined && 
-              p.name !== "Empty Aspect Socket" && 
+              p.plugHash !== undefined &&
+              p.name !== "Empty Aspect Socket" &&
               p.name !== "Empty Fragment Socket"
             ) {
               subclassItem.socketOverrides![p.socketIndex] = Number(p.plugHash)
