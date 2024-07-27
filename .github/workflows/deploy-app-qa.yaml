@@ -1,4 +1,4 @@
-name: Deploy app
+name: Deploy app (QA)
 
 on:
   workflow_dispatch:
@@ -15,7 +15,8 @@ env:
 
 jobs:
   deploy-app-qa:
-    name: Deploy
+    name: Deploy app
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
     runs-on: ubuntu-latest
     steps:
       - name: Extract branch name
@@ -35,9 +36,10 @@ jobs:
         working-directory: scripts/transform-json
         env:
           API_BASE: https://${{ steps.extract_branch.outputs.branch }}-api.guardianforge-r53.net
-          LOGIN_URL: ${{ secrets.LOGIN_URL }}
+          LOGIN_URL: https://www.bungie.net/en/oauth/authorize?client_id=${{ secrets.OAUTH_CLIENT_ID }}&response_type=code
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
           BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+          BUILD_S3_BUCKET: guardianforge-${{ steps.extract_branch.outputs.branch }}-data
         run: |
           go run main.go \
             --mapfile ../../frontend/public/transform_map.json \

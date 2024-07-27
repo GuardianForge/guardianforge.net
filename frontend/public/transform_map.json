@@ -2,5 +2,6 @@
   "apiBase": "API_BASE",
   "loginUrl": "LOGIN_URL",
   "oauthClientId": "OAUTH_CLIENT_ID",
-  "bungieApiKey": "BUNGIE_API_KEY"
+  "bungieApiKey": "BUNGIE_API_KEY",
+  "buildS3Bucket": "BUILD_S3_BUCKET"
 }

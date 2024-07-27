@@ -9,7 +9,7 @@ vendor:
 	./scripts/vendor.sh
 
 build: vendor
-	sam build
+	sam build --parallel --cached
 
 run: build
 	sam local start-api --env-vars devenv.json -p 4040

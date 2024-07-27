@@ -1,4 +1,4 @@
-name: Deploy backend
+name: Deploy backend (QA)
 
 on:
   workflow_dispatch:
@@ -15,7 +15,8 @@ env:
 
 jobs:
   deploy-backend:
-    name: Deploy
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
+    name: Deploy backend
     runs-on: ubuntu-latest
     steps:
       - name: Extract branch name
