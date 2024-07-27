@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -14,6 +15,7 @@ func main() {
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Println(request.HTTPMethod, request.Path)
 
 	builds, err := services.FetchLatestBuilds()
 	if err != nil {
