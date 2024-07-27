@@ -127,7 +127,6 @@ function CreateBuild() {
   const [stats, setStats] = useState<BuildStatCollection>(new BuildStatCollection())
   const [inputStyle, setInputStyle] = useState<ModalSelectorOption>({ value: "0", display: "None"});
   const [activity, setActivity] = useState<ActivityOption>({ value: "1", display: "Any Activity" });
-  const [secondaryActivity, setSecondaryActivity] = useState<ActivityOption>({ value: "1", display: "Any Activity" });
   const [videoLink, setVideoLink] = useState<string>("");
 
   // Validateion
@@ -147,7 +146,7 @@ function CreateBuild() {
 
       // TODO: Pull this from ForgeClient user info
       let { membershipType, membershipId } = userUtils.parseMembershipFromProfile(ForgeClient.userData)
-
+      
       try {
         let token = ForgeClient.getToken()
         window.services.InventoryManager = new InventoryManager(BungieApiService, ManifestService)
@@ -219,7 +218,6 @@ function CreateBuild() {
     setStats(new BuildStatCollection())
     setInputStyle({ value: "0", display: "None"});
     setActivity({ value: "1", display: "Any Activity" });
-    setSecondaryActivity({ value: "1", display: "Any Activity" });
     setBuildData({
       items: {
         subclass: null,
@@ -394,10 +392,6 @@ function CreateBuild() {
 
     if(activity.value !== "0") {
       build.primaryActivity = activity.value
-    }
-
-    if(secondaryActivity.value !== "0") {
-      build.secondaryActivity = secondaryActivity.value
     }
 
     if(visibility.value === "0") {
@@ -584,11 +578,6 @@ function CreateBuild() {
                         className="mb-3"
                         value={activity}
                         onChange={(opt: ActivityOption) => setActivity(opt)} />
-                      <span>Secondary Activity</span>
-                      <ActivitySelector
-                        className="mb-3"
-                        value={secondaryActivity}
-                        onChange={(opt: ActivityOption) => setSecondaryActivity(opt)} />
                       <span>Input Style</span>
                       <ModalSelector
                         title="Input Style"
@@ -642,11 +631,6 @@ function CreateBuild() {
                     className="mb-3"
                     value={activity}
                     onChange={(opt: ActivityOption) => setActivity(opt)} />
-                  <span>Secondary Activity</span>
-                  <ActivitySelector
-                    className="mb-3"
-                    value={secondaryActivity}
-                    onChange={(opt: ActivityOption) => setSecondaryActivity(opt)} />
                   <span>Input Style</span>
                   <ModalSelector
                     title="Input Style"

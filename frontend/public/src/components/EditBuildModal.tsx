@@ -27,7 +27,6 @@ interface Props {
   notes: string
   videoLink: string
   activity: ActivityOption
-  secondaryActivity: ActivityOption
   inputStyle: ModalSelectorOption
   onUpdateFailed: (err: any) => void
   onUpdated: (updates: UpdateBuildResponse) => void
@@ -36,13 +35,12 @@ interface Props {
 }
 
 function EditBuildModal(props: Props) {
-  const { show, onHide, buildId, name, notes, videoLink, activity, secondaryActivity, inputStyle, onUpdated, onUpdateFailed } = props
+  const { show, onHide, buildId, name, notes, videoLink, activity, inputStyle, onUpdated, onUpdateFailed } = props
   const [_state, setState] = useState(COMP_STATE.DONE)
   const [_name, setName] = useState(name)
   const [_notes, setNotes] = useState(notes)
   const [_videoLink, setVideoLink] = useState(videoLink)
   const [_activity, setActivity] = useState<ActivityOption>(activity)
-  const [_secondaryActivity, setSecondaryActivity] = useState<ActivityOption>(secondaryActivity)
   const [_inputStyle, setInputStyle] = useState<ModalSelectorOption>(inputStyle)
 
   async function update() {
@@ -107,11 +105,6 @@ function EditBuildModal(props: Props) {
           className="mb-3"
           value={_activity}
           onChange={(opt: ActivityOption) => setActivity(opt)} />
-        <span>Secondary Activity</span>
-        <ActivitySelector
-          className="mb-3"
-          value={_secondaryActivity}
-          onChange={(opt: ActivityOption) => setSecondaryActivity(opt)} />
         <span>Input Style</span>
         <ModalSelector
           title="Input Style"
@@ -120,7 +113,7 @@ function EditBuildModal(props: Props) {
           value={_inputStyle}
           onChange={(opt: ModalSelectorOption) => setInputStyle(opt)} />
       </div>
-
+      
       <h4>Video Review</h4>
       <div className="build-info-card">
         <Input

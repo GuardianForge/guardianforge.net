@@ -10,19 +10,18 @@ import (
 )
 
 type Build struct {
-	Highlights        []string        `json:"highlights"`
-	Name              string          `json:"name"`
-	Notes             string          `json:"notes"`
-	Items             Items           `json:"items"`
-	Class             int             `json:"class"`
-	SelectedUser      BuildUser       `json:"selectedUser"`
-	CreatedBy         string          `json:"createdBy"`
-	Stats             StatsCollection `json:"stats"`
-	PrimaryActivity   string          `json:"primaryActivity"`
-	SecondaryActivity string          `json:"secondaryActivity"`
-	VideoLink         string          `json:"videoLink"`
-	IsPrivate         bool            `json:"isPrivate"`
-	InputStyle        string          `json:"inputStyle"`
+	Highlights      []string        `json:"highlights"`
+	Name            string          `json:"name"`
+	Notes           string          `json:"notes"`
+	Items           Items           `json:"items"`
+	Class           int             `json:"class"`
+	SelectedUser    BuildUser       `json:"selectedUser"`
+	CreatedBy       string          `json:"createdBy"`
+	Stats           StatsCollection `json:"stats"`
+	PrimaryActivity string          `json:"primaryActivity"`
+	VideoLink       string          `json:"videoLink"`
+	IsPrivate       bool            `json:"isPrivate"`
+	InputStyle      string          `json:"inputStyle"`
 }
 
 func (b *Build) ToDbRecord(buildId string, publishedOn int64, membershipId *string) dbModels.Build {
